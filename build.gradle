@@ -1,0 +1,35 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+ext {
+    javaVersion = JavaVersion.VERSION_11
+    junitVersion = '5.6.2'
+}
+
+sourceCompatibility = javaVersion
+targetCompatibility = javaVersion
+
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+    testImplementation 'org.assertj:assertj-core:3.17.1'
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'sk.ivankohut.quantifa.Application'
+        )
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
