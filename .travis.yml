@@ -15,5 +15,6 @@ cache:
 
 script:
   - ./gradlew compileJava compileTestJava --info
+  - ./gradlew checkstyleRoot --info
   - ./gradlew test --info
   - ./gradlew assemble --info
