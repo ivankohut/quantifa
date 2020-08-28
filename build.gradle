@@ -1,11 +1,13 @@
 plugins {
     id 'java'
     id 'application'
+    id 'checkstyle'
 }
 
 ext {
     javaVersion = JavaVersion.VERSION_11
     junitVersion = '5.6.2'
+    checkstyleVersion = '8.35'
 }
 
 sourceCompatibility = javaVersion
@@ -32,4 +34,21 @@ jar {
 
 test {
     useJUnitPlatform()
+}
+
+checkstyle {
+    toolVersion checkstyleVersion
+    checkstyleMain.enabled = false
+    checkstyleTest.enabled = false
+}
+
+task checkstyleRoot(type: Checkstyle) {
+    source = rootDir
+    classpath = files()
+    configFile = file('config/checkstyle/checkstyle-root.xml')
+    exclude '**/build/**', '.idea/**', '**/.gradle/**', 'gradle/**', 'gradlew', 'gradlew.bat'
+}
+
+check {
+    dependsOn checkstyleRoot
 }
