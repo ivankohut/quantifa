@@ -17,6 +17,7 @@ script:
   - ./gradlew compileJava compileTestJava --info
   - ./gradlew checkstyleRoot --info
   - ./gradlew checkstyleMain checkstyleTest --info
+  - ./gradlew spotbugsMain spotbugsTest --info
   - ./gradlew markdownlint --info
   - ./gradlew lintGradle codenarcGradle --info
   - ./gradlew test --info
