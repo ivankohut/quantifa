@@ -12,6 +12,7 @@ public class Application {
         return "Hello from " + name;
     }
 
+    @SuppressWarnings("PMD.SystemPrintln")
     public static void main(String[] args) {
         System.out.println(new Application("quantifa").greeting());
     }
