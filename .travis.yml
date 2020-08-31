@@ -18,6 +18,7 @@ script:
   - ./gradlew checkstyleRoot --info
   - ./gradlew checkstyleMain checkstyleTest --info
   - ./gradlew spotbugsMain spotbugsTest --info
+  - ./gradlew pmdMain pmdTest --info
   - ./gradlew markdownlint --info
   - ./gradlew lintGradle codenarcGradle --info
   - ./gradlew test --info
