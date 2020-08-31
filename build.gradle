@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'application'
     id 'checkstyle'
+    id 'com.appmattus.markdown' version '0.6.0'
 }
 
 ext {
