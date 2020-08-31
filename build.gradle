@@ -38,8 +38,6 @@ test {
 
 checkstyle {
     toolVersion checkstyleVersion
-    checkstyleMain.enabled = false
-    checkstyleTest.enabled = false
 }
 
 task checkstyleRoot(type: Checkstyle) {
