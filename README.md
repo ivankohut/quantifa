@@ -1,2 +1,2 @@
 # quantifa
-Quantitative fundamental analysis of stocks 
+Quantitative fundamental analysis of stocks
