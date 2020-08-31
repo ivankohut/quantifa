@@ -3,17 +3,20 @@ plugins {
     id 'application'
     id 'checkstyle'
     id 'com.appmattus.markdown' version '0.6.0'
+    id 'groovy'
+    id 'codenarc'
+    id 'nebula.lint' version '16.9.1'
 }
 
 ext {
     javaVersion = JavaVersion.VERSION_11
     junitVersion = '5.6.2'
     checkstyleVersion = '8.35'
+    codenarcVersion = '1.6.1'
 }
 
 sourceCompatibility = javaVersion
 targetCompatibility = javaVersion
-
 
 repositories {
     jcenter()
@@ -50,4 +53,33 @@ task checkstyleRoot(type: Checkstyle) {
 
 check {
     dependsOn checkstyleRoot
+}
+
+codenarc {
+    toolVersion codenarcVersion
+    codenarcMain.enabled = false
+    codenarcTest.enabled = false
+}
+
+task codenarcGradle(type: CodeNarc) {
+    configFile = file('config/codenarc/codenarc-gradle.groovy')
+    source = rootDir
+    include '*.gradle', 'config/codenarc/*.groovy'
+    ignoreFailures false
+    maxPriority1Violations 0
+    maxPriority2Violations 0
+    maxPriority3Violations 0
+}
+
+check {
+    dependsOn codenarcGradle
+}
+
+gradleLint {
+    alwaysRun = false
+    criticalRules = ['all-dependency']
+}
+
+check {
+    dependsOn criticalLintGradle
 }
