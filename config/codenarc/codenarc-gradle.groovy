@@ -4,6 +4,8 @@ ruleset {
     ruleset('rulesets/comments.xml')
     ruleset('rulesets/convention.xml') {
         exclude 'CompileStatic'
+        exclude 'NoDef'
+        exclude 'VariableTypeRequired'
     }
     ruleset('rulesets/design.xml')
     ruleset('rulesets/dry.xml')
@@ -11,6 +13,8 @@ ruleset {
     ruleset('rulesets/exceptions.xml')
     ruleset('rulesets/formatting.xml') {
         exclude 'SpaceAroundMapEntryColon'
+        // Line length is checked globally by checkstyle
+        exclude 'LineLength'
     }
     ruleset('rulesets/generic.xml')
     ruleset('rulesets/groovyism.xml')

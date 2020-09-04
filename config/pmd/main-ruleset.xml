@@ -16,7 +16,8 @@
         <exclude name="MissingSerialVersionUID"/>
         <exclude name="AvoidFieldNameMatchingMethodName"/>
         <exclude name="OnlyOneReturn"/>
-        <!-- Allready covered by SpotBugs -->
+        <exclude name="LoosePackageCoupling"/>
+        <!-- Already covered by SpotBugs -->
         <exclude name="UnusedPrivateMethod"/>
         <exclude name="UnusedPrivateField"/>
         <exclude name="FinalFieldCouldBeStatic"/>
@@ -25,11 +26,11 @@
     </rule>
 
     <!-- Allow variable named `id` (too short otherwise) -->
-    <rule ref="rulesets/java/naming.xml/ShortVariable">
+    <rule ref="category/java/codestyle.xml/ShortVariable">
         <properties>
             <property name="xpath">
                 <value>
-                    //VariableDeclaratorId[(string-length(@Image) &lt; 3) and (not (@Image='id'))]
+                    //VariableDeclaratorId[(string-length(@Name) &lt; 3) and (not (@Name='id'))]
                     [not(ancestor::ForInit)]
                     [not((ancestor::FormalParameter) and (ancestor::TryStatement))]
                 </value>
