@@ -66,6 +66,7 @@ codenarc {
 }
 
 task codenarcGradle(type: CodeNarc) {
+    compilationClasspath += buildscript.configurations.classpath
     configFile = file('config/codenarc/codenarc-gradle.groovy')
     source = rootDir
     include '*.gradle', 'config/codenarc/*.groovy'
