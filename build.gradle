@@ -1,6 +1,9 @@
+import org.ajoberstar.grgit.Grgit
+
 plugins {
     id 'java'
     id 'application'
+    id 'org.ajoberstar.grgit' version '4.0.2'
     id 'checkstyle'
     id 'com.appmattus.markdown' version '0.6.0'
     id 'groovy'
@@ -30,6 +33,26 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
     testImplementation 'org.assertj:assertj-core:3.17.1'
+}
+
+task commitMessageFormatCheck {
+    def pattern = ~/#\d+ [A-Z0-9]\S* \S.*/
+    def grgit = Grgit.open(currentDir: project.rootDir)
+    inputs.property('head-commit-hash', grgit.head().id)
+    // at least one (dummy) output must be defined for Incremental build to work
+    outputs.file("$buildDir/nothing")
+    doLast {
+        grgit.log { range('origin/master', 'HEAD') }.each { commit ->
+            def message = commit.shortMessage
+            if (!pattern.matcher(message).matches()) {
+                throw new GradleException("Illegal commit message: ${message}\n  Expected format is: ${pattern.pattern()}")
+            }
+        }
+    }
+}
+
+check {
+    dependsOn commitMessageFormatCheck
 }
 
 jar {
