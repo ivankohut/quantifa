@@ -11,6 +11,8 @@ plugins {
     id 'nebula.lint' version '16.9.1'
     id 'com.github.spotbugs' version '4.5.0'
     id 'pmd'
+    id 'jacoco'
+    id 'org.sonarqube' version '3.0'
 }
 
 ext {
@@ -20,6 +22,7 @@ ext {
     codenarcVersion = '1.6.1'
     spotbugsVersion = '4.1.2'
     pmdVersion = '6.26.0'
+    jacocoVersion = '0.8.5'
 }
 
 sourceCompatibility = javaVersion
@@ -63,8 +66,21 @@ jar {
     }
 }
 
+jacoco {
+    toolVersion jacocoVersion
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        html.enabled false
+        xml.enabled true
+    }
+}
+
 test {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
 }
 
 checkstyle {
@@ -137,3 +153,13 @@ pmdMain {
     ruleSets = []
     ruleSetFiles = files('config/pmd/main-ruleset.xml')
 }
+
+sonarqube {
+    properties {
+        property 'sonar.projectKey', 'ivankohut_quantifa'
+        property 'sonar.qualitygate.wait', true
+        property 'sonar.coverage.jacoco.xmlReportPaths', "$buildDir/reports/jacoco/test/jacocoTestReport.xml"
+    }
+}
+
+tasks['sonarqube'].dependsOn test

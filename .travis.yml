@@ -13,6 +13,18 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
 
+addons:
+  sonarcloud:
+    organization: "ivankohut"
+    token:
+      secure: >
+        qEPNpdgajotK98WvY+6XWWsnwY2gwjXNgGJvaM5v/bb22CQJdoB9UAdfTzqUhlYVV5RMWVs1mluvYnbvAyWOla0X+2R4DK3o24eJZbrESogtAA6X125uOdVR
+        dE8mAU61PHMN6LITOHiInxvNxynN0sx5921ig9nYNVyOtVGqf6U1eyhXhmN7LnZHgNTmwmGG/BlV6dpaqTpqFK1xitog03fgzVFqHByDYVb11C1HxR2/pJLd
+        iKWvT/RDlsWnKAdgRdMnM0fwHw3tQU/m1QxjDog/risMiO7cKWJRBgTsbpmm5egksT7joI98y2CjkEI4dlRD0JOWNvzZORp/dVtLyWm4jFvDf6gX3fFcVxSZ
+        9SYpFIDVkqW3tJyQQQbxstwPtG1Gj/quwVnPNavO0E7FnmJMMJCA+Oz2t6ENU3gRvcXJxDs2qatce3PP8xoEi6ldY97gl4dsV3YDv2Fc/Zg2EcLqVqo7pKvz
+        2M5lHakqqmcDaNPOAut6S0pqg0CP4HihfnSq2K70bSu/H1bPHCGtOrLG5iCZqb+AbbyZnZD3TfqOMLiEsj1LZn4RuUuhL1P/kn9WS9c+j4kEzbcdGHd3vuWv
+        ioG5hNz+GVlqGUa9t9fZCec8Pc6Y7YHNkxJSi+rGXtVlHA1YWx9j9QFz2SwzZX2PO8iOfWeeReLRV0pbSgk=
+
 script:
   - ./gradlew --info compileJava compileTestJava
   - ./gradlew --info checkstyleRoot
@@ -22,4 +34,5 @@ script:
   - ./gradlew --info markdownlint
   - ./gradlew --info lintGradle codenarcGradle
   - ./gradlew --info test
+  - ./gradlew --info sonarqube
   - ./gradlew --info assemble
