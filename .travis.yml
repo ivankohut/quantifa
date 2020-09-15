@@ -33,6 +33,7 @@ script:
   - ./gradlew --info pmdMain pmdTest
   - ./gradlew --info markdownlint
   - ./gradlew --info lintGradle codenarcGradle
+  - ./gradlew --info validateYaml
   - ./gradlew --info test
   - ./gradlew --info sonarqube
   - ./gradlew --info assemble
