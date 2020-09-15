@@ -12,7 +12,7 @@ public class Application {
         return "Hello from " + name;
     }
 
-    @SuppressWarnings("PMD.SystemPrintln")
+    @SuppressWarnings({"PMD.SystemPrintln", "java:S106"})
     public static void main(String[] args) {
         System.out.println(new Application("quantifa").greeting());
     }
