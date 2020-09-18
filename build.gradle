@@ -1,5 +1,7 @@
 import org.ajoberstar.grgit.Grgit
 
+import java.util.regex.Pattern
+
 plugins {
     id 'java'
     id 'application'
@@ -38,24 +40,53 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.17.1'
 }
 
-task commitMessageFormatCheck {
-    def pattern = ~/#\d+ [A-Z0-9]\S* \S.*/
+class CurrentBranch {
+
+    private final Grgit grgit
+
+    CurrentBranch(Grgit grgit) {
+        this.grgit = grgit
+    }
+
+    String name() {
+        def branchName
+        def currentBranchName = grgit.branch.current().name
+        if (currentBranchName == 'HEAD') {
+            branchName = System.getenv("TRAVIS_BRANCH")
+            if (branchName == null) {
+                throw new GradleException("Could not retrieve current branch name.")
+            }
+        } else {
+            branchName = currentBranchName
+        }
+        branchName
+    }
+}
+
+task gitBranchChecks {
+    def branchPattern = ~/(master)|(feature\/#\d+\/[a-z0-9\-]+)/
+    def messagePattern = ~/#\d+ [A-Z0-9]\S* \S.*/
     def grgit = Grgit.open(currentDir: project.rootDir)
     inputs.property('head-commit-hash', grgit.head().id)
+
     // at least one (dummy) output must be defined for Incremental build to work
     outputs.file("$buildDir/nothing")
     doLast {
-        grgit.log { range('origin/master', 'HEAD') }.each { commit ->
-            def message = commit.shortMessage
-            if (!pattern.matcher(message).matches()) {
-                throw new GradleException("Illegal commit message: ${message}\n  Expected format is: ${pattern.pattern()}")
+        def check = { Pattern pattern, String text, String name ->
+            if (!pattern.matcher(text).matches()) {
+                throw new GradleException("Illegal ${name}: ${text}\n  Expected format is: ${pattern.pattern()}")
             }
+        }
+        def branchName = new CurrentBranch(grgit).name()
+        check(branchPattern, branchName, 'branch name')
+        grgit.log { range('origin/master', branchName) }.each { commit ->
+            check(messagePattern, commit.shortMessage, 'commit message')
         }
     }
 }
 
 check {
-    dependsOn commitMessageFormatCheck
+    dependsOn gitBranchChecks
 }
 
 jar {
