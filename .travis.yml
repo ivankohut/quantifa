@@ -26,6 +26,7 @@ addons:
         ioG5hNz+GVlqGUa9t9fZCec8Pc6Y7YHNkxJSi+rGXtVlHA1YWx9j9QFz2SwzZX2PO8iOfWeeReLRV0pbSgk=
 
 script:
+  - ./gradlew --info commitMessageFormatCheck
   - ./gradlew --info compileJava compileTestJava
   - ./gradlew --info checkstyleRoot
   - ./gradlew --info checkstyleMain checkstyleTest
