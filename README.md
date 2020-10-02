@@ -4,7 +4,7 @@
 
 [![Build Status](https://travis-ci.com/ivankohut/quantifa.svg?branch=master)](https://travis-ci.com/ivankohut/quantifa)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ivankohut_quantifa&metric=alert_status)](https://sonarcloud.io/dashboard?id=ivankohut_quantifa)
-[![Codecov](https://codecov.io/gh/vainkohut/quantifa/branch/master/graph/badge.svg)](https://codecov.io/gh/ivankohut/quantifa)
+[![Codecov](https://codecov.io/gh/ivankohut/quantifa/branch/master/graph/badge.svg)](https://codecov.io/gh/ivankohut/quantifa)
 
 [![Hits-of-Code](https://hitsofcode.com/github/ivankohut/quantifa)](https://hitsofcode.com/view/github/ivankohut/quantifa)
 
