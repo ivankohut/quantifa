@@ -37,3 +37,6 @@ script:
   - ./gradlew --info test
   - ./gradlew --info sonarqube
   - ./gradlew --info assemble
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
