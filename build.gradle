@@ -1,5 +1,3 @@
-import org.ajoberstar.grgit.Grgit
-
 plugins {
     id 'java'
     id 'application'
@@ -14,6 +12,7 @@ plugins {
     id 'jacoco'
     id 'org.sonarqube' version '3.0'
     id 'at.zierler.yamlvalidator' version '1.5.0'
+    id 'com.github.ivankohut.git-branch-checks' version '0.0.2'
 }
 
 ext {
@@ -39,24 +38,13 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.17.1'
 }
 
-task commitMessageFormatCheck {
-    def pattern = ~/#\d+ [A-Z0-9]\S* \S.*/
-    def grgit = Grgit.open(currentDir: project.rootDir)
-    inputs.property('head-commit-hash', grgit.head().id)
-    // at least one (dummy) output must be defined for Incremental build to work
-    outputs.file("$buildDir/nothing")
-    doLast {
-        grgit.log { range('origin/master', 'HEAD') }.each { commit ->
-            def message = commit.shortMessage
-            if (!pattern.matcher(message).matches()) {
-                throw new GradleException("Illegal commit message: ${message}\n  Expected format is: ${pattern.pattern()}")
-            }
-        }
-    }
+gitBranchChecks {
+    branchPattern = ~/(master)|(feature\/#\d+\/[a-z0-9\-]+)/
+    messagePattern = ~/#\d+ [A-Z0-9]\S* \S.*/
 }
 
 check {
-    dependsOn commitMessageFormatCheck
+    dependsOn checkBranchName, checkCommitMessages, checkNoMergeCommits
 }
 
 jar {
