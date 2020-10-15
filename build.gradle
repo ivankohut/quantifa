@@ -1,3 +1,12 @@
+buildscript {
+    repositories {
+        mavenLocal()
+    }
+    dependencies {
+        classpath "com.github.ivankohut:git-branch-checks:0.0.1"
+    }
+}
+
 plugins {
     id 'java'
     id 'application'
@@ -12,8 +21,9 @@ plugins {
     id 'jacoco'
     id 'org.sonarqube' version '3.0'
     id 'at.zierler.yamlvalidator' version '1.5.0'
-    id 'com.github.ivankohut.git-branch-checks' version '0.0.2'
 }
+
+apply plugin: 'com.github.ivankohut.git-branch-checks'
 
 ext {
     javaVersion = JavaVersion.VERSION_11
@@ -29,6 +39,7 @@ sourceCompatibility = javaVersion
 targetCompatibility = javaVersion
 
 repositories {
+    mavenLocal()
     jcenter()
 }
 
@@ -155,4 +166,9 @@ tasks['sonarqube'].dependsOn test
 
 yamlValidator {
     searchPaths = ['.travis.yml']
+}
+
+gitBranchChecks {
+    branchPattern = ~/featsr/
+    messagePattern = ~/aaa/
 }
