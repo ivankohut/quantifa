@@ -3,13 +3,9 @@
          xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
-    <description>All production rules except those not meaningful for unit tests</description>
+    <description>All production rules except those not meaningful for acceptance tests</description>
     <rule ref="config/pmd/main-ruleset.xml">
-        <!-- Unwanted rules-->
-        <exclude name="JUnitTestContainsTooManyAsserts"/>
-        <exclude name="JUnitTestsShouldIncludeAssert"/>
-        <exclude name="JUnitAssertionsShouldIncludeMessage"/>
-        <!-- Not applicable in unit tests -->
+        <!-- Not applicable in fixtures -->
         <exclude name="DefaultPackage"/>
         <exclude name="TooManyStaticImports"/>
         <exclude name="SignatureDeclareThrowsException"/>
@@ -18,12 +14,6 @@
         <exclude name="ExcessiveImports"/>
         <exclude name="UseConcurrentHashMap"/>
         <exclude name="AtLeastOneConstructor"/>
-    </rule>
-
-    <rule ref="category/java/design.xml/TooManyMethods">
-        <properties>
-            <property name="maxmethods" value="20" />
-        </properties>
     </rule>
 
     <!-- Higher limit for max variable name length (original is 17) -->

@@ -22,6 +22,8 @@ ext {
     spotbugsVersion = '4.1.2'
     pmdVersion = '6.26.0'
     jacocoVersion = '0.8.5'
+    lombokVersion = '1.18.10'
+    twsApiZipUrl = 'https://interactivebrokers.github.io/downloads/twsapi_macunix.976.01.zip'
 }
 
 sourceCompatibility = javaVersion
@@ -31,10 +33,42 @@ repositories {
     jcenter()
 }
 
+sourceSets {
+    acceptanceTest {
+        java {
+            srcDir 'src/acceptanceTest/java'
+        }
+    }
+}
+
+// Download TWS API jar which is not available in public maven repositories
+def twsDir = new File("$buildDir/tws/")
+def twsApiJar = new File("$twsDir/twsApi.jar")
+twsDir.mkdirs()
+if (!twsApiJar.exists()) {
+    def twsApiZip = new File(twsDir, 'twsapi.zip')
+    twsApiZip << new URL(twsApiZipUrl).bytes
+    def unzippedDir = "$twsDir/unzipped"
+    ant.unzip(src: twsApiZip, dest: unzippedDir, overwrite: 'true')
+    twsApiJar << new File("$unzippedDir/IBJts/source/JavaClient/TwsApi.jar").bytes
+}
+
 dependencies {
+    implementation files(twsApiJar)
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:${junitVersion}"
     testImplementation 'org.assertj:assertj-core:3.17.1'
+    testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    testImplementation 'org.mockito:mockito-core:3.6.0'
+
+    acceptanceTestImplementation 'org.fitnesse:fitnesse:20200501'
+    acceptanceTestImplementation sourceSets.main.compileClasspath
+    acceptanceTestImplementation sourceSets.main.output
+    acceptanceTestAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 }
 
 gitBranchChecks {
@@ -79,7 +113,8 @@ task checkstyleRoot(type: Checkstyle) {
     source = rootDir
     classpath = files()
     configFile = file('config/checkstyle/checkstyle-root.xml')
-    exclude '**/build/**', '.idea/**', 'out/**', '**/.gradle/**', 'gradle/**', 'gradlew', 'gradlew.bat', '**/*.md'
+    exclude '**/build/**', '.idea/**', 'out/**', '**/.gradle/**', 'gradle/**', 'gradlew', 'gradlew.bat', '**/*.md',
+            'src/acceptanceTest/specification/**/*.zip', 'src/acceptanceTest/specification/GradleClassPath.wiki'
 }
 
 check {
@@ -130,14 +165,21 @@ tasks.withType(Pmd) {
     include '**/*.java'
 }
 
+def pmdConfigPath = 'config/pmd'
+
 pmdTest {
     ruleSets = []
-    ruleSetFiles = files('config/pmd/test-ruleset.xml')
+    ruleSetFiles = files("$pmdConfigPath/test-ruleset.xml")
 }
 
 pmdMain {
     ruleSets = []
-    ruleSetFiles = files('config/pmd/main-ruleset.xml')
+    ruleSetFiles = files("$pmdConfigPath/main-ruleset.xml")
+}
+
+pmdAcceptanceTest {
+    ruleSets = []
+    ruleSetFiles = files("$pmdConfigPath/acceptanceTest-ruleset.xml")
 }
 
 sonarqube {
@@ -145,6 +187,7 @@ sonarqube {
         property 'sonar.projectKey', 'ivankohut_quantifa'
         property 'sonar.qualitygate.wait', true
         property 'sonar.coverage.jacoco.xmlReportPaths', "$buildDir/reports/jacoco/test/jacocoTestReport.xml"
+        property 'sonar.coverage.exclusions', '**/Application.java'
     }
 }
 
@@ -152,4 +195,31 @@ tasks['sonarqube'].dependsOn test
 
 yamlValidator {
     searchPaths = ['.travis.yml']
+}
+
+task writeFitNesseClasspath (type: WriteFitNesseClasspath) {
+    classpath = sourceSets.acceptanceTest.runtimeClasspath
+    pagePath = project.file('src/acceptanceTest/specification')
+}
+
+class WriteFitNesseClasspath extends DefaultTask {
+
+    @Input
+    FileCollection classpath
+
+    @OutputDirectory
+    File pagePath
+
+    @TaskAction
+    void generatePage() {
+        def outputFile = project.file("${pagePath}/GradleClassPath.wiki")
+        outputFile.createNewFile()
+        outputFile.withWriter { writer ->
+            project.sourceSets.main.output.classesDirs.forEach { classesDir -> writer.writeLine("!path ${classesDir}") }
+            classpath.each { d ->
+                writer.writeLine("!path $d")
+            }
+        }
+    }
+
 }

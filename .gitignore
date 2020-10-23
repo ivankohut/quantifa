@@ -4,3 +4,5 @@ hs_err_pid*
 build
 /.idea/
 out
+
+/src/acceptanceTest/specification/GradleClassPath.wiki

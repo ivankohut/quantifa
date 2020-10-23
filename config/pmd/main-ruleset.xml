@@ -17,6 +17,7 @@
         <exclude name="AvoidFieldNameMatchingMethodName"/>
         <exclude name="OnlyOneReturn"/>
         <exclude name="LoosePackageCoupling"/>
+        <exclude name="CallSuperInConstructor"/>
         <!-- Already covered by SpotBugs -->
         <exclude name="UnusedPrivateMethod"/>
         <exclude name="UnusedPrivateField"/>
@@ -43,6 +44,17 @@
     <rule ref="category/java/codestyle.xml/FieldNamingConventions">
         <properties>
             <property name="constantPattern" value="\w*"/>
+        </properties>
+    </rule>
+
+    <!-- Higher limit for max variable name length (original is 17) -->
+    <rule ref="category/java/codestyle.xml/LongVariable">
+        <properties>
+            <property name="xpath">
+                <value>
+                    VariableDeclaratorId[string-length(@Image) &gt; 25]
+                </value>
+            </property>
         </properties>
     </rule>
 </ruleset>
