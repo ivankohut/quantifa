@@ -80,7 +80,7 @@ task checkstyleRoot(type: Checkstyle) {
     source = rootDir
     classpath = files()
     configFile = file('config/checkstyle/checkstyle-root.xml')
-    exclude '**/build/**', '.idea/**', '**/.gradle/**', 'gradle/**', 'gradlew', 'gradlew.bat', '**/*.md'
+    exclude '**/build/**', '.idea/**', 'out/**', '**/.gradle/**', 'gradle/**', 'gradlew', 'gradlew.bat', '**/*.md'
 }
 
 check {
