@@ -65,7 +65,7 @@ dependencies {
     testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     testImplementation 'org.mockito:mockito-core:3.6.0'
 
-    acceptanceTestImplementation 'org.fitnesse:fitnesse:20200501'
+    acceptanceTestImplementation 'org.fitnesse:fitnesse:20201213'
     acceptanceTestImplementation sourceSets.main.compileClasspath
     acceptanceTestImplementation sourceSets.main.output
     acceptanceTestAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
