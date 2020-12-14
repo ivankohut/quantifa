@@ -18,6 +18,6 @@ public class NyseCatPriceFixture {
 
     public BigDecimal price() {
         var application = new Application(new FakePriceMarketDataTwsApi(new SimpleStockContract(exchange, symbol, currency), tickType, priceInTWS));
-        return new BigDecimal(application.toString());
+        return application.price().get();
     }
 }

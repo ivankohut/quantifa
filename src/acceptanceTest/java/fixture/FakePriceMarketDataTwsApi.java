@@ -3,12 +3,11 @@ package fixture;
 import com.ib.client.TickType;
 import com.ib.controller.ApiController;
 import sk.ivankohut.quantifa.StockContract;
-import sk.ivankohut.quantifa.TwsApi;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-public class FakePriceMarketDataTwsApi implements TwsApi {
+public class FakePriceMarketDataTwsApi extends TwsApiAdapter {
 
     private final TickType tickType;
     private final BigDecimal currentPriceInTWS;
@@ -31,19 +30,9 @@ public class FakePriceMarketDataTwsApi implements TwsApi {
         }
     }
 
-    private static boolean areStockContractsEqual(StockContract object, StockContract other) {
+    public static boolean areStockContractsEqual(StockContract object, StockContract other) {
         return object.exchange().equals(other.exchange())
                 && object.symbol().equals(other.symbol())
                 && object.currency().equals(other.currency());
-    }
-
-    @Override
-    public void setMarketDataType(int type) {
-        // nothing
-    }
-
-    @Override
-    public void cancelTopMarketData(ApiController.ITopMktDataHandler handler) {
-        // nothing
     }
 }

@@ -57,6 +57,8 @@ dependencies {
     implementation files(twsApiJar)
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    implementation 'org.cactoos:cactoos:0.48'
+    implementation 'commons-io:commons-io:2.8.0'
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"

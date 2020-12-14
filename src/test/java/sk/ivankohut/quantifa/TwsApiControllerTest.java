@@ -77,6 +77,25 @@ class TwsApiControllerTest {
         verify(apiController).cancelTopMktData(handler);
     }
 
+    @Test
+    void delegatesFundamentalsRequestToTws() {
+        var apiController = mock(ApiController.class);
+        var sut = create(apiController);
+        var handler = mock(ApiController.IFundamentalsHandler.class);
+        var stockContract = new SimpleStockContract("exchange", "symbol", "currency");
+        var type = Types.FundamentalType.ReportRatios;
+        // exercise
+        sut.requestFundamentals(stockContract, type, handler);
+        // verify
+        var argumentCaptor = ArgumentCaptor.forClass(Contract.class);
+        verify(apiController).reqFundamentals(argumentCaptor.capture(), eq(type), eq(handler));
+        var contract = argumentCaptor.getValue();
+        assertThat(contract.exchange()).isEqualTo(stockContract.exchange());
+        assertThat(contract.symbol()).isEqualTo(stockContract.symbol());
+        assertThat(contract.currency()).isEqualTo(stockContract.currency());
+        assertThat(contract.secType()).isEqualTo(Types.SecType.STK);
+    }
+
     private static TwsApiController create(ApiController apiController) {
         return new TwsApiController("host", 1, apiController, 0);
     }
