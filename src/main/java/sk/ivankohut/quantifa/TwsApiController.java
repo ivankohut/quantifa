@@ -50,4 +50,14 @@ public class TwsApiController implements AutoCloseable, TwsApi {
     public void cancelTopMarketData(ApiController.ITopMktDataHandler handler) {
         apiController.cancelTopMktData(handler);
     }
+
+    @Override
+    public void requestFundamentals(StockContract stockContract, Types.FundamentalType type, ApiController.IFundamentalsHandler handler) {
+        var contract = new Contract();
+        contract.secType(Types.SecType.STK);
+        contract.exchange(stockContract.exchange());
+        contract.symbol(stockContract.symbol());
+        contract.currency(stockContract.currency());
+        apiController.reqFundamentals(contract, type, handler);
+    }
 }
