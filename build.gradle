@@ -182,6 +182,8 @@ pmdAcceptanceTest {
     ruleSetFiles = files("$pmdConfigPath/acceptanceTest-ruleset.xml")
 }
 
+tasks['check'].dependsOn('markdownlint')
+
 sonarqube {
     properties {
         property 'sonar.projectKey', 'ivankohut_quantifa'
