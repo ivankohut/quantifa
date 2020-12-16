@@ -22,8 +22,6 @@
         <exclude name="UnusedPrivateMethod"/>
         <exclude name="UnusedPrivateField"/>
         <exclude name="FinalFieldCouldBeStatic"/>
-        <!-- Buggy rules -->
-        <exclude name="DataflowAnomalyAnalysis"/>
     </rule>
 
     <!-- Allow variable named `id` (too short otherwise) -->
