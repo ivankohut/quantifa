@@ -1,4 +1,6 @@
-package sk.ivankohut.quantifa;
+package sk.ivankohut.quantifa.utils;
+
+import sk.ivankohut.quantifa.ApplicationException;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;

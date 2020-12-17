@@ -4,6 +4,7 @@ import com.ib.client.TickAttrib;
 import com.ib.client.TickType;
 import com.ib.controller.ApiController;
 import lombok.RequiredArgsConstructor;
+import sk.ivankohut.quantifa.utils.UncheckedCompletableFuture;
 
 import java.math.BigDecimal;
 import java.util.Optional;
