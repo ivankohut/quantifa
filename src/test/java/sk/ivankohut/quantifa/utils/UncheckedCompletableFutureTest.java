@@ -1,4 +1,4 @@
-package sk.ivankohut.quantifa;
+package sk.ivankohut.quantifa.utils;
 
 import org.junit.jupiter.api.Test;
 
