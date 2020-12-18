@@ -1,8 +1,13 @@
 package sk.ivankohut.quantifa;
 
+import com.ib.client.Types;
 import com.ib.controller.ApiController;
+import org.cactoos.scalar.ScalarOfSupplier;
 import org.cactoos.scalar.Sticky;
+import org.cactoos.scalar.Ternary;
 import org.cactoos.scalar.Unchecked;
+import sk.ivankohut.quantifa.utils.StickyFirstOrFail;
+import sk.ivankohut.quantifa.xmldom.XPathNodes;
 
 public class Application {
 
@@ -12,7 +17,17 @@ public class Application {
     public Application(TwsApi twsApi) {
         var stockContract = new SimpleStockContract("NYSE", "CAT", "USD");
         this.price = new TwsMarketPriceOfStock(twsApi, stockContract, true);
-        this.bookValue = new Unchecked<>(new Sticky<>(new TwsBookValueOfStock(twsApi, stockContract)));
+        var financialStatementsNode = new StickyFirstOrFail<>(
+                new XPathNodes(
+                        new TwsFundamental(twsApi, stockContract, Types.FundamentalType.ReportsFinStatements),
+                        "/ReportFinancialStatements/FinancialStatements"),
+                "No financial statements available."
+        );
+        var annual = new Unchecked<>(new BookValueOfTheMostRecentBalanceSheet(financialStatementsNode, true));
+        var interim = new Unchecked<>(new BookValueOfTheMostRecentBalanceSheet(financialStatementsNode, false));
+        this.bookValue = new Unchecked<>(new Sticky<>(
+                new Ternary<>(new ScalarOfSupplier<>(() -> interim.value().date().isAfter(annual.value().date())), interim, annual))
+        );
     }
 
     public MarketPrice price() {
