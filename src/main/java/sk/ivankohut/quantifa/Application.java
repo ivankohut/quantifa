@@ -8,15 +8,15 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
 
-public class Application implements MarketPrice, BalanceSheet {
+public class Application implements MarketPrice, ReportedAmount {
 
     private final MarketPrice price;
-    private final Unchecked<BalanceSheet> balanceSheet;
+    private final Unchecked<ReportedAmount> bookValue;
 
     public Application(TwsApi twsApi) {
         var stockContract = new SimpleStockContract("NYSE", "CAT", "USD");
         this.price = new TwsMarketPriceOfStock(twsApi, stockContract, true);
-        this.balanceSheet = new Unchecked<>(new Sticky<>(new TwsBookValueOfStock(twsApi, stockContract)));
+        this.bookValue = new Unchecked<>(new Sticky<>(new TwsBookValueOfStock(twsApi, stockContract)));
     }
 
     @Override
@@ -25,13 +25,13 @@ public class Application implements MarketPrice, BalanceSheet {
     }
 
     @Override
-    public BigDecimal bookValue() {
-        return balanceSheet.value().bookValue();
+    public BigDecimal value() {
+        return bookValue.value().value();
     }
 
     @Override
     public LocalDate date() {
-        return balanceSheet.value().date();
+        return bookValue.value().date();
     }
 
     @SuppressWarnings({ "PMD.SystemPrintln", "java:S106", "PMD.AvoidPrintStackTrace", "java:S4507", "PMD.AvoidCatchingGenericException" })
@@ -40,7 +40,7 @@ public class Application implements MarketPrice, BalanceSheet {
         try (var twsApi = new TwsApiController("localhost", 7496, new ApiController(new TwsConnectionHandler()), 500)) {
             var application = new Application(twsApi);
             System.out.printf("Current price: %s%n", application.price().map(Object::toString).orElse(""));
-            System.out.printf("Latest book value: %s (%s)%n", application.bookValue(), application.date());
+            System.out.printf("Latest book value: %s (%s)%n", application.value(), application.date());
             status = 0;
         } catch (ApplicationException e) {
             System.out.println("Error: " + e.getMessage());

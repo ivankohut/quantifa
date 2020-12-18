@@ -27,7 +27,7 @@ class TwsBookValueOfStockTest {
         // exercise
         var result = sut.value();
         // verify
-        assertThat(result.bookValue()).isEqualByComparingTo(new BigDecimal("13.404310"));
+        assertThat(result.value()).isEqualByComparingTo(new BigDecimal("13.404310"));
         assertThat(result.date()).isEqualTo("2020-09-30");
     }
 }

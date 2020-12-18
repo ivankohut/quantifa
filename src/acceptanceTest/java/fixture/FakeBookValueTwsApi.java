@@ -7,7 +7,7 @@ import lombok.SneakyThrows;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.text.Concatenated;
 import org.cactoos.text.Joined;
-import sk.ivankohut.quantifa.BalanceSheet;
+import sk.ivankohut.quantifa.ReportedAmount;
 import sk.ivankohut.quantifa.StockContract;
 
 import java.util.List;
@@ -19,7 +19,7 @@ import static fixture.FakePriceMarketDataTwsApi.areStockContractsEqual;
 public class FakeBookValueTwsApi extends TwsApiAdapter {
 
     private final StockContract stockContract;
-    private final Map<String, List<BalanceSheet>> bookValues;
+    private final Map<String, List<ReportedAmount>> bookValues;
 
     @SneakyThrows @Override
     public void requestFundamentals(StockContract stockContract, Types.FundamentalType type, ApiController.IFundamentalsHandler handler) {
@@ -41,7 +41,7 @@ public class FakeBookValueTwsApi extends TwsApiAdapter {
                                                                 <lineItem coaCode="STBP">%s</lineItem>
                                                             </Statement>
                                                         </FiscalPeriod>"""
-                                                        .formatted(bookValue.date(), bookValue.bookValue()),
+                                                        .formatted(bookValue.date(), bookValue.value()),
                                                 entry.getValue())
                                 ).asString() + "</" + periods + ">";
                             },

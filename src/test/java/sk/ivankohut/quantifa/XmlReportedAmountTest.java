@@ -8,15 +8,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class XmlBalanceSheetTest {
+class XmlReportedAmountTest {
 
     @Test
     void extractValuesFromGivenXml() {
         // exercise
-        var sut = new XmlBalanceSheet(createNode("2019-12-31"), createNode("12.410860"));
+        var sut = new XmlReportedAmount(createNode("2019-12-31"), createNode("12.410860"));
         // verify
         assertThat(sut.date()).isEqualTo("2019-12-31");
-        assertThat(sut.bookValue()).isEqualByComparingTo("12.41086");
+        assertThat(sut.value()).isEqualByComparingTo("12.41086");
     }
 
     private static Scalar<Node> createNode(String textContent) {

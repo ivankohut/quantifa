@@ -9,10 +9,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @RequiredArgsConstructor
-public class XmlBalanceSheet implements BalanceSheet {
+public class XmlReportedAmount implements ReportedAmount {
 
     private final Scalar<Node> date;
-    private final Scalar<Node> bookValue;
+    private final Scalar<Node> value;
 
     @Override
     public LocalDate date() {
@@ -20,8 +20,8 @@ public class XmlBalanceSheet implements BalanceSheet {
     }
 
     @Override
-    public BigDecimal bookValue() {
-        return new BigDecimal(textContent(bookValue));
+    public BigDecimal value() {
+        return new BigDecimal(textContent(value));
     }
 
     private static String textContent(Scalar<Node> node) {
