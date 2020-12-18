@@ -4,11 +4,7 @@ import com.ib.controller.ApiController;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.Optional;
-
-public class Application implements MarketPrice, ReportedAmount {
+public class Application {
 
     private final MarketPrice price;
     private final Unchecked<ReportedAmount> bookValue;
@@ -19,19 +15,12 @@ public class Application implements MarketPrice, ReportedAmount {
         this.bookValue = new Unchecked<>(new Sticky<>(new TwsBookValueOfStock(twsApi, stockContract)));
     }
 
-    @Override
-    public Optional<BigDecimal> price() {
-        return price.price();
+    public MarketPrice price() {
+        return price;
     }
 
-    @Override
-    public BigDecimal value() {
-        return bookValue.value().value();
-    }
-
-    @Override
-    public LocalDate date() {
-        return bookValue.value().date();
+    public ReportedAmount bookValue() {
+        return bookValue.value();
     }
 
     @SuppressWarnings({ "PMD.SystemPrintln", "java:S106", "PMD.AvoidPrintStackTrace", "java:S4507", "PMD.AvoidCatchingGenericException" })
@@ -39,8 +28,9 @@ public class Application implements MarketPrice, ReportedAmount {
         int status;
         try (var twsApi = new TwsApiController("localhost", 7496, new ApiController(new TwsConnectionHandler()), 500)) {
             var application = new Application(twsApi);
-            System.out.printf("Current price: %s%n", application.price().map(Object::toString).orElse(""));
-            System.out.printf("Latest book value: %s (%s)%n", application.value(), application.date());
+            System.out.printf("Current price: %s%n", application.price().price().map(Object::toString).orElse(""));
+            var bookValue = application.bookValue();
+            System.out.printf("Latest book value: %s (%s)%n", bookValue.value(), bookValue.date());
             status = 0;
         } catch (ApplicationException e) {
             System.out.println("Error: " + e.getMessage());
