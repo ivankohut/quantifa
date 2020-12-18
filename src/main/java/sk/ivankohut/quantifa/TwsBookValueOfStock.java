@@ -17,13 +17,13 @@ import sk.ivankohut.quantifa.xmldom.XPathNodes;
 
 import java.util.Comparator;
 
-public class TwsBookValueOfStock extends ScalarEnvelope<BalanceSheet> {
+public class TwsBookValueOfStock extends ScalarEnvelope<ReportedAmount> {
 
     public TwsBookValueOfStock(TwsApi twsApi, StockContract stockContract) {
         super(create(twsApi, stockContract));
     }
 
-    private static Scalar<BalanceSheet> create(TwsApi twsApi, StockContract stockContract) {
+    private static Scalar<ReportedAmount> create(TwsApi twsApi, StockContract stockContract) {
         var fundamental = new TwsFundamental(twsApi, stockContract, Types.FundamentalType.ReportsFinStatements);
         var financialStatementsNode = new StickyFirstOrFail<>(
                 new XPathNodes(fundamental, "/ReportFinancialStatements/FinancialStatements"),
@@ -35,17 +35,17 @@ public class TwsBookValueOfStock extends ScalarEnvelope<BalanceSheet> {
     }
 }
 
-class MostRecentBalanceSheet extends ScalarEnvelope<BalanceSheet> {
+class MostRecentBalanceSheet extends ScalarEnvelope<ReportedAmount> {
 
     MostRecentBalanceSheet(Scalar<? extends Node> node, boolean annual) {
         super(
                 new StickyFirstOrFail<>(
                         new Sorted<>(
-                                Comparator.comparing(BalanceSheet::date).reversed(),
+                                Comparator.comparing(ReportedAmount::date).reversed(),
                                 new Mapped<>(
                                         statementNode -> {
                                             var childNodes = new ChildNodes(statementNode);
-                                            return new XmlBalanceSheet(
+                                            return new XmlReportedAmount(
                                                     new FirstFilteredNode(
                                                             "StatementDate",
                                                             new ChildNodes(new FirstFilteredNode("FPHeader", childNodes))

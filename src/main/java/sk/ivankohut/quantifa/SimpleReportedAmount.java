@@ -1,16 +1,15 @@
-package fixture;
+package sk.ivankohut.quantifa;
 
 import lombok.RequiredArgsConstructor;
-import sk.ivankohut.quantifa.BalanceSheet;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @RequiredArgsConstructor
-public class SimpleBalanceSheet implements BalanceSheet {
+public class SimpleReportedAmount implements ReportedAmount {
 
     private final LocalDate date;
-    private final BigDecimal bookValue;
+    private final BigDecimal value;
 
     @Override
     public LocalDate date() {
@@ -18,7 +17,7 @@ public class SimpleBalanceSheet implements BalanceSheet {
     }
 
     @Override
-    public BigDecimal bookValue() {
-        return bookValue;
+    public BigDecimal value() {
+        return value;
     }
 }
