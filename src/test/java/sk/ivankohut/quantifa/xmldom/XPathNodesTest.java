@@ -11,7 +11,15 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class XPathNodesTest {
 
     @Test
-    void nodesAsEvaluationOfGivenXPathExpressionAgainstGivenNode() {
+    void nodesAsEvaluationOfGivenXPathExpressionAgainstXml() {
+        // exercise
+        var sut = new XPathNodes(() -> "<a><b><c></c><c></c></b></a>", "/a/b/*");
+        // verify
+        assertThat(sut).extracting(Node::getNodeName).containsExactly("c", "c");
+    }
+
+    @Test
+    void nodesAsEvaluationOfGivenXPathExpressionAgainstGivenNonRootNode() {
         // exercise
         var sut = new XPathNodes(() -> XmlDocumentTest.create("<a><b><c></c><c></c></b></a>").value().getFirstChild().getFirstChild(), "c");
         // verify

@@ -3,16 +3,20 @@ package sk.ivankohut.quantifa;
 import com.ib.client.Types;
 import com.ib.controller.ApiController;
 import org.cactoos.scalar.ScalarOfSupplier;
+import org.cactoos.iterable.Mapped;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Ternary;
 import org.cactoos.scalar.Unchecked;
 import sk.ivankohut.quantifa.utils.StickyFirstOrFail;
 import sk.ivankohut.quantifa.xmldom.XPathNodes;
 
+import java.math.BigDecimal;
+
 public class Application {
 
     private final MarketPrice price;
     private final Unchecked<ReportedAmount> bookValue;
+    private final Unchecked<BigDecimal> eps;
 
     public Application(TwsApi twsApi) {
         var stockContract = new SimpleStockContract("NYSE", "CAT", "USD");
@@ -28,6 +32,10 @@ public class Application {
         this.bookValue = new Unchecked<>(new Sticky<>(
                 new Ternary<>(new ScalarOfSupplier<>(() -> interim.value().date().isAfter(annual.value().date())), interim, annual))
         );
+        this.eps = new Unchecked<>(new TrailingTwelveMonths(new Mapped<>(
+                statementNode -> new XmlReportedAmount(statementNode, "VDES"),
+                new StatementNodes(financialStatementsNode, false, false)
+        )));
     }
 
     public MarketPrice price() {
@@ -38,6 +46,10 @@ public class Application {
         return bookValue.value();
     }
 
+    public BigDecimal eps() {
+        return eps.value();
+    }
+
     @SuppressWarnings({ "PMD.SystemPrintln", "java:S106", "PMD.AvoidPrintStackTrace", "java:S4507", "PMD.AvoidCatchingGenericException" })
     public static void main(String[] args) {
         int status;
@@ -46,6 +58,7 @@ public class Application {
             System.out.printf("Current price: %s%n", application.price().price().map(Object::toString).orElse(""));
             var bookValue = application.bookValue();
             System.out.printf("Latest book value: %s (%s)%n", bookValue.value(), bookValue.date());
+            System.out.printf("Diluted normalized EPS TTM: %s%n", application.eps());
             status = 0;
         } catch (ApplicationException e) {
             System.out.println("Error: " + e.getMessage());
