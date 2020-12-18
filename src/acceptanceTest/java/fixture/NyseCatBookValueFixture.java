@@ -18,7 +18,9 @@ public class NyseCatBookValueFixture implements ReportedAmount {
     private ReportedAmount result;
 
     public void execute() {
-        result = new Application(new FakeBookValueTwsApi(new SimpleStockContract(exchange, symbol, currency), BalanceSheetsWithBookValue.getValues()));
+        result = new Application(
+                new FakeBookValueTwsApi(new SimpleStockContract(exchange, symbol, currency), BalanceSheetsWithBookValue.getValues())
+        ).bookValue();
     }
 
     @Override
