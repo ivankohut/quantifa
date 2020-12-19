@@ -88,6 +88,10 @@ jar {
                 'Main-Class': 'sk.ivankohut.quantifa.Application'
         )
     }
+    // create fat-jar
+    from {
+        configurations.runtimeClasspath.collect { file -> file.directory ? file : zipTree(file) }
+    }
 }
 
 jacoco {
