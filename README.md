@@ -16,18 +16,20 @@ useful is implemented yet.
 
 *quantifa* calculates simple metrics (like Graham number) for given list of
 stocks. This information can help you to decide which stocks are worth
-buying/selling based on value investing principles.
+buying/selling based on value investing principles. Stock data are retrieved
+from [IB Trader Workstation (TWS)](https://www1.interactivebrokers.com/en/index.php?f=14099).
 
 ## How to Use
 
-First you need to build the executable `jar` file (requires JDK 11+) by
+First you need to build the executable `jar` file (requires JDK 15+) by
 executing
 
 ```shell script
 ./gradlew assemble
 ```
 
-Then, to run it, execute
+Then, make sure TWS is running on localhost accepting connections on port 7496.
+Finally, to run application, execute
 
 ```shell script
 java -jar ./build/libs/quantifa.jar
@@ -35,6 +37,6 @@ java -jar ./build/libs/quantifa.jar
 
 ## Frequently Asked Questions
 
-> What does then name *quantifa* stands for?
+> What does the name *quantifa* stands for?
 
 *quantifa* stands for **quanti**tative **f**undamental **a**nalysis.
