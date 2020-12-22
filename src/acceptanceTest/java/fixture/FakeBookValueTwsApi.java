@@ -5,7 +5,6 @@ import com.ib.controller.ApiController;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.cactoos.iterable.Mapped;
-import org.cactoos.text.Concatenated;
 import org.cactoos.text.Joined;
 import sk.ivankohut.quantifa.ReportedAmount;
 import sk.ivankohut.quantifa.StockContract;
@@ -24,8 +23,7 @@ public class FakeBookValueTwsApi extends TwsApiAdapter {
     @SneakyThrows @Override
     public void requestFundamentals(StockContract stockContract, Types.FundamentalType type, ApiController.IFundamentalsHandler handler) {
         if (areStockContractsEqual(this.stockContract, stockContract)) {
-            handler.fundamentals(new Concatenated(
-                    () -> "<ReportFinancialStatements><Notes/><FinancialStatements>",
+            handler.fundamentals(new FinancialStatementsXml(
                     new Joined("", new Mapped<>(
                             entry -> {
                                 var periods = entry.getKey() + "Periods";
@@ -46,8 +44,7 @@ public class FakeBookValueTwsApi extends TwsApiAdapter {
                                 ).asString() + "</" + periods + ">";
                             },
                             bookValues.entrySet()
-                    )),
-                    () -> "</FinancialStatements></ReportFinancialStatements>"
+                    ))
             ).asString());
         } else {
             throw new IllegalArgumentException("Expected arguments not provided.");

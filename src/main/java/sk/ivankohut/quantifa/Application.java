@@ -2,8 +2,8 @@ package sk.ivankohut.quantifa;
 
 import com.ib.client.Types;
 import com.ib.controller.ApiController;
-import org.cactoos.scalar.ScalarOfSupplier;
 import org.cactoos.iterable.Mapped;
+import org.cactoos.scalar.ScalarOfSupplier;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Ternary;
 import org.cactoos.scalar.Unchecked;
@@ -11,6 +11,7 @@ import sk.ivankohut.quantifa.utils.StickyFirstOrFail;
 import sk.ivankohut.quantifa.xmldom.XPathNodes;
 
 import java.math.BigDecimal;
+import java.time.Clock;
 
 public class Application {
 
@@ -18,12 +19,19 @@ public class Application {
     private final Unchecked<ReportedAmount> bookValue;
     private final Unchecked<BigDecimal> eps;
 
-    public Application(TwsApi twsApi) {
+    public Application(TwsApi twsApi, Clock clock) {
         var stockContract = new SimpleStockContract("NYSE", "CAT", "USD");
         this.price = new TwsMarketPriceOfStock(twsApi, stockContract, true);
         var financialStatementsNode = new StickyFirstOrFail<>(
                 new XPathNodes(
-                        new TwsFundamental(twsApi, stockContract, Types.FundamentalType.ReportsFinStatements),
+                        new CachedFinancialStatements(
+                                new TextFilesStore("financialStatementsCache"),
+                                clock,
+                                new org.cactoos.text.Joined("-", stockContract.exchange(), stockContract.symbol(), stockContract.currency()),
+                                new TwsFundamental(twsApi, stockContract, Types.FundamentalType.ReportsFinStatements),
+                                5,
+                                ".xml"
+                        ),
                         "/ReportFinancialStatements/FinancialStatements"),
                 "No financial statements available."
         );
@@ -36,6 +44,10 @@ public class Application {
                 statementNode -> new XmlReportedAmount(statementNode, "VDES"),
                 new StatementNodes(financialStatementsNode, false, false)
         )));
+    }
+
+    public Application(TwsApi twsApi) {
+        this(twsApi, Clock.systemDefaultZone());
     }
 
     public MarketPrice price() {
