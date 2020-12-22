@@ -70,6 +70,8 @@ dependencies {
     acceptanceTestImplementation 'org.fitnesse:fitnesse:20201213'
     acceptanceTestImplementation sourceSets.main.compileClasspath
     acceptanceTestImplementation sourceSets.main.output
+    acceptanceTestImplementation sourceSets.test.compileClasspath
+    acceptanceTestImplementation sourceSets.test.output
     acceptanceTestAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 }
 
