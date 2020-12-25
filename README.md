@@ -28,7 +28,19 @@ executing
 ./gradlew assemble
 ```
 
-Then, make sure TWS is running on localhost accepting connections on port 7496.
+Second, make sure TWS is running and accepting connections.
+
+Then, set environment variables, e.g. (default values are shown for optional
+variables):
+
+```shell
+export TWS_HOSTNAME=localhost # optional
+export TWS_PORT=7496 # optional
+export EXCHANGE=NYSE
+export SYMBOL=CAT
+export CURRENCY=USD
+```
+
 Finally, to run application, execute
 
 ```shell script

@@ -16,14 +16,12 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class DilutedNormalizedEpsFixture {
 
-    private final String exchange;
-    private final String symbol;
-    private final String currency;
     private List<ReportedAmount> dateAndAmount;
 
     public BigDecimal ttm() {
         StoredStatementsFixture.clearCache();
-        return new Application(new FakeEpsTwsApi(new SimpleStockContract(exchange, symbol, currency), dateAndAmount)).eps();
+        var stockContract = new SimpleStockContract("exchange", "symbol", "currency");
+        return new Application(new FakeEpsTwsApi(stockContract, dateAndAmount), stockContract).eps();
     }
 
     public void setDateAndAmount(Map<String, String> dateAndAmount) {
