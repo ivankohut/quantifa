@@ -19,8 +19,7 @@ public class Application {
     private final Unchecked<ReportedAmount> bookValue;
     private final Unchecked<BigDecimal> eps;
 
-    public Application(TwsApi twsApi, Clock clock) {
-        var stockContract = new SimpleStockContract("NYSE", "CAT", "USD");
+    public Application(TwsApi twsApi, Clock clock, StockContract stockContract) {
         this.price = new TwsMarketPriceOfStock(twsApi, stockContract, true);
         var financialStatementsNode = new StickyFirstOrFail<>(
                 new XPathNodes(
@@ -46,8 +45,8 @@ public class Application {
         )));
     }
 
-    public Application(TwsApi twsApi) {
-        this(twsApi, Clock.systemDefaultZone());
+    public Application(TwsApi twsApi, StockContract stockContract) {
+        this(twsApi, Clock.systemDefaultZone(), stockContract);
     }
 
     public MarketPrice price() {
@@ -65,8 +64,9 @@ public class Application {
     @SuppressWarnings({ "PMD.SystemPrintln", "java:S106", "PMD.AvoidPrintStackTrace", "java:S4507", "PMD.AvoidCatchingGenericException" })
     public static void main(String[] args) {
         int status;
-        try (var twsApi = new TwsApiController("localhost", 7496, new ApiController(new TwsConnectionHandler()), 500)) {
-            var application = new Application(twsApi);
+        var configuration = new ApplicationConfiguration("environment variable", System.getenv());
+        try (var twsApi = new TwsApiController(configuration, new ApiController(new TwsConnectionHandler()), 500)) {
+            var application = new Application(twsApi, configuration);
             System.out.printf("Current price: %s%n", application.price().price().map(Object::toString).orElse(""));
             var bookValue = application.bookValue();
             System.out.printf("Latest book value: %s (%s)%n", bookValue.value(), bookValue.date());

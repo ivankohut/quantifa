@@ -1,8 +1,12 @@
 package sk.ivankohut.quantifa;
 
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 @RequiredArgsConstructor
+@EqualsAndHashCode
+@ToString
 public class SimpleStockContract implements StockContract {
 
     private final String exchange;

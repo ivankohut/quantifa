@@ -6,28 +6,21 @@ import sk.ivankohut.quantifa.StockContract;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 public class FakePriceMarketDataTwsApi extends TwsApiAdapter {
 
-    private final TickType tickType;
-    private final BigDecimal currentPriceInTWS;
-    private final StockContract stockContract;
+    private final Map<StockContract, Map<TickType, BigDecimal>> prices;
 
-    public FakePriceMarketDataTwsApi(StockContract stockContract, TickType tickType, BigDecimal currentPriceInTWS) {
-        this.stockContract = stockContract;
-        this.tickType = tickType;
-        this.currentPriceInTWS = currentPriceInTWS;
+    public FakePriceMarketDataTwsApi(Map<StockContract, Map<TickType, BigDecimal>> prices) {
+        this.prices = prices;
     }
 
     @Override
     public void requestTopMarketData(
             StockContract stockContract, List<String> genericTicks, boolean snapshot, boolean regulatorySnapshot, ApiController.ITopMktDataHandler handler
     ) {
-        if (areStockContractsEqual(this.stockContract, stockContract)) {
-            handler.tickPrice(tickType, currentPriceInTWS.doubleValue(), null);
-        } else {
-            throw new IllegalArgumentException("Expected arguments not provided.");
-        }
+        prices.get(stockContract).forEach((key, value) -> handler.tickPrice(key, value.doubleValue(), null));
     }
 
     public static boolean areStockContractsEqual(StockContract object, StockContract other) {

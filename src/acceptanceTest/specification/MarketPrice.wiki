@@ -1,0 +1,25 @@
+---
+Test
+---
+!*< Hidden
+
+|Define alias                             |
+|Market prices|fixture.MarketPricesFixture|
+|Market price |fixture.MarketPriceFixture |
+
+*!
+
+Application displays delayed (cca 15min) bid price of requested stock.
+
+|Market prices                              |
+|exchange|symbol|currency|tick type  |price |
+|NYSE    |CAT   |USD     |DELAYED_ASK|125.67|
+|NYSE    |CAT   |USD     |DELAYED_BID|123.45|
+|NASDAQ  |CAT   |USD     |DELAYED_BID|149.63|
+|NYSE    |FTI   |USD     |DELAYED_BID|78.54 |
+|NYSE    |CAT   |CAN     |DELAYED_BID|14.39 |
+
+|Market price                   |
+|exchange|symbol|currency|price?|
+|NYSE    |CAT   |USD     |123.45|
+

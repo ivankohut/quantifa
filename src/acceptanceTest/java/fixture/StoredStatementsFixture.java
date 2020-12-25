@@ -9,6 +9,7 @@ import org.cactoos.Text;
 import org.cactoos.iterable.Mapped;
 import sk.ivankohut.quantifa.Application;
 import sk.ivankohut.quantifa.CachedFinancialStatementsTest;
+import sk.ivankohut.quantifa.SimpleStockContract;
 import sk.ivankohut.quantifa.TextFilesStore;
 import sk.ivankohut.quantifa.StockContract;
 
@@ -43,7 +44,7 @@ public class StoredStatementsFixture {
                 fundamentalsRequested = true;
             }
         };
-        new Application(twsApi, CachedFinancialStatementsTest.clockFixedOn(currentDate)).bookValue();
+        new Application(twsApi, CachedFinancialStatementsTest.clockFixedOn(currentDate), new SimpleStockContract("NYSE", "CAT", "USD")).bookValue();
         return twsApi.fundamentalsRequested;
     }
 

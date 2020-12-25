@@ -13,9 +13,9 @@ public class TwsApiController implements AutoCloseable, TwsApi {
     /**
      * @param afterConnectionDelay - we have to wait some time, e.g. 0.5s (maybe for the inner threads to start), otherwise it does not work
       */
-    public TwsApiController(String host, int port, ApiController apiController, int afterConnectionDelay) {
+    public TwsApiController(TwsCoordinates coordinates, ApiController apiController, int afterConnectionDelay) {
         this.apiController = apiController;
-        this.apiController.connect(host, port, 1, null);
+        this.apiController.connect(coordinates.hostName(), coordinates.port(), 1, null);
         try {
             Thread.sleep(afterConnectionDelay);
         } catch (InterruptedException e) {

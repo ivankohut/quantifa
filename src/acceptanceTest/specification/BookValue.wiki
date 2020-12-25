@@ -1,0 +1,40 @@
+---
+Test
+---
+!*< Hidden
+
+|Define alias                                     |
+|Balance Sheets|fixture.BalanceSheetsWithBookValue|
+|Book Value    |fixture.BookValueFixture          |
+
+*!
+Application displays latest book value selected stock.
+
+|Balance Sheets|Annual    |
+|date          |book value|
+|2019-12-31    |10.4      |
+|2018-12-31    |10.3      |
+
+|Balance Sheets|Interim   |
+|date          |book value|
+|2020-03-31    |10.2      |
+|2019-12-31    |10.1      |
+
+|Book Value       |
+|value?|date?     |
+|10.2  |2020-03-31|
+
+If there are two latest values, choose the one from annual statement.
+
+|Balance Sheets|Annual    |
+|date          |book value|
+|2018-12-31    |20.1      |
+|2019-12-31    |20.2      |
+
+|Balance Sheets|Interim   |
+|date          |book value|
+|2019-12-31    |20.3      |
+
+|Book Value       |
+|value?|date?     |
+|20.2  |2019-12-31|

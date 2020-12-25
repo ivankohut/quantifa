@@ -19,12 +19,11 @@ class TwsApiControllerTest {
     @Test
     void connectsDuringCreationAndDisconnectWhenClosing() {
         var apiController = mock(ApiController.class);
-        var host = "host";
-        var port = 1;
+        var coordinates = new SimpleTwsCoordinates();
         // exercise
-        new TwsApiController(host, port, apiController, 0);
+        new TwsApiController(coordinates, apiController, 0);
         // verify
-        verify(apiController).connect(host, port, 1, null);
+        verify(apiController).connect(coordinates.hostName(), coordinates.port(), 1, null);
     }
 
     @Test
@@ -97,6 +96,6 @@ class TwsApiControllerTest {
     }
 
     private static TwsApiController create(ApiController apiController) {
-        return new TwsApiController("host", 1, apiController, 0);
+        return new TwsApiController(new SimpleTwsCoordinates(), apiController, 0);
     }
 }
