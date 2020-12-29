@@ -74,6 +74,7 @@ dependencies {
     acceptanceTestImplementation sourceSets.test.compileClasspath
     acceptanceTestImplementation sourceSets.test.output
     acceptanceTestAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    acceptanceTestImplementation "com.github.spotbugs:spotbugs-annotations:${spotbugsVersion}"
 }
 
 gitBranchChecks {

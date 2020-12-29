@@ -14,8 +14,8 @@ import java.util.Comparator;
 
 public class TrailingTwelveMonths extends ScalarEnvelope<BigDecimal> {
 
-    public TrailingTwelveMonths(Iterable<ReportedAmount> balanceSheets) {
-        super(create(balanceSheets));
+    public TrailingTwelveMonths(Iterable<ReportedAmount> amounts) {
+        super(create(amounts));
     }
 
     private static Scalar<BigDecimal> create(Iterable<ReportedAmount> amounts) {
@@ -26,13 +26,13 @@ public class TrailingTwelveMonths extends ScalarEnvelope<BigDecimal> {
                                 Comparator.comparing(ReportedAmount::date).reversed(),
                                 amounts
                         ),
-                        "Missing income statement."
+                        "Missing amount."
                 )
         );
         return new Reduced<>(
                 BigDecimal::add,
                 new Mapped<>(
-                        balanceSheet -> new Constant<>(balanceSheet.value()),
+                        amount -> new Constant<>(amount.value()),
                         new Filtered<>(amount -> amount.date().isAfter(threshold.value()), amounts)
                 )
         );

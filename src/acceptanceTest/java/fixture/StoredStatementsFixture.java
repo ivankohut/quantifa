@@ -2,6 +2,7 @@ package fixture;
 
 import com.ib.client.Types;
 import com.ib.controller.ApiController;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.Setter;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -32,6 +33,7 @@ public class StoredStatementsFixture {
         this.storedStatementsDates = storedStatementsDates;
     }
 
+    @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT")
     public boolean retrievingStatementsFromTWS() {
         resetCache();
         var twsApi = new TwsApiAdapter() {
@@ -44,7 +46,7 @@ public class StoredStatementsFixture {
                 fundamentalsRequested = true;
             }
         };
-        new Application(twsApi, CachedFinancialStatementsTest.clockFixedOn(currentDate), new SimpleStockContract("NYSE", "CAT", "USD")).bookValue();
+        new Application(twsApi, CachedFinancialStatementsTest.clockFixedOn(currentDate), new SimpleStockContract("NYSE", "CAT", "USD")).bookValue().value();
         return twsApi.fundamentalsRequested;
     }
 

@@ -23,7 +23,7 @@ class TrailingTwelveMonthsTest {
         assertThat(result).isEqualByComparingTo("3");
     }
 
-    private static SimpleReportedAmount createReportedAmount(String date, double value) {
+    private static ReportedAmount createReportedAmount(String date, double value) {
         return new SimpleReportedAmount(LocalDate.parse(date), BigDecimal.valueOf(value));
     }
 }

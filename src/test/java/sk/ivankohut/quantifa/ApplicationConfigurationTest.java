@@ -71,7 +71,7 @@ class ApplicationConfigurationTest {
     }
 
     private static void assertException(ThrowableAssert.ThrowingCallable operation, String expectedMessage) {
-        assertThatThrownBy(operation::call)
+        assertThatThrownBy(operation)
                 .isInstanceOf(ApplicationException.class)
                 .hasMessage(expectedMessage);
     }
