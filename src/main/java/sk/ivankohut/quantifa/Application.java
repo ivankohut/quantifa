@@ -3,8 +3,11 @@ package sk.ivankohut.quantifa;
 import com.ib.client.Types;
 import com.ib.controller.ApiController;
 import org.cactoos.iterable.Mapped;
+import org.cactoos.list.ListOf;
+import org.cactoos.scalar.DivisionOf;
 import org.cactoos.scalar.ScalarOfSupplier;
 import org.cactoos.scalar.Sticky;
+import org.cactoos.scalar.SumOf;
 import org.cactoos.scalar.Ternary;
 import org.cactoos.scalar.Unchecked;
 import sk.ivankohut.quantifa.utils.StickyFirstOrFail;
@@ -12,6 +15,7 @@ import sk.ivankohut.quantifa.xmldom.XPathNodes;
 
 import java.math.BigDecimal;
 import java.time.Clock;
+import java.time.LocalDate;
 
 public class Application {
 
@@ -44,7 +48,21 @@ public class Application {
                 )
         ));
         var statement = new XmlFinancialStatement(() -> statementEntry.value().getKey(), () -> statementEntry.value().getValue());
-        this.bookValue = new FinancialStatementAmount(statement, "STBP");
+        this.bookValue = new ReportedAmount() {
+
+            @Override
+            public LocalDate date() {
+                return statement.date();
+            }
+
+            @Override
+            public BigDecimal value() {
+                return BigDecimal.valueOf(new DivisionOf(
+                        statement.value("QTLE"),
+                        new SumOf(new ListOf<>(statement.value("QTCO"), statement.value("QTPO")))
+                ).doubleValue());
+            }
+        };
         this.eps = new Unchecked<>(new TrailingTwelveMonths(new Mapped<>(
                 statementNode -> new FinancialStatementAmount(new XmlFinancialStatement(new XmlStatementDate(statementNode), () -> statementNode), "VDES"),
                 new StatementNodes(financialStatementsNode, false, false)

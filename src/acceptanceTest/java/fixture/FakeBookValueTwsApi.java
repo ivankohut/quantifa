@@ -6,9 +6,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.text.Joined;
-import sk.ivankohut.quantifa.ReportedAmount;
 import sk.ivankohut.quantifa.StockContract;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -18,7 +19,7 @@ import static fixture.FakePriceMarketDataTwsApi.areStockContractsEqual;
 public class FakeBookValueTwsApi extends TwsApiAdapter {
 
     private final StockContract stockContract;
-    private final Map<String, List<ReportedAmount>> bookValues;
+    private final Map<String, List<Map.Entry<LocalDate, Map<String, BigDecimal>>>> bookValues;
 
     @SneakyThrows @Override
     public void requestFundamentals(StockContract stockContract, Types.FundamentalType type, ApiController.IFundamentalsHandler handler) {
@@ -36,10 +37,13 @@ public class FakeBookValueTwsApi extends TwsApiAdapter {
                                                                 <FPHeader>
                                                                     <StatementDate>%s</StatementDate>
                                                                 </FPHeader>
-                                                                <lineItem coaCode="STBP">%s</lineItem>
+                                                                %s
                                                             </Statement>
                                                         </FiscalPeriod>"""
-                                                        .formatted(bookValue.date(), bookValue.value()),
+                                                        .formatted(bookValue.getKey(), new Mapped<>(
+                                                                e -> "<lineItem coaCode=\"%s\">%s</lineItem>".formatted(e.getKey(), e.getValue()),
+                                                                bookValue.getValue().entrySet()
+                                                        )),
                                                 entry.getValue())
                                 ).asString() + "</" + periods + ">";
                             },
