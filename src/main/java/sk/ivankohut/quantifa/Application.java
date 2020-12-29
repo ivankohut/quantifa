@@ -16,7 +16,7 @@ import java.time.Clock;
 public class Application {
 
     private final MarketPrice price;
-    private final Unchecked<ReportedAmount> bookValue;
+    private final ReportedAmount bookValue;
     private final Unchecked<BigDecimal> eps;
 
     public Application(TwsApi twsApi, Clock clock, StockContract stockContract) {
@@ -34,13 +34,19 @@ public class Application {
                         "/ReportFinancialStatements/FinancialStatements"),
                 "No financial statements available."
         );
-        var annual = new Unchecked<>(new BookValueOfTheMostRecentBalanceSheet(financialStatementsNode, true));
-        var interim = new Unchecked<>(new BookValueOfTheMostRecentBalanceSheet(financialStatementsNode, false));
-        this.bookValue = new Unchecked<>(new Sticky<>(
-                new Ternary<>(new ScalarOfSupplier<>(() -> interim.value().date().isAfter(annual.value().date())), interim, annual))
-        );
+        var annual = new Unchecked<>(new MostRecentFinancialStatementNode(new StatementNodes(financialStatementsNode, true, true)));
+        var interim = new Unchecked<>(new MostRecentFinancialStatementNode(new StatementNodes(financialStatementsNode, false, true)));
+        var statementEntry = new Unchecked<>(new Sticky<>(
+                new Ternary<>(
+                        new ScalarOfSupplier<>(() -> interim.value().getKey().isAfter(annual.value().getKey())),
+                        interim,
+                        annual
+                )
+        ));
+        var statement = new XmlFinancialStatement(() -> statementEntry.value().getKey(), () -> statementEntry.value().getValue());
+        this.bookValue = new FinancialStatementAmount(statement, "STBP");
         this.eps = new Unchecked<>(new TrailingTwelveMonths(new Mapped<>(
-                statementNode -> new XmlReportedAmount(statementNode, "VDES"),
+                statementNode -> new FinancialStatementAmount(new XmlFinancialStatement(new XmlStatementDate(statementNode), () -> statementNode), "VDES"),
                 new StatementNodes(financialStatementsNode, false, false)
         )));
     }
@@ -54,7 +60,7 @@ public class Application {
     }
 
     public ReportedAmount bookValue() {
-        return bookValue.value();
+        return bookValue;
     }
 
     public BigDecimal eps() {
