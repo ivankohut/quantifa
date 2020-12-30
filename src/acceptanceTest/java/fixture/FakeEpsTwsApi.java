@@ -36,6 +36,8 @@ public class FakeEpsTwsApi extends TwsApiAdapter {
                                                 <Statement Type="INC">
                                                     <FPHeader>
                                                         <StatementDate>%s</StatementDate>
+                                                        <!-- required for cache -->
+                                                        <PeriodLength>3</PeriodLength>
                                                     </FPHeader>
                                                     <lineItem coaCode="VDES">%s</lineItem>
                                                 </Statement>

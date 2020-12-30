@@ -45,7 +45,19 @@ public class FakeBookValueTwsApi extends TwsApiAdapter {
                                                                 bookValue.getValue().entrySet()
                                                         )),
                                                 entry.getValue())
-                                ).asString() + "</" + periods + ">";
+                                ).asString() + "</" + periods + ">"
+                                        // required for cache
+                                        + """
+                                        <InterimPeriods>
+                                            <FiscalPeriod>
+                                                <Statement Type="INC">
+                                                    <FPHeader>
+                                                        <StatementDate>1900-01-01</StatementDate>
+                                                        <PeriodLength>3</PeriodLength>
+                                                    </FPHeader>
+                                                </Statement>
+                                            </FiscalPeriod>
+                                        </InterimPeriods>""";
                             },
                             bookValues.entrySet()
                     ))

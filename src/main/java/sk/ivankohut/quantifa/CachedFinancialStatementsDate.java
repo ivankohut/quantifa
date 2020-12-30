@@ -2,8 +2,10 @@ package sk.ivankohut.quantifa;
 
 import org.cactoos.Text;
 import org.cactoos.iterable.IterableOf;
+import org.cactoos.iterable.Mapped;
 import org.cactoos.scalar.And;
 import org.cactoos.scalar.Equals;
+import org.cactoos.scalar.NumberOf;
 import org.cactoos.scalar.SumOfInt;
 import org.cactoos.scalar.Ternary;
 import org.cactoos.scalar.Unchecked;
@@ -24,9 +26,12 @@ public class CachedFinancialStatementsDate implements Iterable<LocalDate> {
         this.date = new Unchecked<>(new Ternary<>(
                 new And(
                         new EndsWith(fileName, extension),
-                        new Equals<>(new SumOfInt(() -> 10, new LengthOf(() -> extension)), new LengthOf(fileName))
+                        new Equals<>(new SumOfInt(() -> 12, new LengthOf(() -> extension)), new LengthOf(fileName))
                 ),
-                new DateTimeParseExceptionToIterable<>(new LocalDateOf(new Sub(fileName, 0, 10))),
+                new Mapped<>(
+                        statementDate -> statementDate.plusMonths(new NumberOf(new Sub(fileName, 11, 12)).intValue()),
+                        new DateTimeParseExceptionToIterable<>(new LocalDateOf(new Sub(fileName, 0, 10)))
+                ),
                 new IterableOf<>()
         ));
     }

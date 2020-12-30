@@ -32,7 +32,7 @@ public class Application {
                                 clock,
                                 new org.cactoos.text.Joined("-", stockContract.exchange(), stockContract.symbol(), stockContract.currency()),
                                 new TwsFundamental(twsApi, stockContract, Types.FundamentalType.ReportsFinStatements),
-                                5,
+                                2,
                                 ".xml"
                         ),
                         "/ReportFinancialStatements/FinancialStatements"),

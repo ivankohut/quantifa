@@ -22,11 +22,11 @@ public class CachedFinancialStatementsTest {
         var directory = new TextOf("NYSE-CAT-USD");
         var store = createStore(
                 directory,
-                new SimpleTextFile("2020-05-24.xml", fundamentals + "X"),
-                new SimpleTextFile("2020-05-25.xml", fundamentals),
-                new SimpleTextFile("2020-05-23.xml", fundamentals + "X")
+                new SimpleTextFile("2020-05-24-3.xml", fundamentals + "X"),
+                new SimpleTextFile("2020-05-25-3.xml", fundamentals),
+                new SimpleTextFile("2020-05-23-3.xml", fundamentals + "X")
         );
-        var sut = create(store, "2020-10-23", directory, () -> "", 5, ".xml");
+        var sut = create(store, "2020-10-23", directory, () -> "", 2, ".xml");
         // exercise
         var result = sut.asString();
         // verify
@@ -41,16 +41,27 @@ public class CachedFinancialStatementsTest {
                     <CoGeneralInfo>
                         <LatestAvailableInterim>2020-09-30</LatestAvailableInterim>
                     </CoGeneralInfo>
+                    <FinancialStatements>
+                        <InterimPeriods>
+                            <FiscalPeriod Type="Interim" EndDate="2020-09-30" FiscalYear="2020" FiscalPeriodNumber="3">
+                                <Statement Type="INC">
+                                    <FPHeader>
+                                        <PeriodLength>3</PeriodLength>
+                                    </FPHeader>
+                                </Statement>
+                            </FiscalPeriod>
+                        </InterimPeriods>
+                    </FinancialStatements>
                 </ReportFinancialStatements>
                 """;
         var directory = new TextOf("NYSE-CAT-USD");
-        var store = createStore(directory, new SimpleTextFile("2020-05-25.xml", "cachedFundamentals"));
-        var sut = create(store, "2020-10-26", directory, () -> fundamentals, 5, ".xml");
+        var store = createStore(directory, new SimpleTextFile("2020-05-25-3.xml", "cachedFundamentals"));
+        var sut = create(store, "2020-10-26", directory, () -> fundamentals, 2, ".xml");
         // exercise
         var result = sut.asString();
         // verify
         assertThat(result).isEqualTo(fundamentals);
-        verify(store).newFile(directory, "2020-09-30.xml", fundamentals);
+        verify(store).newFile(directory, "2020-09-30-3.xml", fundamentals);
     }
 
     private static CachedFinancialStatements create(

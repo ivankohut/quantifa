@@ -3,19 +3,21 @@ Test
 ---
 !*< Hidden
 
-|Define alias                                           |
-|Stored statements dates|fixture.StoredStatementsFixture|
+|Define alias                                                     |
+|Stored financial statements files|fixture.StoredStatementsFixture|
 
 *!
-Financial statements requests are limited by TWS to ? request per minute. Therefore it is necessary to avoid loading statement from TWS whenever possible,
-i.e. to store the statement locally and use that stored statement until it is outdated. Then it must retrieved from TWS again.
+Financial statements requests are limited by TWS to several requests per minute. Therefore it is necessary to avoid loading statements from TWS whenever
+possible, i.e. to store the response locally and use it until it is outdated. Then it must retrieved from TWS again.
 
-Statements retrieved from TWS are stored in file system and kept forever so that analysis of historical data can be done efficiently.
-Statement is considered outdated if its older than five months (for now we consider per quarter statements only).
+Financial statements retrieved from TWS are stored in file system and kept forever so that analysis of historical data can be done efficiently.
+File with financial statements is considered outdated if it's date plus the number of months of interim income statements plus two months is older then the
+current date.
 
-|Stored statements dates|[2019-12-31, 2020-03-31, 2019-09-30]|
-|current date           |retrieving statements from TWS?     |
-|2020-07-01             |false                               |
-|2020-08-31             |false                               |
-|2020-09-01             |true                                |
-|2020-11-04             |true                                |
+|Stored financial statements files|[2019-12-31-3.xml, 2020-03-31-3.xml, 2019-09-30-3.xml]                                                              |
+|current date                     |retrieving statements from TWS?|#explanation                                                                        |
+|2020-07-01                       |false                          |                                                                                    |
+|2020-08-30                       |false                          |                                                                                    |
+|2020-08-31                       |true                           |2020-03-31 plus 3 months is 2020-06-30, by adding another 2 months we get 2020-08-30|
+|2020-09-01                       |true                           |                                                                                    |
+|2020-11-04                       |true                           |                                                                                    |

@@ -45,7 +45,10 @@ public class CachedFinancialStatements extends TextEnvelope {
                         content -> store.newFile(
                                 directory,
                                 new XPathNodes(new XmlDocument(() -> content), "/ReportFinancialStatements/CoGeneralInfo/LatestAvailableInterim")
-                                        .iterator().next().getTextContent() + fileExtension,
+                                        .iterator().next().getTextContent()
+                                        + "-" + new XPathNodes(new XmlDocument(() -> content), "/ReportFinancialStatements/FinancialStatements/InterimPeriods"
+                                        + "/FiscalPeriod/Statement[@Type='INC']/FPHeader/PeriodLength").iterator().next().getTextContent()
+                                        + fileExtension,
                                 content
                         )
                 )
