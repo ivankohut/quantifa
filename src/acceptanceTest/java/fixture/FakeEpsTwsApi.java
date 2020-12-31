@@ -16,18 +16,21 @@ public class FakeEpsTwsApi extends TwsApiAdapter {
 
     private final StockContract stockContract;
     private final List<ReportedAmount> dateAndAmount;
+    private final String period;
 
-    public FakeEpsTwsApi(StockContract stockContract, List<ReportedAmount> dateAndAmount) {
+    public FakeEpsTwsApi(StockContract stockContract, List<ReportedAmount> dateAndAmount, String period) {
         this.stockContract = stockContract;
         this.dateAndAmount = dateAndAmount;
+        this.period = period;
     }
 
     @SneakyThrows
     @Override
     public void requestFundamentals(StockContract stockContract, Types.FundamentalType type, ApiController.IFundamentalsHandler handler) {
         if (areStockContractsEqual(this.stockContract, stockContract)) {
+            var periods = period + "Periods";
             handler.fundamentals(new FinancialStatementsXml(
-                    () -> "<InterimPeriods>",
+                    () -> "<%s>".formatted(periods),
                     new Joined(
                             "",
                             new Mapped<>(
@@ -44,7 +47,7 @@ public class FakeEpsTwsApi extends TwsApiAdapter {
                                     dateAndAmount
                             )
                     ),
-                    () -> "</InterimPeriods>"
+                    () -> "</%s>".formatted(periods)
             ).asString());
         } else {
             throw new IllegalArgumentException("Expected arguments not provided.");

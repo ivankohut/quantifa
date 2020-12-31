@@ -14,14 +14,14 @@ import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor
-public class DilutedNormalizedEpsFixture {
+public class DilutedNormalizedEpsTtmFixture {
 
     private List<ReportedAmount> dateAndAmount;
 
-    public BigDecimal ttm() {
+    public BigDecimal eps() {
         StoredStatementsFixture.clearCache();
         var stockContract = new SimpleStockContract("exchange", "symbol", "currency");
-        return new Application(new FakeEpsTwsApi(stockContract, dateAndAmount), stockContract).eps();
+        return new Application(new FakeEpsTwsApi(stockContract, dateAndAmount, "Interim"), stockContract).epsTtm();
     }
 
     public void setDateAndAmount(Map<String, String> dateAndAmount) {

@@ -2,15 +2,23 @@
 Test
 ---
 !*< Hidden
-
-|Define alias                                              |
-|Diluted normalized EPS|fixture.DilutedNormalizedEpsFixture|
-
+|Define alias                                                             |
+|Diluted normalized EPS TTM    |fixture.DilutedNormalizedEpsTtmFixture    |
+|Diluted normalized EPS average|fixture.DilutedNormalizedEpsAverageFixture|
 *!
-From interim income statements.
+!2 Trailing Twelve Months (TTM)
+From '''interim''' income statements.
 
-|Diluted normalized EPS                                                                                      |
-|date and amount                                                                                        |ttm?|
-|!{2020-09-30:1, 2020-03-31:20, 2019-09-30:300, 2019-03-31:4000}                                        |21  |
-|!{2020-09-30:1, 2020-06-30:20, 2020-03-31:300, 2019-12-31:4000, 2019-09-30:50000, 2019-06-30:600000}   |4321|
-|!{2020-10-31:1, 2020-09-30:1, 2020-01-31:1, 2019-12-31:1, 2019-11-30:1, 2019-10-31:100, 2019-09-30:100}|5   |
+|Diluted normalized EPS TTM                                                                            |
+|date and amount                                                                                  |eps?|
+|!{2020-09-30:1,2020-03-31:20,2019-09-30:300,2019-03-31:4000}                                     |21  |
+|!{2020-09-30:1,2020-06-30:20,2020-03-31:300,2019-12-31:4000,2019-09-30:50000,2019-06-30:600000}  |4321|
+|!{2020-10-31:1,2020-09-30:1,2020-01-31:1,2019-12-31:1,2019-11-30:1,2019-10-31:100,2019-09-30:100}|5   |
+
+!2 Average
+From the three most recent '''annual''' income statements.
+
+|Diluted normalized EPS average                             |
+|date and amount                                       |eps?|
+|!{2019-12-31:1,2020-12-31:3,2017-12-31:5,2018-12-31:8}|4.0 |
+|!{2019-12-31:1,2020-12-31:3}                          |2.0 |

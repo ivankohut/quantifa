@@ -17,11 +17,13 @@ import java.math.BigDecimal;
 import java.time.Clock;
 import java.time.LocalDate;
 
+@SuppressWarnings("PMD.DataClass")
 public class Application {
 
     private final MarketPrice price;
     private final ReportedAmount bookValue;
-    private final Unchecked<BigDecimal> eps;
+    private final Unchecked<BigDecimal> epsTtm;
+    private final Unchecked<BigDecimal> epsAverage;
 
     public Application(TwsApi twsApi, Clock clock, StockContract stockContract) {
         this.price = new TwsMarketPriceOfStock(twsApi, stockContract, true);
@@ -63,10 +65,22 @@ public class Application {
                 ).doubleValue());
             }
         };
-        this.eps = new Unchecked<>(new TrailingTwelveMonths(new Mapped<>(
+        this.epsTtm = new Unchecked<>(new TrailingTwelveMonths(new Mapped<>(
                 statementNode -> new FinancialStatementAmount(new XmlFinancialStatement(new XmlStatementDate(statementNode), () -> statementNode), "VDES"),
                 new StatementNodes(financialStatementsNode, false, false)
         )));
+        this.epsAverage = new Unchecked<>(new org.cactoos.scalar.Mapped<>(
+                BigDecimal::valueOf,
+                new AverageOfTheMostRecent(
+                        new Mapped<>(
+                                statementNode -> new FinancialStatementAmount(
+                                        new XmlFinancialStatement(new XmlStatementDate(statementNode), () -> statementNode),
+                                        "VDES"),
+                                new StatementNodes(financialStatementsNode, true, false)
+                        ),
+                        3
+                )
+        ));
     }
 
     public Application(TwsApi twsApi, StockContract stockContract) {
@@ -81,8 +95,12 @@ public class Application {
         return bookValue;
     }
 
-    public BigDecimal eps() {
-        return eps.value();
+    public BigDecimal epsTtm() {
+        return epsTtm.value();
+    }
+
+    public BigDecimal epsAverage() {
+        return epsAverage.value();
     }
 
     @SuppressWarnings({ "PMD.SystemPrintln", "java:S106", "PMD.AvoidPrintStackTrace", "java:S4507", "PMD.AvoidCatchingGenericException" })
@@ -94,7 +112,8 @@ public class Application {
             System.out.printf("Current price: %s%n", application.price().price().map(Object::toString).orElse(""));
             var bookValue = application.bookValue();
             System.out.printf("Latest book value: %s (%s)%n", bookValue.value(), bookValue.date());
-            System.out.printf("Diluted normalized EPS TTM: %s%n", application.eps());
+            System.out.printf("Diluted normalized EPS TTM: %s%n", application.epsTtm());
+            System.out.printf("Diluted normalized EPS 3 year average: %s%n", application.epsAverage());
             status = 0;
         } catch (ApplicationException e) {
             System.out.println("Error: " + e.getMessage());
