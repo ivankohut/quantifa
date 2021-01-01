@@ -109,11 +109,11 @@ public class Application {
         var configuration = new ApplicationConfiguration("environment variable", System.getenv());
         try (var twsApi = new TwsApiController(configuration, new ApiController(new TwsConnectionHandler()), 500)) {
             var application = new Application(twsApi, configuration);
-            System.out.printf("Current price: %s%n", application.price().price().map(Object::toString).orElse(""));
+            System.out.printf("Current price: %f%n", application.price().price().orElse(BigDecimal.ZERO));
             var bookValue = application.bookValue();
-            System.out.printf("Latest book value: %s (%s)%n", bookValue.value(), bookValue.date());
-            System.out.printf("Diluted normalized EPS TTM: %s%n", application.epsTtm());
-            System.out.printf("Diluted normalized EPS 3 year average: %s%n", application.epsAverage());
+            System.out.printf("Latest book value: %f (%s)%n", bookValue.value(), bookValue.date());
+            System.out.printf("Diluted normalized EPS TTM: %f%n", application.epsTtm());
+            System.out.printf("Diluted normalized EPS 3 year average: %f%n", application.epsAverage());
             status = 0;
         } catch (ApplicationException e) {
             System.out.println("Error: " + e.getMessage());
