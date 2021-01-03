@@ -23,15 +23,19 @@ public class BalanceSheetsWithBookValue {
     private BigDecimal preferredSharesOutstanding;
 
     public void execute() {
-        values.merge(
-                type,
-                List.of(Map.entry(date, Map.of("QTLE", totalEquity, "QTCO", commonSharesOutstanding, "QTPO", preferredSharesOutstanding))),
-                (a, b) -> new Joined<Map.Entry<LocalDate, Map<String, BigDecimal>>>(a, b)
-        );
+        addStatement(type, date, Map.of("QTLE", totalEquity, "QTCO", commonSharesOutstanding, "QTPO", preferredSharesOutstanding));
     }
 
     public void beginTable() {
         values.remove(type);
+    }
+
+    public static void addStatement(String type, LocalDate date, Map<String, BigDecimal> values) {
+        BalanceSheetsWithBookValue.values.merge(
+                type,
+                List.of(Map.entry(date, values)),
+                (a, b) -> new Joined<Map.Entry<LocalDate, Map<String, BigDecimal>>>(a, b)
+        );
     }
 
     public static Map<String, List<Map.Entry<LocalDate, Map<String, BigDecimal>>>> getValues() {

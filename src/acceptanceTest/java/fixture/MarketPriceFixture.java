@@ -21,6 +21,6 @@ public class MarketPriceFixture {
 
     public BigDecimal price() {
         var stockContract = new SimpleStockContract(exchange, symbol, currency);
-        return new Application(new FakePriceMarketDataTwsApi(prices), stockContract).price().price().orElse(BigDecimal.ZERO);
+        return new Application(new FakeTwsApi(prices), stockContract).price().price().orElse(BigDecimal.ZERO);
     }
 }

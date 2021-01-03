@@ -1,12 +1,13 @@
 package fixture;
 
 import org.cactoos.Text;
+import org.cactoos.list.ListOf;
 import org.cactoos.text.Concatenated;
 import org.cactoos.text.TextEnvelope;
 
-public class FinancialStatementsXml extends TextEnvelope {
+public class ReportFinancialStatementsXml extends TextEnvelope {
 
-    public FinancialStatementsXml(Text... body) {
+    public ReportFinancialStatementsXml(Iterable<? extends Text> body) {
         super(new Concatenated(
                 () -> """
                         <?xml version="1.0" encoding="UTF-8"?>
@@ -19,5 +20,9 @@ public class FinancialStatementsXml extends TextEnvelope {
                 new Concatenated(body),
                 () -> "</FinancialStatements></ReportFinancialStatements>"
         ));
+    }
+
+    public ReportFinancialStatementsXml(Text... body) {
+        this(new ListOf<>(body));
     }
 }
