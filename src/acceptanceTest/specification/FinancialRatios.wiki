@@ -1,0 +1,24 @@
+---
+Test
+---
+!*< Hidden
+|Define alias                                            |
+|Graham number        |fixture.GrahamNumberFixture       |
+|Current assets ratios|fixture.CurrentAssetsRatiosFixture|
+*!
+
+Graham number is square root of 15 x average earnings per share x 1.5 x book value per share.
+Graham ration is ratio of price to graham number.
+
+|Graham number                                         |
+|earnings|book value|price|graham number?|graham ratio?|
+|2       |8         |12   |18.9737       |0.6325       |
+|10      |20        |150  |67.0820       |2.2361       |
+
+Current ratio is ratio of current assets to current liabilities.
+Net current assets to long term debt is ratio of current assets subtracted with current liabilities to long term debt.
+
+|Current assets ratios                                                                                 |
+|current assets|current liabilities|long term debt|current ratio?|net current assets to long term debt?|
+|10            |8                  |3             |1.2500        |0.6667                               |
+|5             |3                  |1.5           |1.6667        |1.3333                               |

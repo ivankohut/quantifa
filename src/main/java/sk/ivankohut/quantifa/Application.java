@@ -8,7 +8,11 @@ import org.cactoos.scalar.ScalarOfSupplier;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Ternary;
 import org.cactoos.scalar.Unchecked;
+import sk.ivankohut.quantifa.decimal.DecimalOf;
 import sk.ivankohut.quantifa.decimal.DivisionOf;
+import sk.ivankohut.quantifa.decimal.MultiplicationOf;
+import sk.ivankohut.quantifa.decimal.Rounded;
+import sk.ivankohut.quantifa.decimal.SquareRootOf;
 import sk.ivankohut.quantifa.decimal.SumOf;
 import sk.ivankohut.quantifa.utils.StickyFirstOrFail;
 import sk.ivankohut.quantifa.xmldom.XPathNodes;
@@ -24,6 +28,10 @@ public class Application {
     private final ReportedAmount bookValue;
     private final Scalar<BigDecimal> epsTtm;
     private final Scalar<BigDecimal> epsAverage;
+    private final Scalar<BigDecimal> grahamNumber;
+    private final Scalar<BigDecimal> grahamRatio;
+    private final Scalar<BigDecimal> currentRatio;
+    private final Scalar<BigDecimal> netCurrentAssetsToLongTermDebtRatio;
 
     public Application(TwsApi twsApi, Clock clock, StockContract stockContract) {
         this.price = new TwsMarketPriceOfStock(twsApi, stockContract, true);
@@ -79,6 +87,13 @@ public class Application {
                 ),
                 3
         );
+        this.currentRatio = new DivisionOf(() -> mostRecentBalanceSheet.value("ATCA"), () -> mostRecentBalanceSheet.value("LTCL"));
+        this.netCurrentAssetsToLongTermDebtRatio = new DivisionOf(
+                () -> mostRecentBalanceSheet.value("ATCA").subtract(mostRecentBalanceSheet.value("LTCL")),
+                () -> mostRecentBalanceSheet.value("LTTD")
+        );
+        this.grahamNumber = new Sticky<>(new SquareRootOf(new MultiplicationOf(new DecimalOf(15 * 1.5), epsAverage, bookValue::value)));
+        this.grahamRatio = new DivisionOf(() -> price.price().orElse(BigDecimal.ZERO), grahamNumber);
     }
 
     public Application(TwsApi twsApi, StockContract stockContract) {
@@ -101,6 +116,22 @@ public class Application {
         return new Unchecked<>(epsAverage).value();
     }
 
+    public BigDecimal grahamNumber() {
+        return new Unchecked<>(new Rounded(grahamNumber)).value();
+    }
+
+    public BigDecimal grahamRatio() {
+        return new Unchecked<>(new Rounded(grahamRatio)).value();
+    }
+
+    public BigDecimal currentRatio() {
+        return new Unchecked<>(new Rounded(currentRatio)).value();
+    }
+
+    public BigDecimal netCurrentAssetsToLongTermDebtRatio() {
+        return new Unchecked<>(new Rounded(netCurrentAssetsToLongTermDebtRatio)).value();
+    }
+
     @SuppressWarnings({ "PMD.SystemPrintln", "java:S106", "PMD.AvoidPrintStackTrace", "java:S4507", "PMD.AvoidCatchingGenericException" })
     public static void main(String[] args) {
         int status;
@@ -112,6 +143,10 @@ public class Application {
             System.out.printf("Latest book value: %f (%s)%n", bookValue.value(), bookValue.date());
             System.out.printf("Diluted normalized EPS TTM: %f%n", application.epsTtm());
             System.out.printf("Diluted normalized EPS 3 year average: %f%n", application.epsAverage());
+            System.out.printf("Graham number: %f%n", application.grahamNumber());
+            System.out.printf("Current price to Graham number: %f%n", application.grahamRatio());
+            System.out.printf("Current ratio: %f%n", application.currentRatio());
+            System.out.printf("Net current assets to long term debt ratio: %f%n", application.netCurrentAssetsToLongTermDebtRatio());
             status = 0;
         } catch (ApplicationException e) {
             System.out.println("Error: " + e.getMessage());
