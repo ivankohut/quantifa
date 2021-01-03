@@ -22,7 +22,7 @@ Application displays latest book value selected stock.
 
 |Book Value       |
 |value?|date?     |
-|2.0   |2020-03-31|
+|2     |2020-03-31|
 
 If there are two latest values, choose the one from annual statement.
 
@@ -37,4 +37,4 @@ If there are two latest values, choose the one from annual statement.
 
 |Book Value       |
 |value?|date?     |
-|2.0   |2019-12-31|
+|2     |2019-12-31|

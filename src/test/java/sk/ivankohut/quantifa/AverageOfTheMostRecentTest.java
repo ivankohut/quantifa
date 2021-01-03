@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class AverageOfTheMostRecentTest {
 
     @Test
-    void averageOfTheGivenNumberOfTheMostRecentAmounts() {
+    void averageOfTheGivenNumberOfTheMostRecentAmounts() throws Exception {
         // exercise
         var sut = new AverageOfTheMostRecent(new ListOf<>(
                 new SimpleReportedAmount(LocalDate.of(2000, 1, 2), BigDecimal.ONE),
@@ -20,16 +20,16 @@ class AverageOfTheMostRecentTest {
                 new SimpleReportedAmount(LocalDate.of(2000, 1, 3), BigDecimal.TEN)
         ), 2);
         // verify
-        assertThat(sut.doubleValue()).isEqualTo(5.0);
+        assertThat(sut.value()).isEqualByComparingTo("5");
     }
 
     @Test
-    void averageOfAllTheGivenAmountsIfTheirNumberIsLessThenRequested() {
+    void averageOfAllTheGivenAmountsIfTheirNumberIsLessThenRequested() throws Exception {
         // exercise
         var sut = new AverageOfTheMostRecent(new ListOf<>(
                 new SimpleReportedAmount(LocalDate.of(2000, 1, 1), BigDecimal.ONE)
         ), 2);
         // verify
-        assertThat(sut.doubleValue()).isEqualTo(1.0);
+        assertThat(sut.value()).isEqualByComparingTo("1");
     }
 }

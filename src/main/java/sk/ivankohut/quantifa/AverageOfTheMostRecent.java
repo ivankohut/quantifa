@@ -5,11 +5,11 @@ import org.cactoos.iterable.Sorted;
 import org.cactoos.iterable.TailOf;
 import org.cactoos.scalar.AvgOf;
 import org.cactoos.scalar.Constant;
-import org.cactoos.scalar.NumberEnvelope;
+import sk.ivankohut.quantifa.decimal.DecimalOf;
 
 import java.util.Comparator;
 
-public class AverageOfTheMostRecent extends NumberEnvelope {
+public class AverageOfTheMostRecent extends DecimalOf {
 
     public AverageOfTheMostRecent(Iterable<ReportedAmount> amounts, int numberOfItems) {
         super(new AvgOf(

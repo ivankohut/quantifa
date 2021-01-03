@@ -1,6 +1,7 @@
 package fixture;
 
 import lombok.Setter;
+import org.cactoos.iterable.Mapped;
 import sk.ivankohut.quantifa.Application;
 import sk.ivankohut.quantifa.ReportedAmount;
 import sk.ivankohut.quantifa.SimpleStockContract;
@@ -16,7 +17,26 @@ public class BookValueFixture implements ReportedAmount {
     public void execute() {
         StoredStatementsFixture.clearCache();
         var stockContract = new SimpleStockContract("exchange", "symbol", "currency");
-        result = new Application(new FakeBookValueTwsApi(stockContract, BalanceSheetsWithBookValue.getValues()), stockContract).bookValue();
+        result = new Application(
+                new FakeTwsApi(
+                        stockContract,
+                        new ReportFinancialStatementsXml(
+                                new Mapped<>(
+                                        entry -> new PeriodsXml(
+                                                entry.getKey(),
+                                                new Mapped<>(
+                                                        bookValue -> new FiscalPeriodXml(
+                                                                new FinancialStatementXml("BAL", bookValue.getKey(), bookValue.getValue())
+                                                        ),
+                                                        entry.getValue()
+                                                )
+                                        ),
+                                        BalanceSheetsWithBookValue.getValues().entrySet()
+                                )
+                        )
+                ),
+                stockContract
+        ).bookValue();
     }
 
     @Override

@@ -2,14 +2,14 @@ package sk.ivankohut.quantifa;
 
 import com.ib.client.Types;
 import com.ib.controller.ApiController;
+import org.cactoos.Scalar;
 import org.cactoos.iterable.Mapped;
-import org.cactoos.list.ListOf;
-import org.cactoos.scalar.DivisionOf;
 import org.cactoos.scalar.ScalarOfSupplier;
 import org.cactoos.scalar.Sticky;
-import org.cactoos.scalar.SumOf;
 import org.cactoos.scalar.Ternary;
 import org.cactoos.scalar.Unchecked;
+import sk.ivankohut.quantifa.decimal.DivisionOf;
+import sk.ivankohut.quantifa.decimal.SumOf;
 import sk.ivankohut.quantifa.utils.StickyFirstOrFail;
 import sk.ivankohut.quantifa.xmldom.XPathNodes;
 
@@ -22,8 +22,8 @@ public class Application {
 
     private final MarketPrice price;
     private final ReportedAmount bookValue;
-    private final Unchecked<BigDecimal> epsTtm;
-    private final Unchecked<BigDecimal> epsAverage;
+    private final Scalar<BigDecimal> epsTtm;
+    private final Scalar<BigDecimal> epsAverage;
 
     public Application(TwsApi twsApi, Clock clock, StockContract stockContract) {
         this.price = new TwsMarketPriceOfStock(twsApi, stockContract, true);
@@ -49,38 +49,36 @@ public class Application {
                         annual
                 )
         ));
-        var statement = new XmlFinancialStatement(() -> statementEntry.value().getKey(), () -> statementEntry.value().getValue());
+        var mostRecentBalanceSheet = new XmlFinancialStatement(() -> statementEntry.value().getKey(), () -> statementEntry.value().getValue());
         this.bookValue = new ReportedAmount() {
 
             @Override
             public LocalDate date() {
-                return statement.date();
+                return mostRecentBalanceSheet.date();
             }
 
             @Override
             public BigDecimal value() {
-                return BigDecimal.valueOf(new DivisionOf(
-                        statement.value("QTLE"),
-                        new SumOf(new ListOf<>(statement.value("QTCO"), statement.value("QTPO")))
-                ).doubleValue());
+                return new Unchecked<>(new DivisionOf(
+                        mostRecentBalanceSheet.value("QTLE"),
+                        new SumOf(mostRecentBalanceSheet.value("QTCO"), mostRecentBalanceSheet.value("QTPO"))
+                )).value();
             }
         };
-        this.epsTtm = new Unchecked<>(new TrailingTwelveMonths(new Mapped<>(
+        this.epsTtm = new TrailingTwelveMonths(new Mapped<>(
                 statementNode -> new FinancialStatementAmount(new XmlFinancialStatement(new XmlStatementDate(statementNode), () -> statementNode), "VDES"),
                 new StatementNodes(financialStatementsNode, false, false)
-        )));
-        this.epsAverage = new Unchecked<>(new org.cactoos.scalar.Mapped<>(
-                BigDecimal::valueOf,
-                new AverageOfTheMostRecent(
-                        new Mapped<>(
-                                statementNode -> new FinancialStatementAmount(
-                                        new XmlFinancialStatement(new XmlStatementDate(statementNode), () -> statementNode),
-                                        "VDES"),
-                                new StatementNodes(financialStatementsNode, true, false)
-                        ),
-                        3
-                )
         ));
+        this.epsAverage = new AverageOfTheMostRecent(
+                new Mapped<>(
+                        statementNode -> new FinancialStatementAmount(
+                                new XmlFinancialStatement(new XmlStatementDate(statementNode), () -> statementNode),
+                                "VDES"
+                        ),
+                        new StatementNodes(financialStatementsNode, true, false)
+                ),
+                3
+        );
     }
 
     public Application(TwsApi twsApi, StockContract stockContract) {
@@ -96,11 +94,11 @@ public class Application {
     }
 
     public BigDecimal epsTtm() {
-        return epsTtm.value();
+        return new Unchecked<>(epsTtm).value();
     }
 
     public BigDecimal epsAverage() {
-        return epsAverage.value();
+        return new Unchecked<>(epsAverage).value();
     }
 
     @SuppressWarnings({ "PMD.SystemPrintln", "java:S106", "PMD.AvoidPrintStackTrace", "java:S4507", "PMD.AvoidCatchingGenericException" })
