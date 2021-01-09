@@ -10,10 +10,20 @@ class DivisionOfTest {
 
     @Test
     void dividesGivenDividendByGivenDivisorUsingDECIMAL128PrecisionSetting() throws Exception {
-        var sut = new DivisionOf(BigDecimal.valueOf(10), BigDecimal.valueOf(3));
+        var sut = new DivisionOf(BigDecimal.valueOf(10), BigDecimal.valueOf(3), BigDecimal.ZERO);
         // exercise
         var result = sut.value();
         // verify
         assertThat(result).isEqualByComparingTo("3.333333333333333333333333333333333");
+    }
+
+    @Test
+    void givenDefaultValueIfDivisorIsZero() throws Exception {
+        var ifDivisorZero = BigDecimal.TEN;
+        var sut = new DivisionOf(BigDecimal.valueOf(7), BigDecimal.ZERO, ifDivisorZero);
+        // exercise
+        var result = sut.value();
+        // verify
+        assertThat(result).isEqualByComparingTo(ifDivisorZero);
     }
 }
