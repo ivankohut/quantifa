@@ -11,6 +11,7 @@ import org.cactoos.scalar.Unchecked;
 import sk.ivankohut.quantifa.decimal.DecimalOf;
 import sk.ivankohut.quantifa.decimal.DivisionOf;
 import sk.ivankohut.quantifa.decimal.MultiplicationOf;
+import sk.ivankohut.quantifa.decimal.NonNegative;
 import sk.ivankohut.quantifa.decimal.Rounded;
 import sk.ivankohut.quantifa.decimal.SquareRootOf;
 import sk.ivankohut.quantifa.decimal.SumOf;
@@ -70,7 +71,8 @@ public class Application {
             public BigDecimal value() {
                 return new Unchecked<>(new DivisionOf(
                         mostRecentBalanceSheet.value("QTLE"),
-                        new SumOf(mostRecentBalanceSheet.value("QTCO"), mostRecentBalanceSheet.value("QTPO"))
+                        new SumOf(mostRecentBalanceSheet.value("QTCO"), mostRecentBalanceSheet.value("QTPO")),
+                        new BigDecimal(-1)
                 )).value();
             }
         };
@@ -88,13 +90,16 @@ public class Application {
                 ),
                 3
         );
-        this.currentRatio = new DivisionOf(() -> mostRecentBalanceSheet.value("ATCA"), () -> mostRecentBalanceSheet.value("LTCL"));
+        this.currentRatio = new DivisionOf(() -> mostRecentBalanceSheet.value("ATCA"), () -> mostRecentBalanceSheet.value("LTCL"), BigDecimal.ZERO);
         this.netCurrentAssetsToLongTermDebtRatio = new DivisionOf(
                 () -> mostRecentBalanceSheet.value("ATCA").subtract(mostRecentBalanceSheet.value("LTCL")),
-                () -> mostRecentBalanceSheet.value("LTTD")
+                () -> mostRecentBalanceSheet.value("LTTD"),
+                BigDecimal.ZERO
         );
-        this.grahamNumber = new Sticky<>(new SquareRootOf(new MultiplicationOf(new DecimalOf(15 * 1.5), epsAverage, bookValue::value)));
-        this.grahamRatio = new DivisionOf(() -> price.price().orElse(BigDecimal.ZERO), grahamNumber);
+        this.grahamNumber = new Sticky<>(new SquareRootOf(new MultiplicationOf(
+                new DecimalOf(15 * 1.5), new NonNegative(epsAverage), new NonNegative(bookValue::value))
+        ));
+        this.grahamRatio = new DivisionOf(() -> price.price().orElse(BigDecimal.ZERO), grahamNumber, BigDecimal.ZERO);
     }
 
     public MarketPrice price() {
