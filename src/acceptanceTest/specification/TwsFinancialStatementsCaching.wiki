@@ -11,11 +11,11 @@ Financial statements requests are limited by TWS to ? request per minute. Theref
 i.e. to store the statement locally and use that stored statement until it is outdated. Then it must retrieved from TWS again.
 
 Statements retrieved from TWS are stored in file system and kept forever so that analysis of historical data can be done efficiently.
-Statement is considered outdated if its older than five months (for now we consider per quarter statements only).
+Statement is considered outdated if its older than thirteen months.
 
 |Stored statements dates|[2019-12-31, 2020-03-31, 2019-09-30]|
 |current date           |retrieving statements from TWS?     |
 |2020-07-01             |false                               |
-|2020-08-31             |false                               |
-|2020-09-01             |true                                |
-|2020-11-04             |true                                |
+|2021-04-30             |false                               |
+|2021-05-01             |true                                |
+|2021-06-04             |true                                |
