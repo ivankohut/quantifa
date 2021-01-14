@@ -24,6 +24,7 @@ ext {
     jacocoVersion = '0.8.6'
     lombokVersion = '1.18.10'
     twsApiZipUrl = 'https://interactivebrokers.github.io/downloads/twsapi_macunix.976.01.zip'
+    specificationDir = 'src/acceptanceTest/specification'
 }
 
 sourceCompatibility = javaVersion
@@ -37,6 +38,9 @@ sourceSets {
     acceptanceTest {
         java {
             srcDir 'src/acceptanceTest/java'
+        }
+        resources {
+            srcDirs specificationDir
         }
     }
 }
@@ -75,6 +79,7 @@ dependencies {
     acceptanceTestImplementation sourceSets.test.output
     acceptanceTestAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     acceptanceTestImplementation "com.github.spotbugs:spotbugs-annotations:${spotbugsVersion}"
+    acceptanceTestImplementation 'junit:junit:4.13'
 }
 
 gitBranchChecks {
@@ -124,7 +129,7 @@ task checkstyleRoot(type: Checkstyle) {
     classpath = files()
     configFile = file('config/checkstyle/checkstyle-root.xml')
     exclude '**/build/**', '.idea/**', 'out/**', '**/.gradle/**', 'gradle/**', 'gradlew', 'gradlew.bat', '**/*.md',
-            'src/acceptanceTest/specification/**/*.zip', 'src/acceptanceTest/specification/GradleClassPath.wiki'
+            "${specificationDir}/**/*.zip", "${specificationDir}/GradleClassPath.wiki"
 }
 
 check {
@@ -211,7 +216,7 @@ yamlValidator {
 
 task writeFitNesseClasspath (type: WriteFitNesseClasspath) {
     classpath = sourceSets.acceptanceTest.runtimeClasspath
-    pagePath = project.file('src/acceptanceTest/specification')
+    pagePath = project.file(specificationDir)
 }
 
 class WriteFitNesseClasspath extends DefaultTask {
@@ -234,4 +239,17 @@ class WriteFitNesseClasspath extends DefaultTask {
         }
     }
 
+}
+
+task acceptanceTestExecution(type: Test) {
+    description = 'Runs acceptance tests.'
+    group = 'verification'
+    useJUnit()
+    testClassesDirs = sourceSets.acceptanceTest.output.classesDirs
+    classpath = sourceSets.acceptanceTest.runtimeClasspath
+    shouldRunAfter test
+}
+
+check {
+    dependsOn acceptanceTestExecution
 }
