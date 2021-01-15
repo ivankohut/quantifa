@@ -3,7 +3,6 @@ package fixture;
 import lombok.RequiredArgsConstructor;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.list.ListOf;
-import sk.ivankohut.quantifa.Application;
 import sk.ivankohut.quantifa.ReportedAmount;
 import sk.ivankohut.quantifa.SimpleReportedAmount;
 import sk.ivankohut.quantifa.SimpleStockContract;
@@ -21,7 +20,7 @@ public class DilutedNormalizedEpsTtmFixture {
     public BigDecimal eps() {
         StoredStatementsFixture.clearCache();
         var stockContract = new SimpleStockContract("exchange", "symbol", "currency");
-        return new Application(new FakeEpsTwsApi(stockContract, dateAndAmount, "Interim"), stockContract).epsTtm();
+        return new FixtureApplication(new FakeEpsTwsApi(stockContract, dateAndAmount, "Interim"), stockContract).epsTtm();
     }
 
     public void setDateAndAmount(Map<String, String> dateAndAmount) {

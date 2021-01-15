@@ -18,6 +18,7 @@ import sk.ivankohut.quantifa.utils.StickyFirstOrFail;
 import sk.ivankohut.quantifa.xmldom.XPathNodes;
 
 import java.math.BigDecimal;
+import java.nio.file.Path;
 import java.time.Clock;
 import java.time.LocalDate;
 
@@ -33,12 +34,12 @@ public class Application {
     private final Scalar<BigDecimal> currentRatio;
     private final Scalar<BigDecimal> netCurrentAssetsToLongTermDebtRatio;
 
-    public Application(TwsApi twsApi, Clock clock, StockContract stockContract) {
+    public Application(TwsApi twsApi, Clock clock, StockContract stockContract, Path cacheDirectory) {
         this.price = new TwsMarketPriceOfStock(twsApi, stockContract, true);
         var financialStatementsNode = new StickyFirstOrFail<>(
                 new XPathNodes(
                         new CachedFinancialStatements(
-                                new TextFilesStore("financialStatementsCache"),
+                                new TextFilesStore(cacheDirectory),
                                 clock,
                                 new org.cactoos.text.Joined("-", stockContract.exchange(), stockContract.symbol(), stockContract.currency()),
                                 new TwsFundamental(twsApi, stockContract, Types.FundamentalType.ReportsFinStatements),
@@ -96,10 +97,6 @@ public class Application {
         this.grahamRatio = new DivisionOf(() -> price.price().orElse(BigDecimal.ZERO), grahamNumber);
     }
 
-    public Application(TwsApi twsApi, StockContract stockContract) {
-        this(twsApi, Clock.systemDefaultZone(), stockContract);
-    }
-
     public MarketPrice price() {
         return price;
     }
@@ -137,7 +134,7 @@ public class Application {
         int status;
         var configuration = new ApplicationConfiguration("environment variable", System.getenv());
         try (var twsApi = new TwsApiController(configuration, new ApiController(new TwsConnectionHandler()), 500)) {
-            var application = new Application(twsApi, configuration);
+            var application = new Application(twsApi, Clock.systemDefaultZone(), configuration, configuration.cacheDirectory());
             System.out.printf("Current price: %f%n", application.price().price().orElse(BigDecimal.ZERO));
             var bookValue = application.bookValue();
             System.out.printf("Latest book value: %f (%s)%n", bookValue.value(), bookValue.date());

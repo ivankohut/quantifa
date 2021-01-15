@@ -2,7 +2,6 @@ package fixture;
 
 import lombok.Setter;
 import org.cactoos.iterable.Mapped;
-import sk.ivankohut.quantifa.Application;
 import sk.ivankohut.quantifa.ReportedAmount;
 import sk.ivankohut.quantifa.SimpleStockContract;
 
@@ -17,7 +16,7 @@ public class BookValueFixture implements ReportedAmount {
     public void execute() {
         StoredStatementsFixture.clearCache();
         var stockContract = new SimpleStockContract("exchange", "symbol", "currency");
-        result = new Application(
+        result = new FixtureApplication(
                 new FakeTwsApi(
                         stockContract,
                         new ReportFinancialStatementsXml(
