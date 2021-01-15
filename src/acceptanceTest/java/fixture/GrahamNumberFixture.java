@@ -21,7 +21,7 @@ public class GrahamNumberFixture {
     public void execute() {
         StoredStatementsFixture.clearCache();
         var stockContract = new SimpleStockContract("exchange", "symbol", "currency");
-        this.application = new Application(
+        this.application = new FixtureApplication(
                 new FakeTwsApi(
                         Map.of(stockContract, Map.of(TickType.DELAYED_BID, price)),
                         stockContract,

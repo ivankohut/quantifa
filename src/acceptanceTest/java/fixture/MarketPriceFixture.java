@@ -2,7 +2,6 @@ package fixture;
 
 import com.ib.client.TickType;
 import lombok.Setter;
-import sk.ivankohut.quantifa.Application;
 import sk.ivankohut.quantifa.SimpleStockContract;
 import sk.ivankohut.quantifa.StockContract;
 
@@ -21,6 +20,6 @@ public class MarketPriceFixture {
 
     public BigDecimal price() {
         var stockContract = new SimpleStockContract(exchange, symbol, currency);
-        return new Application(new FakeTwsApi(prices), stockContract).price().price().orElse(BigDecimal.ZERO);
+        return new FixtureApplication(new FakeTwsApi(prices), stockContract).price().price().orElse(BigDecimal.ZERO);
     }
 }

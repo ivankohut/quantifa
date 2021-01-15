@@ -20,7 +20,7 @@ public class CurrentAssetsRatiosFixture {
     public void execute() {
         StoredStatementsFixture.clearCache();
         var stockContract = new SimpleStockContract("exchange", "symbol", "currency");
-        this.application = new Application(
+        this.application = new FixtureApplication(
                 new FakeTwsApi(
                         stockContract,
                         new ReportFinancialStatementsXml(

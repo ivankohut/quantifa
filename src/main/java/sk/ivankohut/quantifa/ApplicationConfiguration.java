@@ -2,6 +2,7 @@ package sk.ivankohut.quantifa;
 
 import lombok.RequiredArgsConstructor;
 
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.Optional;
 
@@ -34,6 +35,10 @@ public class ApplicationConfiguration implements TwsCoordinates, StockContract {
     @Override
     public String currency() {
         return mandatory("CURRENCY");
+    }
+
+    public Path cacheDirectory() {
+        return Path.of(mandatory("CACHE_DIR"));
     }
 
     private String mandatory(String key) {
