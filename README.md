@@ -36,6 +36,7 @@ variables):
 ```shell
 export TWS_HOSTNAME=localhost # optional
 export TWS_PORT=7496 # optional
+export CACHE_DIR=cache/dir
 export EXCHANGE=NYSE
 export SYMBOL=CAT
 export CURRENCY=USD
