@@ -35,8 +35,8 @@ public class Application {
     private final Scalar<BigDecimal> currentRatio;
     private final Scalar<BigDecimal> netCurrentAssetsToLongTermDebtRatio;
 
-    public Application(TwsApi twsApi, Clock clock, StockContract stockContract, Path cacheDirectory) {
-        this.price = new TwsMarketPriceOfStock(twsApi, stockContract, true);
+    public Application(TwsApi twsApi, Clock clock, StockContract stockContract, Path cacheDirectory, int priceDivisor) {
+        this.price = new TwsMarketPriceOfStock(twsApi, stockContract, true, priceDivisor);
         var financialStatementsNode = new StickyFirstOrFail<>(
                 new XPathNodes(
                         new CachedFinancialStatements(
@@ -139,7 +139,7 @@ public class Application {
         int status;
         var configuration = new ApplicationConfiguration("environment variable", System.getenv());
         try (var twsApi = new TwsApiController(configuration, new ApiController(new TwsConnectionHandler()), 500)) {
-            var application = new Application(twsApi, Clock.systemDefaultZone(), configuration, configuration.cacheDirectory());
+            var application = new Application(twsApi, Clock.systemDefaultZone(), configuration, configuration.cacheDirectory(), configuration.priceDivisor());
             System.out.printf("Current price: %f%n", application.price().price().orElse(BigDecimal.ZERO));
             var bookValue = application.bookValue();
             System.out.printf("Latest book value: %f (%s)%n", bookValue.value(), bookValue.date());

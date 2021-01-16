@@ -15,11 +15,12 @@ public class MarketPriceFixture {
     private String exchange;
     private String symbol;
     private String currency;
+    private int priceDivisor;
 
     static final Map<StockContract, Map<TickType, BigDecimal>> prices = new HashMap<>();
 
     public BigDecimal price() {
         var stockContract = new SimpleStockContract(exchange, symbol, currency);
-        return new FixtureApplication(new FakeTwsApi(prices), stockContract).price().price().orElse(BigDecimal.ZERO);
+        return new FixtureApplication(new FakeTwsApi(prices), stockContract, priceDivisor).price().price().orElse(BigDecimal.ZERO);
     }
 }

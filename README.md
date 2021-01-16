@@ -40,6 +40,7 @@ export CACHE_DIR=cache/dir
 export EXCHANGE=NYSE
 export SYMBOL=CAT
 export CURRENCY=USD
+export PRICE_DIVISOR=1 # optional
 ```
 
 Finally, to run application, execute
