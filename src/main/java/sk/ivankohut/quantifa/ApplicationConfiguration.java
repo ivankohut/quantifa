@@ -41,6 +41,10 @@ public class ApplicationConfiguration implements TwsCoordinates, StockContract {
         return Path.of(mandatory("CACHE_DIR"));
     }
 
+    public int priceDivisor() {
+        return Integer.parseInt(configuration.getOrDefault("PRICE_DIVISOR", "1"));
+    }
+
     private String mandatory(String key) {
         return Optional.ofNullable(configuration.get(key))
                 .orElseThrow(() -> new ApplicationException("Configuration value %s of type %s is not defined.".formatted(key, type)));

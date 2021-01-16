@@ -9,7 +9,9 @@ Test
 
 *!
 
-Application displays delayed (cca 15min) bid price of requested stock.
+Application displays delayed (cca 15min) bid price of requested stock. 
+Price is divided by given divisor - useful in case of prices not denominated in the basic currency unit,
+e.g. London Stock Exchange prices are denominated in pences, not in pounds.
 
 |Market prices                              |
 |exchange|symbol|currency|tick type  |price |
@@ -19,7 +21,8 @@ Application displays delayed (cca 15min) bid price of requested stock.
 |NYSE    |FTI   |USD     |DELAYED_BID|78.54 |
 |NYSE    |CAT   |CAN     |DELAYED_BID|14.39 |
 
-|Market price                   |
-|exchange|symbol|currency|price?|
-|NYSE    |CAT   |USD     |123.45|
+|Market price                                 |
+|exchange|symbol|currency|price divisor|price?|
+|NYSE    |CAT   |USD     |1            |123.45|
+|NYSE    |CAT   |USD     |100          |1.2345|
 
