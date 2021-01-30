@@ -11,13 +11,11 @@ public class TwsMarketPriceOfStock implements MarketPrice {
     private final TwsApi twsApi;
     private final StockContract stockContract;
     private final boolean bid;
-    private final int divisor;
 
-    public TwsMarketPriceOfStock(TwsApi twsApi, StockContract stockContract, boolean bid, int divisor) {
+    public TwsMarketPriceOfStock(TwsApi twsApi, StockContract stockContract, boolean bid) {
         this.twsApi = twsApi;
         this.stockContract = stockContract;
         this.bid = bid;
-        this.divisor = divisor;
     }
 
     @Override
@@ -27,7 +25,7 @@ public class TwsMarketPriceOfStock implements MarketPrice {
         twsApi.setMarketDataType(MarketDataType.DELAYED);
         twsApi.requestTopMarketData(stockContract, Collections.emptyList(), false, false, handler);
         try {
-            return handler.price().map(price -> price.divide(BigDecimal.valueOf(divisor)));
+            return handler.price();
         } finally {
             twsApi.cancelTopMarketData(handler);
         }
