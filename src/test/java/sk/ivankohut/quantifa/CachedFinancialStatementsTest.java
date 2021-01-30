@@ -14,6 +14,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@SuppressWarnings("java:S5786")
 public class CachedFinancialStatementsTest {
 
     @Test
@@ -63,7 +64,7 @@ public class CachedFinancialStatementsTest {
     ) {
         return new CachedFinancialStatements(
                 store,
-                clockFixedOn(LocalDate.parse(currentDate)),
+                LocalDate.parse(currentDate),
                 directory,
                 fundamental,
                 outdatedAfterMonths,

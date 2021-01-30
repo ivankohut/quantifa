@@ -1,6 +1,8 @@
 package fixture;
 
 import sk.ivankohut.quantifa.Application;
+import sk.ivankohut.quantifa.PriceRequest;
+import sk.ivankohut.quantifa.SimpleStockContract;
 import sk.ivankohut.quantifa.StockContract;
 import sk.ivankohut.quantifa.TwsApi;
 
@@ -20,10 +22,17 @@ public class FixtureApplication extends Application {
             Clock clock,
             StockContract stockContract
     ) {
-        super(twsApi, clock, stockContract, CacheUtils.DIRECTORY, 1);
+        super(twsApi, clock, stockContract, CacheUtils.DIRECTORY, new SimplePriceRequest(stockContract));
     }
 
     public FixtureApplication(FakeTwsApi twsApi, StockContract stockContract, int priceDivisor) {
-        super(twsApi, Clock.systemDefaultZone(), stockContract, CacheUtils.DIRECTORY, priceDivisor);
+        super(twsApi, Clock.systemDefaultZone(), stockContract, CacheUtils.DIRECTORY, new SimplePriceRequest(stockContract, priceDivisor));
+    }
+
+    public FixtureApplication(
+            Clock clock,
+            PriceRequest priceRequest
+    ) {
+        super(null, clock, new SimpleStockContract("", "", ""), CacheUtils.DIRECTORY, priceRequest);
     }
 }

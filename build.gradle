@@ -63,6 +63,7 @@ dependencies {
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     implementation 'org.cactoos:cactoos:0.49'
     implementation 'commons-io:commons-io:2.8.0'
+    implementation 'org.json:json:20201115'
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"

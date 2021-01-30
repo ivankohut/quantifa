@@ -42,7 +42,8 @@ public class FakeTwsApi extends TwsApiAdapter {
     public void requestTopMarketData(
             StockContract stockContract, List<String> genericTicks, boolean snapshot, boolean regulatorySnapshot, ApiController.ITopMktDataHandler handler
     ) {
-        prices.get(stockContract).forEach((key, value) -> handler.tickPrice(key, value.doubleValue(), null));
+        // wrapping stockContract to SimpleStockContract so that look up in map works
+        prices.get(new SimpleStockContract(stockContract)).forEach((key, value) -> handler.tickPrice(key, value.doubleValue(), null));
     }
 
     public static boolean areStockContractsEqual(StockContract object, StockContract other) {

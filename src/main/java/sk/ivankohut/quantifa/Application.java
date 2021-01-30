@@ -8,6 +8,9 @@ import org.cactoos.scalar.ScalarOfSupplier;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Ternary;
 import org.cactoos.scalar.Unchecked;
+import org.cactoos.text.Concatenated;
+import org.cactoos.text.TextOf;
+import org.json.JSONObject;
 import sk.ivankohut.quantifa.decimal.DecimalOf;
 import sk.ivankohut.quantifa.decimal.DivisionOf;
 import sk.ivankohut.quantifa.decimal.MultiplicationOf;
@@ -15,13 +18,18 @@ import sk.ivankohut.quantifa.decimal.NonNegative;
 import sk.ivankohut.quantifa.decimal.Rounded;
 import sk.ivankohut.quantifa.decimal.SquareRootOf;
 import sk.ivankohut.quantifa.decimal.SumOf;
+import sk.ivankohut.quantifa.utils.ContentOfUri;
+import sk.ivankohut.quantifa.utils.PeekedScalar;
 import sk.ivankohut.quantifa.utils.StickyFirstOrFail;
 import sk.ivankohut.quantifa.xmldom.XPathNodes;
 
 import java.math.BigDecimal;
+import java.net.http.HttpClient;
 import java.nio.file.Path;
 import java.time.Clock;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @SuppressWarnings("PMD.DataClass")
 public class Application {
@@ -35,15 +43,49 @@ public class Application {
     private final Scalar<BigDecimal> currentRatio;
     private final Scalar<BigDecimal> netCurrentAssetsToLongTermDebtRatio;
 
-    public Application(TwsApi twsApi, Clock clock, StockContract stockContract, Path cacheDirectory, int priceDivisor) {
-        this.price = () -> new TwsMarketPriceOfStock(twsApi, stockContract, true).price().map(p -> p.divide(BigDecimal.valueOf(priceDivisor)));
+    // checkstyle nor pmd does not properly support switch expression yet
+    @SuppressWarnings({ "checkstyle:Indentation", "checkstyle:WhitespaceAround", "PMD.UselessParentheses" })
+    public Application(TwsApi twsApi, Clock clock, StockContract fundamentalsRequest, Path cacheDirectory, PriceRequest priceRequest) {
+        var today = LocalDate.now(clock);
+        this.price = () -> (switch (priceRequest.source()) {
+            case "TWS" -> new TwsMarketPriceOfStock(twsApi, priceRequest, true);
+            case "FMP" -> new FmpMarketPriceOfStock(
+                    new TextCache(
+                            new TextFilesStore(cacheDirectory.resolve("prices/fmp")),
+                            new Concatenated(
+                                    new TextOf(today, DateTimeFormatter.ISO_LOCAL_DATE),
+                                    new TextOf(".json")
+                            ),
+                            new TextOf(
+                                    new PeekedScalar<>(
+                                            () -> new ContentOfUri(
+                                                    HttpClient.newHttpClient(),
+                                                    new Concatenated(
+                                                            "https://financialmodelingprep.com/api/v3/stock/list?apikey=",
+                                                            priceRequest.apiKey()),
+                                                    Duration.ofSeconds(15)
+                                            ).asString(),
+                                            s -> {
+                                                var key = "Error Message";
+                                                if (s.contains(key)) {
+                                                    throw new ApplicationException(new JSONObject(s).getString(key));
+                                                }
+                                            }
+                                    )
+                            )
+                    ),
+                    priceRequest.symbol()
+            );
+            default -> throw new IllegalArgumentException("Unknown price source.");
+        }).price().map(p -> p.divide(BigDecimal.valueOf(priceRequest.divisor())));
+
         var financialStatementsNode = new StickyFirstOrFail<>(
                 new XPathNodes(
                         new CachedFinancialStatements(
-                                new TextFilesStore(cacheDirectory),
-                                clock,
-                                new org.cactoos.text.Joined("-", stockContract.exchange(), stockContract.symbol(), stockContract.currency()),
-                                new TwsFundamental(twsApi, stockContract, Types.FundamentalType.ReportsFinStatements),
+                                new TextFilesStore(cacheDirectory.resolve("financialStatements")),
+                                today,
+                                new org.cactoos.text.Joined("-", fundamentalsRequest.exchange(), fundamentalsRequest.symbol(), fundamentalsRequest.currency()),
+                                new TwsFundamental(twsApi, fundamentalsRequest, Types.FundamentalType.ReportsFinStatements),
                                 13,
                                 ".xml"
                         ),
@@ -139,7 +181,13 @@ public class Application {
         int status;
         var configuration = new ApplicationConfiguration("environment variable", System.getenv());
         try (var twsApi = new TwsApiController(configuration, new ApiController(new TwsConnectionHandler()), 500)) {
-            var application = new Application(twsApi, Clock.systemDefaultZone(), configuration, configuration.cacheDirectory(), configuration.priceDivisor());
+            var application = new Application(
+                    twsApi,
+                    Clock.systemDefaultZone(),
+                    configuration.fundamentalsRequest(),
+                    configuration.cacheDirectory(),
+                    configuration.priceRequest()
+            );
             System.out.printf("Current price: %f%n", application.price());
             var bookValue = application.bookValue();
             System.out.printf("Latest book value: %f (%s)%n", bookValue.value(), bookValue.date());

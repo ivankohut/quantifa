@@ -3,17 +3,26 @@ Test
 ---
 !*< Hidden
 
-|Define alias                             |
-|Market prices|fixture.MarketPricesFixture|
-|Market price |fixture.MarketPriceFixture |
+|Define alias                                    |
+|TWS market prices|fixture.TwsMarketPricesFixture|
+|TWS market price |fixture.TwsMarketPriceFixture |
+|FMP market prices|fixture.FmpMarketPricesFixture|
+|FMP market price |fixture.FmpMarketPriceFixture |
 
 *!
 
-Application displays delayed (cca 15min) bid price of requested stock. 
+Market price of stock can be retrieved from the following sources:
+ * Trader Workstation (TWS)
+ * financialmodelingprep.com (FMP)
+
+
+!1 TWS
+
+Application displays delayed (cca 15min) bid price of requested stock.
 Price is divided by given divisor - useful in case of prices not denominated in the basic currency unit,
 e.g. London Stock Exchange prices are denominated in pences, not in pounds.
 
-|Market prices                              |
+|TWS market prices                          |
 |exchange|symbol|currency|tick type  |price |
 |NYSE    |CAT   |USD     |DELAYED_ASK|125.67|
 |NYSE    |CAT   |USD     |DELAYED_BID|123.45|
@@ -21,8 +30,21 @@ e.g. London Stock Exchange prices are denominated in pences, not in pounds.
 |NYSE    |FTI   |USD     |DELAYED_BID|78.54 |
 |NYSE    |CAT   |CAN     |DELAYED_BID|14.39 |
 
-|Market price                                 |
+|TWS Market price                             |
 |exchange|symbol|currency|price divisor|price?|
 |NYSE    |CAT   |USD     |1            |123.45|
 |NYSE    |CAT   |USD     |100          |1.2345|
 
+!1 FMP
+
+|FMP market prices|
+|symbol|price     |
+|CAT   |185.67    |
+|AKE.PA|94.17     |
+|AAL.L |2534.21   |
+
+|FMP market price            |
+|symbol|price divisor|price? |
+|CAT   |1            |185.67 |
+|CBK.DE|1            |0      |
+|AAL.L |100          |25.3421|

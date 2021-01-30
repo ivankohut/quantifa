@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-public class ApplicationConfiguration implements TwsCoordinates, StockContract {
+public class ApplicationConfiguration implements TwsCoordinates {
 
     private final String type;
     private final Map<String, String> configuration;
@@ -22,27 +22,63 @@ public class ApplicationConfiguration implements TwsCoordinates, StockContract {
         return Integer.parseInt(configuration.getOrDefault("TWS_PORT", "7496"));
     }
 
-    @Override
-    public String exchange() {
-        return mandatory("EXCHANGE");
+    public StockContract fundamentalsRequest() {
+        return new StockContract() {
+
+            @Override
+            public String exchange() {
+                return mandatory("FUNDAMENTALS_EXCHANGE");
+            }
+
+            @Override
+            public String symbol() {
+                return mandatory("FUNDAMENTALS_SYMBOL");
+            }
+
+            @Override
+            public String currency() {
+                return mandatory("FUNDAMENTALS_CURRENCY");
+            }
+        };
     }
 
-    @Override
-    public String symbol() {
-        return mandatory("SYMBOL");
-    }
+    public PriceRequest priceRequest() {
+        return new PriceRequest() {
 
-    @Override
-    public String currency() {
-        return mandatory("CURRENCY");
+            @Override
+            public String source() {
+                return mandatory("PRICE_SOURCE");
+            }
+
+            @Override
+            public String apiKey() {
+                return configuration.getOrDefault("PRICE_APIKEY", "");
+            }
+
+            @Override
+            public String exchange() {
+                return mandatory("PRICE_EXCHANGE");
+            }
+
+            @Override
+            public String symbol() {
+                return mandatory("PRICE_SYMBOL");
+            }
+
+            @Override
+            public String currency() {
+                return mandatory("PRICE_CURRENCY");
+            }
+
+            @Override
+            public int divisor() {
+                return Integer.parseInt(configuration.getOrDefault("PRICE_DIVISOR", "1"));
+            }
+        };
     }
 
     public Path cacheDirectory() {
         return Path.of(mandatory("CACHE_DIR"));
-    }
-
-    public int priceDivisor() {
-        return Integer.parseInt(configuration.getOrDefault("PRICE_DIVISOR", "1"));
     }
 
     private String mandatory(String key) {
