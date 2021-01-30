@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Setter
-public class MarketPriceFixture {
+public class TwsMarketPriceFixture {
 
     private String exchange;
     private String symbol;

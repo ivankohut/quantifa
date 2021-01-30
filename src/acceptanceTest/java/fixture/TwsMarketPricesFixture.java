@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Setter
-public class MarketPricesFixture {
+public class TwsMarketPricesFixture {
 
     private String exchange;
     private String symbol;
@@ -18,11 +18,11 @@ public class MarketPricesFixture {
     private BigDecimal price;
 
     public void beforeAll() {
-        MarketPriceFixture.prices.clear();
+        TwsMarketPriceFixture.prices.clear();
     }
 
     public void execute() {
-        MarketPriceFixture.prices.merge(
+        TwsMarketPriceFixture.prices.merge(
                 new SimpleStockContract(exchange, symbol, currency),
                 new HashMap<>(Map.of(tickType, price)),
                 (result, item) -> {

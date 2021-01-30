@@ -43,31 +43,73 @@ class ApplicationConfigurationTest {
     }
 
     @Test
-    void stockContractValues() {
-        // exercise
+    void fundamentalsRequestValues() {
         var sut = create(Map.of(
-                "EXCHANGE", "exchange",
-                "SYMBOL", "symbol",
-                "CURRENCY", "currency"
+                "FUNDAMENTALS_EXCHANGE", "exchange",
+                "FUNDAMENTALS_SYMBOL", "symbol",
+                "FUNDAMENTALS_CURRENCY", "currency"
         ));
+        // exercise
+        var result = sut.fundamentalsRequest();
         // verify
-        assertThat(sut.exchange()).isEqualTo("exchange");
-        assertThat(sut.symbol()).isEqualTo("symbol");
-        assertThat(sut.currency()).isEqualTo("currency");
+        assertThat(result.exchange()).isEqualTo("exchange");
+        assertThat(result.symbol()).isEqualTo("symbol");
+        assertThat(result.currency()).isEqualTo("currency");
+    }
+
+    @Test
+    void failsIfFundamentalsValuesAreNotDefined() {
+        var sut = new ApplicationConfiguration("environment variable", Map.of());
+        // exercise
+        var result = sut.fundamentalsRequest();
+        // verify
+        assertException(result::exchange, "Configuration value FUNDAMENTALS_EXCHANGE of type environment variable is not defined.");
+        assertException(result::symbol, "Configuration value FUNDAMENTALS_SYMBOL of type environment variable is not defined.");
+        assertException(result::currency, "Configuration value FUNDAMENTALS_CURRENCY of type environment variable is not defined.");
+    }
+
+    @Test
+    void priceRequestValues() {
+        var sut = create(Map.of(
+                "PRICE_SOURCE", "source",
+                "PRICE_APIKEY", "apiKey",
+                "PRICE_SYMBOL", "symbol",
+                "PRICE_CURRENCY", "currency",
+                "PRICE_DIVISOR", "100"
+        ));
+        // exercise
+        var result = sut.priceRequest();
+        // verify
+        assertThat(result.source()).isEqualTo("source");
+        assertThat(result.apiKey()).isEqualTo("apiKey");
+        assertThat(result.symbol()).isEqualTo("symbol");
+        assertThat(result.currency()).isEqualTo("currency");
+        assertThat(result.divisor()).isEqualTo(100);
+    }
+
+    @Test
+    void failsIfPriceRequestMandatoryValueAreNotDefined() {
+        var sut = new ApplicationConfiguration("environment variable", Map.of());
+        // exercise
+        var result = sut.priceRequest();
+        // verify
+        assertException(result::source, "Configuration value PRICE_SOURCE of type environment variable is not defined.");
+        assertException(result::symbol, "Configuration value PRICE_SYMBOL of type environment variable is not defined.");
+        assertException(result::currency, "Configuration value PRICE_CURRENCY of type environment variable is not defined.");
+    }
+
+    @Test
+    void defaultPriceRequestValues() {
+        var sut = create(Map.of());
+        // exercise
+        var result = sut.priceRequest();
+        // verify
+        assertThat(result.apiKey()).isEmpty();
+        assertThat(result.divisor()).isEqualTo(1);
     }
 
     private static ApplicationConfiguration create(Map<String, String> configuration) {
         return new ApplicationConfiguration("type", configuration);
-    }
-
-    @Test
-    void failsIfStockContractValuesAreNotDefined() {
-        // exercise
-        var sut = new ApplicationConfiguration("environment variable", Map.of());
-        // verify
-        assertException(sut::exchange, "Configuration value EXCHANGE of type environment variable is not defined.");
-        assertException(sut::symbol, "Configuration value SYMBOL of type environment variable is not defined.");
-        assertException(sut::currency, "Configuration value CURRENCY of type environment variable is not defined.");
     }
 
     private static void assertException(ThrowableAssert.ThrowingCallable operation, String expectedMessage) {

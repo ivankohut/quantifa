@@ -13,6 +13,10 @@ public class SimpleStockContract implements StockContract {
     private final String symbol;
     private final String currency;
 
+    public SimpleStockContract(StockContract stockContract) {
+        this(stockContract.exchange(), stockContract.symbol(), stockContract.currency());
+    }
+
     @Override
     public String exchange() {
         return exchange;
