@@ -25,12 +25,12 @@ class TwsMarketPriceOfStockTest {
         var captor = ArgumentCaptor.forClass(ApiController.ITopMktDataHandler.class);
         doVoidAnswer(invocation -> invocation.getArgument(4, ApiController.ITopMktDataHandler.class).tickPrice(TickType.DELAYED_BID, price.doubleValue(), null))
                 .when(twsApi).requestTopMarketData(eq(contract), eq(List.of()), eq(false), eq(false), captor.capture());
-        var sut = new TwsMarketPriceOfStock(twsApi, contract, true, 2);
+        var sut = new TwsMarketPriceOfStock(twsApi, contract, true);
         // exercise
         var result = sut.price();
         // verify
         verify(twsApi).setMarketDataType(MarketDataType.DELAYED);
         verify(twsApi).cancelTopMarketData(captor.getValue());
-        assertThat(result.get()).isEqualByComparingTo("0.5");
+        assertThat(result.get()).isEqualByComparingTo("1.0");
     }
 }
