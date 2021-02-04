@@ -18,7 +18,7 @@ public class DilutedNormalizedEpsTtmFixture {
     private List<ReportedAmount> dateAndAmount;
 
     public BigDecimal eps() {
-        StoredStatementsFixture.clearCache();
+        CacheUtils.clear();
         var stockContract = new SimpleStockContract("exchange", "symbol", "currency");
         return new FixtureApplication(new FakeEpsTwsApi(stockContract, dateAndAmount, "Interim"), stockContract).epsTtm();
     }

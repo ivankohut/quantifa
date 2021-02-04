@@ -32,7 +32,7 @@ public class CurrentAssetsRatiosFixture {
 
     @SuppressWarnings("unchecked")
     public void execute() {
-        StoredStatementsFixture.clearCache();
+        CacheUtils.clear();
         var stockContract = new SimpleStockContract("exchange", "symbol", "currency");
         this.application = new FixtureApplication(
                 new FakeTwsApi(

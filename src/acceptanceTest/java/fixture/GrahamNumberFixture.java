@@ -19,7 +19,7 @@ public class GrahamNumberFixture {
     private Application application;
 
     public void execute() {
-        StoredStatementsFixture.clearCache();
+        CacheUtils.clear();
         var stockContract = new SimpleStockContract("exchange", "symbol", "currency");
         this.application = new FixtureApplication(
                 new FakeTwsApi(
