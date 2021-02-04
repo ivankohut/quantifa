@@ -8,12 +8,15 @@ Test
 |TWS market price |fixture.TwsMarketPriceFixture |
 |FMP market prices|fixture.FmpMarketPricesFixture|
 |FMP market price |fixture.FmpMarketPriceFixture |
+|AV market prices |fixture.AvMarketPricesFixture |
+|AV market price  |fixture.AvMarketPriceFixture  |
 
 *!
 
 Market price of stock can be retrieved from the following sources:
  * Trader Workstation (TWS)
  * financialmodelingprep.com (FMP)
+ * alphavantage.co (AV)
 
 
 !1 TWS
@@ -38,12 +41,27 @@ e.g. London Stock Exchange prices are denominated in pences, not in pounds.
 !1 FMP
 
 |FMP market prices|
-|symbol|price     |
-|CAT   |185.67    |
-|AKE.PA|94.17     |
-|AAL.L |2534.21   |
+|symbol  |price   |
+|CAT     |185.67  |
+|AKE.PA  |94.17   |
+|AAL.L   |2534.21 |
 
 |FMP market price            |
+|symbol|price divisor|price? |
+|CAT   |1            |185.67 |
+|CBK.DE|1            |0      |
+|AAL.L |100          |25.3421|
+
+
+!1 AV
+
+|AV market prices|
+|symbol |price   |
+|CAT    |185.67  |
+|AKE.PA |94.17   |
+|AAL.L  |2534.21 |
+
+|AV market price             |
 |symbol|price divisor|price? |
 |CAT   |1            |185.67 |
 |CBK.DE|1            |0      |
