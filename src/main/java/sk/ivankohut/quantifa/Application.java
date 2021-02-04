@@ -44,7 +44,7 @@ public class Application {
     private final Scalar<BigDecimal> netCurrentAssetsToLongTermDebtRatio;
 
     // checkstyle nor pmd does not properly support switch expression yet
-    @SuppressWarnings({ "checkstyle:Indentation", "checkstyle:WhitespaceAround", "PMD.UselessParentheses" })
+    @SuppressWarnings({ "checkstyle:Indentation", "checkstyle:WhitespaceAround", "PMD.UselessParentheses", "PMD.ExcessiveMethodLength" })
     public Application(TwsApi twsApi, Clock clock, StockContract fundamentalsRequest, Path cacheDirectory, PriceRequest priceRequest, HttpClient httpClient) {
         var today = LocalDate.now(clock);
         var timeout = Duration.ofSeconds(15);
@@ -77,6 +77,22 @@ public class Application {
                             )
                     ),
                     priceRequest.symbol()
+            );
+            case "AV" -> new AvMarketPriceOfStock(
+                    new TextCache(
+                            new TextFilesStore(cacheDirectory.resolve("prices/av/" + priceRequest.symbol())),
+                            priceFileName,
+                            new ContentOfUri(
+                                    httpClient,
+                                    new Concatenated(
+                                            "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=",
+                                            priceRequest.symbol(),
+                                            "&apikey=",
+                                            priceRequest.apiKey()
+                                    ),
+                                    timeout
+                            )
+                    )
             );
             default -> throw new IllegalArgumentException("Unknown price source.");
         }).price().map(p -> p.divide(BigDecimal.valueOf(priceRequest.divisor())));
