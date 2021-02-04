@@ -14,7 +14,7 @@ public class BookValueFixture implements ReportedAmount {
     private ReportedAmount result;
 
     public void execute() {
-        StoredStatementsFixture.clearCache();
+        CacheUtils.clear();
         var stockContract = new SimpleStockContract("exchange", "symbol", "currency");
         result = new FixtureApplication(
                 new FakeTwsApi(

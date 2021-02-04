@@ -20,10 +20,10 @@ public class FixtureApplication extends Application {
             Clock clock,
             StockContract stockContract
     ) {
-        super(twsApi, clock, stockContract, StoredStatementsFixture.CACHE_DIRECTORY, 1);
+        super(twsApi, clock, stockContract, CacheUtils.DIRECTORY, 1);
     }
 
     public FixtureApplication(FakeTwsApi twsApi, StockContract stockContract, int priceDivisor) {
-        super(twsApi, Clock.systemDefaultZone(), stockContract, StoredStatementsFixture.CACHE_DIRECTORY, priceDivisor);
+        super(twsApi, Clock.systemDefaultZone(), stockContract, CacheUtils.DIRECTORY, priceDivisor);
     }
 }
