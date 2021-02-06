@@ -36,11 +36,11 @@
         <CashFlowMethod Code="IND">Indirect</CashFlowMethod>
     </StatementInfo>
     <Notes>
-        <CFAAvailability Code="1" />
-        <IAvailability Code="1" />
-        <ISIAvailability Code="1" />
-        <BSIAvailability Code="1" />
-        <CFIAvailability Code="1" />
+        <CFAAvailability Code="1"/>
+        <IAvailability Code="1"/>
+        <ISIAvailability Code="1"/>
+        <BSIAvailability Code="1"/>
+        <CFIAvailability Code="1"/>
     </Notes>
     <FinancialStatements>
         <COAMap>
@@ -101,7 +101,7 @@
             <mapItem coaItem="LPBA" statementType="BAL" lineID="900" precision="1">Payable/Accrued</mapItem>
             <mapItem coaItem="LAEX" statementType="BAL" lineID="910" precision="1">Accrued Expenses</mapItem>
             <mapItem coaItem="LSTD" statementType="BAL" lineID="1120" precision="1">Notes Payable/Short Term Debt</mapItem>
-            <mapItem coaItem="LCLD" statementType="BAL" lineID="1130" precision="1">Current Port. of  LT Debt/Capital Leases</mapItem>
+            <mapItem coaItem="LCLD" statementType="BAL" lineID="1130" precision="1">Current Port. of LT Debt/Capital Leases</mapItem>
             <mapItem coaItem="SOCL" statementType="BAL" lineID="1220" precision="1">Other Current liabilities, Total</mapItem>
             <mapItem coaItem="LTCL" statementType="BAL" lineID="1230" precision="1">Total Current Liabilities</mapItem>
             <mapItem coaItem="LLTD" statementType="BAL" lineID="1240" precision="1">Long Term Debt</mapItem>

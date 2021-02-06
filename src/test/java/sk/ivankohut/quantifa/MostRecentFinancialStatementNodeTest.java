@@ -1,4 +1,3 @@
-
 package sk.ivankohut.quantifa;
 
 import org.junit.jupiter.params.ParameterizedTest;

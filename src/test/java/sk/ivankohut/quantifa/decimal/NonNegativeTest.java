@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class NonNegativeTest {
+
     @ParameterizedTest
     @CsvSource({
             "-1.5, 0",

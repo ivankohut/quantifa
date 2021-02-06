@@ -18,7 +18,7 @@ class TwsFundamentalTest {
         var twsApi = mock(TwsApi.class);
         var fundamentalType = Types.FundamentalType.ReportsFinStatements;
         doVoidAnswer(invocation -> invocation.getArgument(2, ApiController.IFundamentalsHandler.class).fundamentals("fundamentals"))
-            .when(twsApi).requestFundamentals(eq(contract), eq(fundamentalType), any());
+                .when(twsApi).requestFundamentals(eq(contract), eq(fundamentalType), any());
         var sut = new TwsFundamental(twsApi, contract, fundamentalType);
         // exercise
         var result = sut.asString();
