@@ -2,8 +2,8 @@ package fixture;
 
 import lombok.RequiredArgsConstructor;
 import org.cactoos.Text;
-import org.cactoos.text.Joined;
 import org.cactoos.list.ListOf;
+import org.cactoos.text.Joined;
 
 @RequiredArgsConstructor
 public class FiscalPeriodXml implements Text {
