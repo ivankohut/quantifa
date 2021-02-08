@@ -45,25 +45,27 @@ public class Application {
 
     // checkstyle nor pmd does not properly support switch expression yet
     @SuppressWarnings({ "checkstyle:Indentation", "checkstyle:WhitespaceAround", "PMD.UselessParentheses" })
-    public Application(TwsApi twsApi, Clock clock, StockContract fundamentalsRequest, Path cacheDirectory, PriceRequest priceRequest) {
+    public Application(TwsApi twsApi, Clock clock, StockContract fundamentalsRequest, Path cacheDirectory, PriceRequest priceRequest, HttpClient httpClient) {
         var today = LocalDate.now(clock);
+        var timeout = Duration.ofSeconds(15);
+        var priceFileName = new Concatenated(
+                new TextOf(today, DateTimeFormatter.ISO_LOCAL_DATE),
+                new TextOf(".json")
+        );
         this.price = () -> (switch (priceRequest.source()) {
             case "TWS" -> new TwsMarketPriceOfStock(twsApi, priceRequest, true);
             case "FMP" -> new FmpMarketPriceOfStock(
                     new TextCache(
                             new TextFilesStore(cacheDirectory.resolve("prices/fmp")),
-                            new Concatenated(
-                                    new TextOf(today, DateTimeFormatter.ISO_LOCAL_DATE),
-                                    new TextOf(".json")
-                            ),
+                            priceFileName,
                             new TextOf(
                                     new PeekedScalar<>(
                                             () -> new ContentOfUri(
-                                                    HttpClient.newHttpClient(),
+                                                    httpClient,
                                                     new Concatenated(
                                                             "https://financialmodelingprep.com/api/v3/stock/list?apikey=",
                                                             priceRequest.apiKey()),
-                                                    Duration.ofSeconds(15)
+                                                    timeout
                                             ).asString(),
                                             s -> {
                                                 var key = "Error Message";
@@ -186,7 +188,8 @@ public class Application {
                     Clock.systemDefaultZone(),
                     configuration.fundamentalsRequest(),
                     configuration.cacheDirectory(),
-                    configuration.priceRequest()
+                    configuration.priceRequest(),
+                    HttpClient.newHttpClient()
             );
             System.out.printf("Current price: %f%n", application.price());
             var bookValue = application.bookValue();

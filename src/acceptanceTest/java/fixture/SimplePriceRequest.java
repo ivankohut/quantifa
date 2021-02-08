@@ -25,9 +25,8 @@ public class SimplePriceRequest implements PriceRequest {
         this(stockContract, 1);
     }
 
-    // FMP price request
-    public SimplePriceRequest(String symbol, int priceDivisor) {
-        this("FMP", "", "", symbol, "", priceDivisor);
+    public SimplePriceRequest(String source, String apiKey, String symbol, int priceDivisor) {
+        this(source, apiKey, "", symbol, "", priceDivisor);
     }
 
     @Override

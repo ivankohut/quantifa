@@ -15,7 +15,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class ContentOfUriTest {
+@SuppressWarnings("java:S5786")
+public class ContentOfUriTest {
 
     @Test
     void bodyOfResponseIfStatusIsOk() throws Exception {
@@ -30,7 +31,7 @@ class ContentOfUriTest {
     }
 
     @Test
-    void failsIfStatusIsNotOk() throws Exception {
+    void failsIfStatusIsNotOk() {
         var timeout = Duration.ofSeconds(1);
         var body = "body";
         var uri = "http://path";
@@ -42,14 +43,18 @@ class ContentOfUriTest {
                 .hasMessage("Retrieving the content of 'http://path' failed: body");
     }
 
-    private static HttpClient createHttpClient(String uri, Duration timeout, int responseStatusCode, String responseBody)
-            throws IOException, InterruptedException {
-        return when(mock(HttpClient.class).send(any(), any())).thenAnswer(invocation -> {
-            var request = invocation.getArgument(0, HttpRequest.class);
-            assertThat(request.uri()).hasToString(uri);
-            assertThat(request.timeout()).contains(timeout);
-            return createHttpResponse(responseBody, responseStatusCode);
-        }).getMock();
+    @SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
+    public static HttpClient createHttpClient(String uri, Duration timeout, int responseStatusCode, String responseBody) {
+        try {
+            return when(mock(HttpClient.class).send(any(), any())).thenAnswer(invocation -> {
+                var request = invocation.getArgument(0, HttpRequest.class);
+                assertThat(request.uri()).hasToString(uri);
+                assertThat(request.timeout()).contains(timeout);
+                return createHttpResponse(responseBody, responseStatusCode);
+            }).getMock();
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @SuppressWarnings("unchecked")

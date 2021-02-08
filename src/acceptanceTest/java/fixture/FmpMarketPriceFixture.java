@@ -1,7 +1,6 @@
 package fixture;
 
 import lombok.Setter;
-import org.cactoos.list.ListOf;
 import org.cactoos.text.UncheckedText;
 import sk.ivankohut.quantifa.CachedFinancialStatementsTest;
 
@@ -16,16 +15,12 @@ public class FmpMarketPriceFixture {
     private String symbol;
     private int priceDivisor;
 
-    public void beginTable() {
-        CacheUtils.resetWith(
-                () -> "prices/fmp",
-                new ListOf<>(DATE),
-                ".json",
-                new UncheckedText(FmpMarketPricesFixture.getJson()).asString()
-        );
-    }
-
     public BigDecimal price() {
-        return new FixtureApplication(CachedFinancialStatementsTest.clockFixedOn(DATE), new SimplePriceRequest(symbol, priceDivisor)).price();
+        return new FixtureApplication(
+                CachedFinancialStatementsTest.clockFixedOn(DATE),
+                new SimplePriceRequest("FMP", "apikey", symbol, priceDivisor),
+                "https://financialmodelingprep.com/api/v3/stock/list?apikey=apikey",
+                new UncheckedText(FmpMarketPricesFixture.getJson()).asString()
+        ).price();
     }
 }
