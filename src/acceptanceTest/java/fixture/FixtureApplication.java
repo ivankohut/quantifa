@@ -5,8 +5,13 @@ import sk.ivankohut.quantifa.PriceRequest;
 import sk.ivankohut.quantifa.SimpleStockContract;
 import sk.ivankohut.quantifa.StockContract;
 import sk.ivankohut.quantifa.TwsApi;
+import sk.ivankohut.quantifa.utils.ContentOfUriTest;
 
+import java.net.http.HttpClient;
 import java.time.Clock;
+import java.time.Duration;
+
+import static org.mockito.Mockito.mock;
 
 public class FixtureApplication extends Application {
 
@@ -22,17 +27,29 @@ public class FixtureApplication extends Application {
             Clock clock,
             StockContract stockContract
     ) {
-        super(twsApi, clock, stockContract, CacheUtils.DIRECTORY, new SimplePriceRequest(stockContract));
+        super(twsApi, clock, stockContract, CacheUtils.DIRECTORY, new SimplePriceRequest(stockContract), mock(HttpClient.class));
     }
 
     public FixtureApplication(FakeTwsApi twsApi, StockContract stockContract, int priceDivisor) {
-        super(twsApi, Clock.systemDefaultZone(), stockContract, CacheUtils.DIRECTORY, new SimplePriceRequest(stockContract, priceDivisor));
+        super(
+                twsApi,
+                Clock.systemDefaultZone(),
+                stockContract,
+                CacheUtils.DIRECTORY,
+                new SimplePriceRequest(stockContract, priceDivisor),
+                mock(HttpClient.class)
+        );
     }
 
     public FixtureApplication(
             Clock clock,
-            PriceRequest priceRequest
+            PriceRequest priceRequest,
+            String uri,
+            String httpResponse
     ) {
-        super(null, clock, new SimpleStockContract("", "", ""), CacheUtils.DIRECTORY, priceRequest);
+        super(
+                null, clock, new SimpleStockContract("", "", ""), CacheUtils.DIRECTORY, priceRequest,
+                ContentOfUriTest.createHttpClient(uri, Duration.ofSeconds(15), 200, httpResponse)
+        );
     }
 }
