@@ -9,7 +9,6 @@ import sk.ivankohut.quantifa.StockContract;
 public class SimplePriceRequest implements PriceRequest {
 
     private final String source;
-    private final String apiKey;
     private final String exchange;
     private final String symbol;
     private final String currency;
@@ -17,7 +16,7 @@ public class SimplePriceRequest implements PriceRequest {
 
     // TWS price request
     public SimplePriceRequest(StockContract stockContract, int priceDivisor) {
-        this("TWS", "", stockContract.exchange(), stockContract.symbol(), stockContract.currency(), priceDivisor);
+        this("TWS", stockContract.exchange(), stockContract.symbol(), stockContract.currency(), priceDivisor);
     }
 
     // TWS price request
@@ -25,18 +24,13 @@ public class SimplePriceRequest implements PriceRequest {
         this(stockContract, 1);
     }
 
-    public SimplePriceRequest(String source, String apiKey, String symbol, int priceDivisor) {
-        this(source, apiKey, "", symbol, "", priceDivisor);
+    public SimplePriceRequest(String source, String symbol, int priceDivisor) {
+        this(source, "", symbol, "", priceDivisor);
     }
 
     @Override
     public String source() {
         return source;
-    }
-
-    @Override
-    public String apiKey() {
-        return apiKey;
     }
 
     @Override
