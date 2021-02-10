@@ -11,35 +11,41 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class ApplicationConfigurationTest {
 
     @Test
-    void twsCoordinatesValues() {
+    void values() {
         // exercise
         var sut = create(Map.of(
                 "TWS_HOSTNAME", "hostName",
-                "TWS_PORT", "1234"
+                "TWS_PORT", "1234",
+                "FMP_APIKEY", "fmpApiKey",
+                "AV_APIKEY", "avApiKey",
+                "CACHE_DIR", "cacheDir"
         ));
         // verify
         assertThat(sut.hostName()).isEqualTo("hostName");
         assertThat(sut.port()).isEqualTo(1234);
+        assertThat(sut.cacheDirectory()).hasToString("cacheDir");
+        assertThat(sut.fmpApiKey()).isEqualTo("fmpApiKey");
+        assertThat(sut.avApiKey()).isEqualTo("avApiKey");
     }
 
     @Test
-    void defaultHostName() {
+    void defaultValues() {
         // exercise
         var sut = create(Map.of(
-                "TWS_PORT", "1234"
         ));
         // verify
         assertThat(sut.hostName()).isEqualTo("localhost");
+        assertThat(sut.port()).isEqualTo(7496);
+        assertThat(sut.avApiKey()).isEmpty();
     }
 
     @Test
-    void defaultPort() {
+    void failsIfMandatoryValueAreNotDefined() {
         // exercise
-        var sut = create(Map.of(
-                "TWS_HOSTNAME", "hostName"
-        ));
+        var sut = new ApplicationConfiguration("environment variable", Map.of());
         // verify
-        assertThat(sut.port()).isEqualTo(7496);
+        assertException(sut::fmpApiKey, "Configuration value FMP_APIKEY of type environment variable is not defined.");
+        assertException(sut::cacheDirectory, "Configuration value CACHE_DIR of type environment variable is not defined.");
     }
 
     @Test
@@ -72,7 +78,6 @@ class ApplicationConfigurationTest {
     void priceRequestValues() {
         var sut = create(Map.of(
                 "PRICE_SOURCE", "source",
-                "PRICE_APIKEY", "apiKey",
                 "PRICE_SYMBOL", "symbol",
                 "PRICE_CURRENCY", "currency",
                 "PRICE_DIVISOR", "100"
@@ -81,7 +86,6 @@ class ApplicationConfigurationTest {
         var result = sut.priceRequest();
         // verify
         assertThat(result.source()).isEqualTo("source");
-        assertThat(result.apiKey()).isEqualTo("apiKey");
         assertThat(result.symbol()).isEqualTo("symbol");
         assertThat(result.currency()).isEqualTo("currency");
         assertThat(result.divisor()).isEqualTo(100);
@@ -104,7 +108,6 @@ class ApplicationConfigurationTest {
         // exercise
         var result = sut.priceRequest();
         // verify
-        assertThat(result.apiKey()).isEmpty();
         assertThat(result.divisor()).isEqualTo(1);
     }
 

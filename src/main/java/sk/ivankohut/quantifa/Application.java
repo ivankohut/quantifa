@@ -9,6 +9,7 @@ import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Ternary;
 import org.cactoos.scalar.Unchecked;
 import org.cactoos.text.Concatenated;
+import org.cactoos.text.Joined;
 import org.cactoos.text.TextOf;
 import org.json.JSONObject;
 import sk.ivankohut.quantifa.decimal.DecimalOf;
@@ -31,7 +32,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-@SuppressWarnings("PMD.DataClass")
+@SuppressWarnings({ "PMD.DataClass", "PMD.ExcessiveImports" })
 public class Application {
 
     private final MarketPrice price;
@@ -44,9 +45,26 @@ public class Application {
     private final Scalar<BigDecimal> netCurrentAssetsToLongTermDebtRatio;
 
     // checkstyle nor pmd does not properly support switch expression yet
-    @SuppressWarnings({ "checkstyle:Indentation", "checkstyle:WhitespaceAround", "PMD.UselessParentheses", "PMD.ExcessiveMethodLength" })
-    public Application(TwsApi twsApi, Clock clock, StockContract fundamentalsRequest, Path cacheDirectory, PriceRequest priceRequest, HttpClient httpClient) {
+    @SuppressWarnings({ "checkstyle:Indentation", "checkstyle:WhitespaceAround", "PMD.UselessParentheses", "PMD.ExcessiveMethodLength", "java:S107" })
+    public Application(
+            TwsApi twsApi,
+            Clock clock,
+            StockContract fundamentalsRequest,
+            Path cacheDirectory,
+            PriceRequest priceRequest,
+            HttpClient httpClient,
+            String fmpApiKey,
+            String avApiKey
+    ) {
         var today = LocalDate.now(clock);
+        var financialStatements = new CachedFinancialStatements(
+                new TextFilesStore(cacheDirectory.resolve("financialStatements")),
+                today,
+                new Joined("-", fundamentalsRequest.exchange(), fundamentalsRequest.symbol(), fundamentalsRequest.currency()),
+                new TwsFundamental(twsApi, fundamentalsRequest, Types.FundamentalType.ReportsFinStatements),
+                13,
+                ".xml"
+        );
         var timeout = Duration.ofSeconds(15);
         var priceFileName = new Concatenated(
                 new TextOf(today, DateTimeFormatter.ISO_LOCAL_DATE),
@@ -62,9 +80,7 @@ public class Application {
                                     new PeekedScalar<>(
                                             () -> new ContentOfUri(
                                                     httpClient,
-                                                    new Concatenated(
-                                                            "https://financialmodelingprep.com/api/v3/stock/list?apikey=",
-                                                            priceRequest.apiKey()),
+                                                    new Concatenated("https://financialmodelingprep.com/api/v3/stock/list?apikey=", fmpApiKey),
                                                     timeout
                                             ).asString(),
                                             s -> {
@@ -88,26 +104,41 @@ public class Application {
                                             "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=",
                                             priceRequest.symbol(),
                                             "&apikey=",
-                                            priceRequest.apiKey()
+                                            avApiKey
                                     ),
                                     timeout
                             )
                     )
             );
             default -> throw new IllegalArgumentException("Unknown price source.");
-        }).price().map(p -> p.divide(BigDecimal.valueOf(priceRequest.divisor())));
+        }).price().map(p -> p.divide(BigDecimal.valueOf(priceRequest.divisor())))
+                .flatMap(p -> new FmpCurrencyExchangeRate(
+                        new TextCache(
+                                new TextFilesStore(cacheDirectory.resolve("forex/fmp")),
+                                priceFileName,
+                                new TextOf(
+                                        new PeekedScalar<>(
+                                                () -> new ContentOfUri(
+                                                        httpClient,
+                                                        new Concatenated("https://financialmodelingprep.com/api/v3/fx?apikey=", fmpApiKey),
+                                                        timeout
+                                                ).asString(),
+                                                s -> {
+                                                    var key = "Error Message";
+                                                    if (s.contains(key)) {
+                                                        throw new ApplicationException(new JSONObject(s).getString(key));
+                                                    }
+                                                }
+                                        )
+                                )
+                        ),
+                        priceRequest.currency(),
+                        new XPathNodes(financialStatements, "/ReportFinancialStatements/CoGeneralInfo/ReportingCurrency")
+                                .iterator().next().getAttributes().getNamedItem("Code").getTextContent()
+                ).price().map(p::multiply).map(BigDecimal::stripTrailingZeros));
 
         var financialStatementsNode = new StickyFirstOrFail<>(
-                new XPathNodes(
-                        new CachedFinancialStatements(
-                                new TextFilesStore(cacheDirectory.resolve("financialStatements")),
-                                today,
-                                new org.cactoos.text.Joined("-", fundamentalsRequest.exchange(), fundamentalsRequest.symbol(), fundamentalsRequest.currency()),
-                                new TwsFundamental(twsApi, fundamentalsRequest, Types.FundamentalType.ReportsFinStatements),
-                                13,
-                                ".xml"
-                        ),
-                        "/ReportFinancialStatements/FinancialStatements"),
+                new XPathNodes(financialStatements, "/ReportFinancialStatements/FinancialStatements"),
                 "No financial statements available."
         );
         var annual = new Unchecked<>(new MostRecentFinancialStatementNode(new StatementNodes(financialStatementsNode, true, true)));
@@ -205,7 +236,9 @@ public class Application {
                     configuration.fundamentalsRequest(),
                     configuration.cacheDirectory(),
                     configuration.priceRequest(),
-                    HttpClient.newHttpClient()
+                    HttpClient.newHttpClient(),
+                    configuration.fmpApiKey(),
+                    configuration.avApiKey()
             );
             System.out.printf("Current price: %f%n", application.price());
             var bookValue = application.bookValue();

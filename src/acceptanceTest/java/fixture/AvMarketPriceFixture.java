@@ -18,11 +18,13 @@ public class AvMarketPriceFixture {
     public BigDecimal price() {
         return new FixtureApplication(
                 CachedFinancialStatementsTest.clockFixedOn(DATE),
-                new SimplePriceRequest("AV", "apikey", symbol, priceDivisor),
-                "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=%s&apikey=apikey".formatted(symbol),
+                new SimplePriceRequest("AV", symbol, priceDivisor),
+                "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=%s&apikey=avApiKey".formatted(symbol),
                 Optional.ofNullable(AvMarketPricesFixture.getPrices().get(symbol))
                         .map("{\"Global Quote\": { \"05. price\": \"%s\"}}"::formatted)
-                        .orElse("{\"Global Quote\": {}}")
+                        .orElse("{\"Global Quote\": {}}"),
+                "",
+                "avApiKey"
         ).price();
     }
 }

@@ -18,9 +18,11 @@ public class FmpMarketPriceFixture {
     public BigDecimal price() {
         return new FixtureApplication(
                 CachedFinancialStatementsTest.clockFixedOn(DATE),
-                new SimplePriceRequest("FMP", "apikey", symbol, priceDivisor),
-                "https://financialmodelingprep.com/api/v3/stock/list?apikey=apikey",
-                new UncheckedText(FmpMarketPricesFixture.getJson()).asString()
+                new SimplePriceRequest("FMP", symbol, priceDivisor),
+                "https://financialmodelingprep.com/api/v3/stock/list?apikey=fmpApiKey",
+                new UncheckedText(FmpMarketPricesFixture.getJson()).asString(),
+                "fmpApiKey",
+                ""
         ).price();
     }
 }

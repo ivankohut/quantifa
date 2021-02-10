@@ -42,17 +42,20 @@ public class ApplicationConfiguration implements TwsCoordinates {
         };
     }
 
+    public String fmpApiKey() {
+        return mandatory("FMP_APIKEY");
+    }
+
+    public String avApiKey() {
+        return configuration.getOrDefault("AV_APIKEY", "");
+    }
+
     public PriceRequest priceRequest() {
         return new PriceRequest() {
 
             @Override
             public String source() {
                 return mandatory("PRICE_SOURCE");
-            }
-
-            @Override
-            public String apiKey() {
-                return configuration.getOrDefault("PRICE_APIKEY", "");
             }
 
             @Override

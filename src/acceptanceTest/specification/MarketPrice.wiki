@@ -3,13 +3,15 @@ Test
 ---
 !*< Hidden
 
-|Define alias                                    |
-|TWS market prices|fixture.TwsMarketPricesFixture|
-|TWS market price |fixture.TwsMarketPriceFixture |
-|FMP market prices|fixture.FmpMarketPricesFixture|
-|FMP market price |fixture.FmpMarketPriceFixture |
-|AV market prices |fixture.AvMarketPricesFixture |
-|AV market price  |fixture.AvMarketPriceFixture  |
+|Define alias                                                                    |
+|Currency exchange rates           |fixture.FmpCurrencyExchangeRatesFixture      |
+|Market price in reporting currency|fixture.MarketPriceInReportingCurrencyFixture|
+|TWS market prices                 |fixture.TwsMarketPricesFixture               |
+|TWS market price                  |fixture.TwsMarketPriceFixture                |
+|FMP market prices                 |fixture.FmpMarketPricesFixture               |
+|FMP market price                  |fixture.FmpMarketPriceFixture                |
+|AV market prices                  |fixture.AvMarketPricesFixture                |
+|AV market price                   |fixture.AvMarketPriceFixture                 |
 
 *!
 
@@ -66,3 +68,22 @@ e.g. London Stock Exchange prices are denominated in pences, not in pounds.
 |CAT   |1            |185.67 |
 |CBK.DE|1            |0      |
 |AAL.L |100          |25.3421|
+
+
+!1 Exchange rates
+
+Market price is displayed in reporting currency, i.e. currency exchange rate (retrieved from FMP) is applied.
+If the exchange rate is not available, the final price is 0.
+
+|Currency exchange rates|
+|from   |to   |rate     |
+|EUR    |GBP  |0.75547  |
+|EUR    |USD  |1.23456  |
+|EUR    |JPY  |100      |
+
+|Market price in reporting currency                         |
+|price from price source|currency|reporting currency|price? |
+|10                     |EUR     |EUR               |10     |
+|10                     |EUR     |USD               |12.3456|
+|10                     |JPY     |EUR               |0.1    |
+|10                     |EUR     |CHF               |0      |

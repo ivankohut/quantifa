@@ -1,5 +1,7 @@
 package sk.ivankohut.quantifa.utils;
 
+import org.cactoos.Text;
+import org.cactoos.text.UncheckedText;
 import org.junit.jupiter.api.Test;
 import sk.ivankohut.quantifa.ApplicationException;
 
@@ -8,6 +10,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -43,13 +46,22 @@ public class ContentOfUriTest {
                 .hasMessage("Retrieving the content of 'http://path' failed: body");
     }
 
-    @SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
+    public static HttpClient createHttpClient(String uri, Duration timeout, int responseStatusCode, Text responseBody) {
+        return createHttpClient(uri, timeout, responseStatusCode, new UncheckedText(responseBody).asString());
+    }
+
     public static HttpClient createHttpClient(String uri, Duration timeout, int responseStatusCode, String responseBody) {
+        return createHttpClient(Map.of(uri, responseBody), timeout, responseStatusCode);
+    }
+
+    @SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
+    public static HttpClient createHttpClient(Map<String, String> uriToResponseBody, Duration timeout, int responseStatusCode) {
         try {
             return when(mock(HttpClient.class).send(any(), any())).thenAnswer(invocation -> {
                 var request = invocation.getArgument(0, HttpRequest.class);
-                assertThat(request.uri()).hasToString(uri);
                 assertThat(request.timeout()).contains(timeout);
+                var responseBody = uriToResponseBody.get(request.uri().toString());
+                assertThat(responseBody).isNotNull();
                 return createHttpResponse(responseBody, responseStatusCode);
             }).getMock();
         } catch (IOException | InterruptedException e) {

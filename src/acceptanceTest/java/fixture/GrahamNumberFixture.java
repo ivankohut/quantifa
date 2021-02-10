@@ -4,8 +4,11 @@ import com.ib.client.TickType;
 import lombok.Setter;
 import sk.ivankohut.quantifa.Application;
 import sk.ivankohut.quantifa.SimpleStockContract;
+import sk.ivankohut.quantifa.utils.ContentOfUriTest;
 
 import java.math.BigDecimal;
+import java.time.Clock;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Map;
 
@@ -20,12 +23,15 @@ public class GrahamNumberFixture {
 
     public void execute() {
         CacheUtils.clear();
-        var stockContract = new SimpleStockContract("exchange", "symbol", "currency");
-        this.application = new FixtureApplication(
+        var fundamentalsStockContract = new SimpleStockContract("exchange", "symbol", "currency");
+        var priceStockContract = new SimpleStockContract("priceExchange", "priceSymbol", "priceCurrency");
+        var reportingCurrency = "reportingCurrency";
+        this.application = new Application(
                 new FakeTwsApi(
-                        Map.of(stockContract, Map.of(TickType.DELAYED_BID, price)),
-                        stockContract,
+                        Map.of(priceStockContract, Map.of(TickType.DELAYED_BID, price)),
+                        fundamentalsStockContract,
                         new ReportFinancialStatementsXml(
+                                reportingCurrency,
                                 new PeriodsXml("Annual", new FiscalPeriodXml(
                                         new FinancialStatementXml("INC", LocalDate.now(), Map.of("VDES", earnings))
                                 )),
@@ -34,7 +40,18 @@ public class GrahamNumberFixture {
                                 ))
                         )
                 ),
-                stockContract
+                Clock.systemDefaultZone(),
+                fundamentalsStockContract,
+                CacheUtils.DIRECTORY,
+                new SimplePriceRequest(priceStockContract),
+                ContentOfUriTest.createHttpClient(
+                        "https://financialmodelingprep.com/api/v3/fx?apikey=fmpApiKey",
+                        Duration.ofSeconds(15),
+                        200,
+                        new FmpExchangeRatesJson(reportingCurrency, priceStockContract.currency(), BigDecimal.ONE)
+                ),
+                "fmpApiKey",
+                ""
         );
     }
 
