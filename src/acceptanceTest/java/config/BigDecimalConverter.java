@@ -16,6 +16,6 @@ public class BigDecimalConverter implements Converter<BigDecimal> {
 
     @Override
     public String toString(BigDecimal value) {
-        return value == null ? "" : value.toString();
+        return value == null ? "" : value.toPlainString();
     }
 }
