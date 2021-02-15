@@ -5,6 +5,9 @@ import com.ib.controller.ApiController;
 import org.cactoos.Scalar;
 import org.cactoos.Text;
 import org.cactoos.iterable.Mapped;
+import org.cactoos.scalar.Equals;
+import org.cactoos.scalar.Or;
+import org.cactoos.scalar.ScalarOf;
 import org.cactoos.scalar.ScalarOfSupplier;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Ternary;
@@ -17,6 +20,7 @@ import org.json.JSONObject;
 import sk.ivankohut.quantifa.decimal.DecimalOf;
 import sk.ivankohut.quantifa.decimal.DivisionOf;
 import sk.ivankohut.quantifa.decimal.MultiplicationOf;
+import sk.ivankohut.quantifa.decimal.Negated;
 import sk.ivankohut.quantifa.decimal.NonNegative;
 import sk.ivankohut.quantifa.decimal.Rounded;
 import sk.ivankohut.quantifa.decimal.SquareRootOf;
@@ -34,7 +38,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-@SuppressWarnings({ "PMD.DataClass", "PMD.ExcessiveImports" })
+@SuppressWarnings({ "PMD.DataClass", "PMD.ExcessiveImports", "PMD.TooManyMethods" })
 public class Application {
 
     private final Text companyName;
@@ -46,6 +50,8 @@ public class Application {
     private final Scalar<BigDecimal> grahamRatio;
     private final Scalar<BigDecimal> currentRatio;
     private final Scalar<BigDecimal> netCurrentAssetsToLongTermDebtRatio;
+    private final Scalar<BigDecimal> netCurrentAssetValue;
+    private final Scalar<BigDecimal> netCurrentAssetValueRatio;
 
     // checkstyle nor pmd does not properly support switch expression yet
     @SuppressWarnings({ "checkstyle:Indentation", "checkstyle:WhitespaceAround", "PMD.UselessParentheses", "PMD.ExcessiveMethodLength", "java:S107" })
@@ -156,6 +162,7 @@ public class Application {
                 )
         ));
         var mostRecentBalanceSheet = new XmlFinancialStatement(() -> statementEntry.value().getKey(), () -> statementEntry.value().getValue());
+        var sharesCount = new SumOf(() -> mostRecentBalanceSheet.value("QTCO"), () -> mostRecentBalanceSheet.value("QTPO"));
         this.bookValue = new ReportedAmount() {
 
             @Override
@@ -167,7 +174,7 @@ public class Application {
             public BigDecimal value() {
                 return new Unchecked<>(new DivisionOf(
                         mostRecentBalanceSheet.value("QTLE"),
-                        new SumOf(mostRecentBalanceSheet.value("QTCO"), mostRecentBalanceSheet.value("QTPO")),
+                        sharesCount,
                         new BigDecimal(-1)
                 )).value();
             }
@@ -187,11 +194,23 @@ public class Application {
                 3
         );
         this.currentRatio = new DivisionOf(() -> mostRecentBalanceSheet.value("ATCA"), () -> mostRecentBalanceSheet.value("LTCL"), BigDecimal.ZERO);
-        this.netCurrentAssetsToLongTermDebtRatio = new DivisionOf(
-                () -> mostRecentBalanceSheet.value("ATCA").subtract(mostRecentBalanceSheet.value("LTCL")),
-                () -> mostRecentBalanceSheet.value("LTTD"),
-                BigDecimal.ZERO
+        var noCurrentValue = new Or(
+                new Equals<>(() -> mostRecentBalanceSheet.value("ATCA"), () -> BigDecimal.ZERO),
+                new Equals<>(() -> mostRecentBalanceSheet.value("LTCL"), () -> BigDecimal.ZERO)
         );
+        var currentValue = new SumOf(() -> mostRecentBalanceSheet.value("ATCA"), new Negated(() -> mostRecentBalanceSheet.value("LTCL")));
+        var longTermDebt = new ScalarOf<>(() -> mostRecentBalanceSheet.value("LTTD"));
+        this.netCurrentAssetsToLongTermDebtRatio = new Ternary<>(
+                noCurrentValue,
+                () -> BigDecimal.ZERO,
+                new DivisionOf(currentValue, longTermDebt, BigDecimal.ZERO)
+        );
+        this.netCurrentAssetValue = new Ternary<>(
+                new Or(noCurrentValue, new Equals<>(longTermDebt, () -> BigDecimal.ZERO)),
+                () -> BigDecimal.ZERO,
+                new DivisionOf(new SumOf(currentValue, new Negated(longTermDebt)), sharesCount, BigDecimal.ZERO)
+        );
+        this.netCurrentAssetValueRatio = new DivisionOf(() -> price.price().orElse(BigDecimal.ZERO), new NonNegative(netCurrentAssetValue), BigDecimal.ZERO);
         this.grahamNumber = new Sticky<>(new SquareRootOf(new MultiplicationOf(
                 new DecimalOf(15 * 1.5), new NonNegative(epsAverage), new NonNegative(bookValue::value))
         ));
@@ -234,6 +253,14 @@ public class Application {
         return new Unchecked<>(new Rounded(netCurrentAssetsToLongTermDebtRatio)).value();
     }
 
+    public BigDecimal netCurrentAssetValue() {
+        return new Unchecked<>(new Rounded(netCurrentAssetValue)).value();
+    }
+
+    public BigDecimal netCurrentAssetValueRatio() {
+        return new Unchecked<>(new Rounded(netCurrentAssetValueRatio)).value();
+    }
+
     @SuppressWarnings({ "PMD.SystemPrintln", "java:S106", "PMD.AvoidPrintStackTrace", "java:S4507", "PMD.AvoidCatchingGenericException" })
     public static void main(String[] args) {
         int status;
@@ -259,6 +286,8 @@ public class Application {
             System.out.printf("Current price to Graham number: %f%n", application.grahamRatio());
             System.out.printf("Current ratio: %f%n", application.currentRatio());
             System.out.printf("Net current assets to long term debt ratio: %f%n", application.netCurrentAssetsToLongTermDebtRatio());
+            System.out.printf("Net current asset value: %f%n", application.netCurrentAssetValue());
+            System.out.printf("Net current asset value ratio: %f%n", application.netCurrentAssetValueRatio());
             status = 0;
         } catch (ApplicationException e) {
             System.out.println("Error: " + e.getMessage());

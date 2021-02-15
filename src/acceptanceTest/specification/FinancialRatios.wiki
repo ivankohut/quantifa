@@ -25,7 +25,19 @@ Net current assets to long term debt is ratio of current assets subtracted with 
 |current assets|current liabilities|long term debt|current ratio?|net current assets to long term debt?|
 |10            |8                  |3             |1.2500        |0.6667                               |
 |5             |3                  |1.5           |1.6667        |1.3333                               |
-|              |2                  |1.5           |0.0000        |-1.3333                              |
-|5             |                   |1.5           |0.0000        |3.3333                               |
+|              |2                  |1.5           |0.0000        |0.0000                               |
+|5             |                   |1.5           |0.0000        |0.0000                               |
 |6             |3                  |              |2.0000        |0.0000                               |
 
+
+Net current asset value (NCAV) is current assets subtracted with current liabilities and long term debt, per share.
+Net current asset value ratio is ratio of price to net current asset value (NCAV).
+
+|Current assets ratios                                                                                                                         |
+|current assets|current liabilities|long term debt|common shares|preferred shares|price|net current asset value?|net current asset value ratio?|
+|4             |1                  |3             |3            |1               |1    |0.0000                  |0.0000                        |
+|10            |8                  |3             |3            |1               |1    |-0.2500                 |0.0000                        |
+|5             |3                  |1.5           |3            |1               |1.375|0.1250                  |11.0000                       |
+|              |2                  |1.5           |3            |1               |3    |0.0000                  |0.0000                        |
+|5             |                   |1.5           |3            |1               |0.5  |0.0000                  |0.0000                        |
+|6             |3                  |              |3            |1               |1    |0.0000                  |0.0000                        |
