@@ -3,6 +3,7 @@ package sk.ivankohut.quantifa;
 import com.ib.client.Types;
 import com.ib.controller.ApiController;
 import org.cactoos.Scalar;
+import org.cactoos.Text;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.scalar.ScalarOfSupplier;
 import org.cactoos.scalar.Sticky;
@@ -11,6 +12,7 @@ import org.cactoos.scalar.Unchecked;
 import org.cactoos.text.Concatenated;
 import org.cactoos.text.Joined;
 import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 import org.json.JSONObject;
 import sk.ivankohut.quantifa.decimal.DecimalOf;
 import sk.ivankohut.quantifa.decimal.DivisionOf;
@@ -35,6 +37,7 @@ import java.time.format.DateTimeFormatter;
 @SuppressWarnings({ "PMD.DataClass", "PMD.ExcessiveImports" })
 public class Application {
 
+    private final Text companyName;
     private final MarketPrice price;
     private final ReportedAmount bookValue;
     private final Scalar<BigDecimal> epsTtm;
@@ -65,6 +68,8 @@ public class Application {
                 13,
                 ".xml"
         );
+        this.companyName = () -> new XPathNodes(financialStatements, "/ReportFinancialStatements/CoIDs/CoID[@Type='CompanyName']")
+                .iterator().next().getTextContent();
         var timeout = Duration.ofSeconds(15);
         var priceFileName = new Concatenated(
                 new TextOf(today, DateTimeFormatter.ISO_LOCAL_DATE),
@@ -193,6 +198,10 @@ public class Application {
         this.grahamRatio = new DivisionOf(() -> price.price().orElse(BigDecimal.ZERO), grahamNumber, BigDecimal.ZERO);
     }
 
+    public String companyName() {
+        return new UncheckedText(companyName).asString();
+    }
+
     public BigDecimal price() {
         return price.price().orElse(BigDecimal.ZERO);
     }
@@ -240,6 +249,7 @@ public class Application {
                     configuration.fmpApiKey(),
                     configuration.avApiKey()
             );
+            System.out.printf("Company name: %s%n", application.companyName());
             System.out.printf("Current price: %f%n", application.price());
             var bookValue = application.bookValue();
             System.out.printf("Latest book value: %f (%s)%n", bookValue.value(), bookValue.date());
