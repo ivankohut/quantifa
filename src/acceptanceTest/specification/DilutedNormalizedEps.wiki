@@ -7,10 +7,13 @@ Test
 |Diluted normalized EPS average|fixture.DilutedNormalizedEpsAverageFixture|
 *!
 !2 Trailing Twelve Months (TTM)
-From '''interim''' income statements.
+Sum of the amounts reported in the last twelve months (starting from the date of the most recent amount) except the earliest 10 days (necessary to
+not to include one amount from previous twelve months period in case of statements issued every 52 weeks instead of every year).
+Computed from '''interim''' income statements.
 
 |Diluted normalized EPS TTM                                                                            |
 |date and amount                                                                                  |eps?|
+|!{2020-02-03:1,2020-08-03:20,2019-08-14:300,2019-08-13:4000}                                     |321 |
 |!{2020-09-30:1,2020-03-31:20,2019-09-30:300,2019-03-31:4000}                                     |21  |
 |!{2020-09-30:1,2020-06-30:20,2020-03-31:300,2019-12-31:4000,2019-09-30:50000,2019-06-30:600000}  |4321|
 |!{2020-10-31:1,2020-09-30:1,2020-01-31:1,2019-12-31:1,2019-11-30:1,2019-10-31:100,2019-09-30:100}|5   |
