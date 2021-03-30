@@ -20,7 +20,7 @@ public class TrailingTwelveMonths extends ScalarEnvelope<BigDecimal> {
 
     private static Scalar<BigDecimal> create(Iterable<ReportedAmount> amounts) {
         var threshold = new org.cactoos.scalar.Mapped<>(
-                amount -> amount.date().minusYears(1),
+                amount -> amount.date().minusYears(1).plusDays(10),
                 new StickyFirstOrFail<>(
                         new Sorted<>(
                                 Comparator.comparing(ReportedAmount::date).reversed(),
