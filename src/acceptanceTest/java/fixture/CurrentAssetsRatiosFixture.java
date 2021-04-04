@@ -47,6 +47,7 @@ public class CurrentAssetsRatiosFixture {
         var fundamentalsStockContract = new SimpleStockContract("exchange", "symbol", "currency");
         var priceStockContract = new SimpleStockContract("priceExchange", "priceSymbol", "priceCurrency");
         var reportingCurrency = "reportingCurrency";
+        var fiscalPeriodEndDate = LocalDate.now();
         this.application = new Application(
                 new FakeTwsApi(
                         Map.of(priceStockContract, Map.of(TickType.DELAYED_BID, price)),
@@ -54,14 +55,16 @@ public class CurrentAssetsRatiosFixture {
                         new ReportFinancialStatementsXml(
                                 reportingCurrency,
                                 new PeriodsXml("Interim", new FiscalPeriodXml(
-                                        new FinancialStatementXml("BAL", LocalDate.now(), Map.ofEntries(new Joined<>(
+                                        fiscalPeriodEndDate,
+                                        new FinancialStatementXml("BAL", Map.ofEntries(new Joined<>(
                                                 entryList("ATCA", currentAssets),
                                                 entryList("LTCL", currentLiabilities),
                                                 entryList("LTTD", longTermDebt),
                                                 entryList("QTCO", Optional.of(commonShares)),
                                                 entryList("QTPO", Optional.of(preferredShares))
                                         ).toArray(new Map.Entry[] {})))
-                                ))
+                                )),
+                                new SingleSimplePeriodPeriodsXml("Annual", fiscalPeriodEndDate.minusYears(1))
                         )
                 ),
                 Clock.systemDefaultZone(),

@@ -152,16 +152,32 @@ public class Application {
                 new XPathNodes(financialStatements, "/ReportFinancialStatements/FinancialStatements"),
                 "No financial statements available."
         );
-        var annual = new Unchecked<>(new MostRecentFinancialStatementNode(new StatementNodes(financialStatementsNode, true, true)));
-        var interim = new Unchecked<>(new MostRecentFinancialStatementNode(new StatementNodes(financialStatementsNode, false, true)));
-        var statementEntry = new Unchecked<>(new Sticky<>(
-                new Ternary<>(
-                        new ScalarOfSupplier<>(() -> interim.value().getKey().isAfter(annual.value().getKey())),
-                        interim,
-                        annual
-                )
-        ));
-        var mostRecentBalanceSheet = new XmlFinancialStatement(() -> statementEntry.value().getKey(), () -> statementEntry.value().getValue());
+
+        var annualFiscalPeriods = new FiscalPeriods(financialStatementsNode, "Annual");
+        var interimFiscalPeriods = new FiscalPeriods(financialStatementsNode, "Interim");
+
+        var annualBalanceSheet = new MostRecentFinancialStatement(new Mapped<>(FiscalPeriod::balanceSheet, annualFiscalPeriods));
+        var interimBalanceSheet = new MostRecentFinancialStatement(new Mapped<>(FiscalPeriod::balanceSheet, interimFiscalPeriods));
+        var mostRecentBalanceSheet = new FinancialStatement() {
+
+            private final Unchecked<FinancialStatement> scalar = new Unchecked<>(new Sticky<>(
+                    new Ternary<>(
+                            new ScalarOfSupplier<>(() -> interimBalanceSheet.date().isAfter(annualBalanceSheet.date())),
+                            interimBalanceSheet,
+                            annualBalanceSheet
+                    )
+            ));
+
+            @Override
+            public LocalDate date() {
+                return scalar.value().date();
+            }
+
+            @Override
+            public BigDecimal value(String name) {
+                return scalar.value().value(name);
+            }
+        };
         var sharesCount = new SumOf(() -> mostRecentBalanceSheet.value("QTCO"), () -> mostRecentBalanceSheet.value("QTPO"));
         this.bookValue = new ReportedAmount() {
 
@@ -180,16 +196,13 @@ public class Application {
             }
         };
         this.epsTtm = new TrailingTwelveMonths(new Mapped<>(
-                statementNode -> new FinancialStatementAmount(new XmlFinancialStatement(new XmlStatementDate(statementNode), () -> statementNode), "VDES"),
-                new StatementNodes(financialStatementsNode, false, false)
+                interimFiscalPeriod -> new FinancialStatementAmount(interimFiscalPeriod.incomeStatement(), "VDES"),
+                interimFiscalPeriods
         ));
         this.epsAverage = new AverageOfTheMostRecent(
                 new Mapped<>(
-                        statementNode -> new FinancialStatementAmount(
-                                new XmlFinancialStatement(new XmlStatementDate(statementNode), () -> statementNode),
-                                "VDES"
-                        ),
-                        new StatementNodes(financialStatementsNode, true, false)
+                        annualFiscalPeriod -> new FinancialStatementAmount(annualFiscalPeriod.incomeStatement(), "VDES"),
+                        annualFiscalPeriods
                 ),
                 3
         );
