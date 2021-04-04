@@ -26,6 +26,7 @@ public class GrahamNumberFixture {
         var fundamentalsStockContract = new SimpleStockContract("exchange", "symbol", "currency");
         var priceStockContract = new SimpleStockContract("priceExchange", "priceSymbol", "priceCurrency");
         var reportingCurrency = "reportingCurrency";
+        var fiscalPeriodEndDate = LocalDate.now();
         this.application = new Application(
                 new FakeTwsApi(
                         Map.of(priceStockContract, Map.of(TickType.DELAYED_BID, price)),
@@ -33,11 +34,11 @@ public class GrahamNumberFixture {
                         new ReportFinancialStatementsXml(
                                 reportingCurrency,
                                 new PeriodsXml("Annual", new FiscalPeriodXml(
-                                        new FinancialStatementXml("INC", LocalDate.now(), Map.of("VDES", earnings))
+                                        fiscalPeriodEndDate,
+                                        new FinancialStatementXml("INC", Map.of("VDES", earnings)),
+                                        new FinancialStatementXml("BAL", Map.of("QTLE", bookValue, "QTCO", BigDecimal.ONE))
                                 )),
-                                new PeriodsXml("Interim", new FiscalPeriodXml(
-                                        new FinancialStatementXml("BAL", LocalDate.now(), Map.of("QTLE", bookValue, "QTCO", BigDecimal.ONE))
-                                ))
+                                new SingleSimplePeriodPeriodsXml("Interim", fiscalPeriodEndDate)
                         )
                 ),
                 Clock.systemDefaultZone(),
@@ -63,3 +64,4 @@ public class GrahamNumberFixture {
         return application.grahamRatio();
     }
 }
+

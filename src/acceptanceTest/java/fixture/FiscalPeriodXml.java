@@ -5,18 +5,22 @@ import org.cactoos.Text;
 import org.cactoos.list.ListOf;
 import org.cactoos.text.Joined;
 
+import java.time.LocalDate;
+
 @RequiredArgsConstructor
 public class FiscalPeriodXml implements Text {
 
+    private final LocalDate endDate;
     private final Iterable<Text> financialStatements;
 
-    public FiscalPeriodXml(Text financialStatement) {
-        this(new ListOf<Text>(financialStatement));
+    public FiscalPeriodXml(LocalDate endDate, Text... financialStatements) {
+        this(endDate, new ListOf<>(financialStatements));
     }
 
     @Override
     public String asString() throws Exception {
-        return "<FiscalPeriod>%n%s</FiscalPeriod>%n".formatted(
+        return "<FiscalPeriod EndDate=\"%s\">%n%s</FiscalPeriod>%n".formatted(
+                endDate.toString(),
                 new Joined(() -> "", financialStatements).asString()
         );
     }

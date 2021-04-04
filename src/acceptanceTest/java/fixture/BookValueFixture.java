@@ -25,7 +25,8 @@ public class BookValueFixture implements ReportedAmount {
                                                 entry.getKey(),
                                                 new Mapped<>(
                                                         bookValue -> new FiscalPeriodXml(
-                                                                new FinancialStatementXml("BAL", bookValue.getKey(), bookValue.getValue())
+                                                                bookValue.getKey(),
+                                                                new FinancialStatementXml("BAL", bookValue.getValue())
                                                         ),
                                                         entry.getValue()
                                                 )
