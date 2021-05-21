@@ -31,7 +31,7 @@ sourceCompatibility = javaVersion
 targetCompatibility = javaVersion
 
 repositories {
-    jcenter()
+    mavenCentral()
 }
 
 sourceSets {
