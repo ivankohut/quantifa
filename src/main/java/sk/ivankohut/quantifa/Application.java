@@ -276,18 +276,18 @@ public class Application {
                     configuration.fmpApiKey(),
                     configuration.avApiKey()
             );
-            System.out.printf("Company name: %s%n", application.companyName());
-            System.out.printf("Current price: %f%n", application.price());
+            print("Company name", application.companyName());
+            print("Current price", application.price());
             var bookValue = application.bookValue();
-            System.out.printf("Latest book value: %f (%s)%n", bookValue.value(), bookValue.date());
-            System.out.printf("Diluted normalized EPS TTM: %f%n", application.epsTtm());
-            System.out.printf("Diluted normalized EPS 3 year average: %f%n", application.epsAverage());
-            System.out.printf("Graham number: %f%n", application.grahamNumber());
-            System.out.printf("Current price to Graham number: %f%n", application.grahamRatio());
-            System.out.printf("Current ratio: %f%n", application.currentRatio());
-            System.out.printf("Net current assets to long term debt ratio: %f%n", application.netCurrentAssetsToLongTermDebtRatio());
-            System.out.printf("Net current asset value: %f%n", application.netCurrentAssetValue());
-            System.out.printf("Net current asset value ratio: %f%n", application.netCurrentAssetValueRatio());
+            print("Book value (%s)".formatted(bookValue.date()), bookValue.value());
+            print("Diluted normalized EPS TTM", application.epsTtm());
+            print("Diluted normalized EPS 3 year average", application.epsAverage());
+            print("Graham number", application.grahamNumber());
+            print("Current price to Graham number", application.grahamRatio());
+            print("Current ratio", application.currentRatio());
+            print("Net current assets to long term debt ratio", application.netCurrentAssetsToLongTermDebtRatio());
+            print("Net current asset value", application.netCurrentAssetValue());
+            print("Net current asset value ratio", application.netCurrentAssetValueRatio());
             status = 0;
         } catch (ApplicationException e) {
             System.out.println("Error: " + e.getMessage());
@@ -299,5 +299,14 @@ public class Application {
         }
         // terminate the JVM, not just the current thread
         System.exit(status);
+    }
+
+    private static void print(String label, BigDecimal number) {
+        print(label, "%f".formatted(number));
+    }
+
+    @SuppressWarnings({ "PMD.SystemPrintln", "java:S106" })
+    private static void print(String label, String string) {
+        System.out.printf("%s: %s%n", label, string);
     }
 }
