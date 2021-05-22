@@ -2,6 +2,7 @@ package fixture;
 
 import org.cactoos.Text;
 import org.cactoos.iterable.Mapped;
+import org.cactoos.text.Joined;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -27,6 +28,8 @@ public class FinancialStatementXml implements Text {
                         <StatementDate>%s</StatementDate>
                     </FPHeader>
                     %s</Statement>
-                """.formatted(type, date, new Mapped<>(e -> "<lineItem coaCode=\"%s\">%s</lineItem>%n".formatted(e.getKey(), e.getValue()), values.entrySet()));
+                """.formatted(type, date, new Joined(
+                "    ", new Mapped<>(e -> "<lineItem coaCode=\"%s\">%s</lineItem>%n".formatted(e.getKey(), e.getValue()), values.entrySet())
+        ));
     }
 }

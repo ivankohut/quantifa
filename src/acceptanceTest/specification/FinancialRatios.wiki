@@ -8,7 +8,7 @@ Test
 *!
 
 Graham number is square root of 15 x average earnings per share x 1.5 x book value per share.
-Graham ration is ratio of price to graham number.
+Graham ratio is a ratio of price to graham number.
 
 |Graham number                                         |
 |earnings|book value|price|graham number?|graham ratio?|
