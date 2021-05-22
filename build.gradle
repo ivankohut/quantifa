@@ -61,7 +61,7 @@ dependencies {
     implementation files(twsApiJar)
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
-    implementation 'org.cactoos:cactoos:0.49'
+    implementation 'org.cactoos:cactoos:0.50'
     implementation 'commons-io:commons-io:2.8.0'
     implementation 'org.json:json:20210307'
 
