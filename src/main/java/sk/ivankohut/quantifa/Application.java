@@ -15,6 +15,7 @@ import org.cactoos.scalar.Unchecked;
 import org.cactoos.text.Concatenated;
 import org.cactoos.text.Joined;
 import org.cactoos.text.TextOf;
+import org.cactoos.text.TextOfDateTime;
 import org.cactoos.text.UncheckedText;
 import org.json.JSONObject;
 import sk.ivankohut.quantifa.decimal.DecimalOf;
@@ -36,7 +37,6 @@ import java.nio.file.Path;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 @SuppressWarnings({ "PMD.DataClass", "PMD.ExcessiveImports", "PMD.TooManyMethods" })
 public class Application {
@@ -78,7 +78,7 @@ public class Application {
                 .iterator().next().getTextContent();
         var timeout = Duration.ofSeconds(15);
         var priceFileName = new Concatenated(
-                new TextOf(today, DateTimeFormatter.ISO_LOCAL_DATE),
+                new TextOfDateTime(today),
                 new TextOf(".json")
         );
         this.price = () -> (switch (priceRequest.source()) {
@@ -195,8 +195,8 @@ public class Application {
         );
         this.currentRatio = new DivisionOf(() -> mostRecentBalanceSheet.value("ATCA"), () -> mostRecentBalanceSheet.value("LTCL"), BigDecimal.ZERO);
         var noCurrentValue = new Or(
-                new Equals<>(() -> mostRecentBalanceSheet.value("ATCA"), () -> BigDecimal.ZERO),
-                new Equals<>(() -> mostRecentBalanceSheet.value("LTCL"), () -> BigDecimal.ZERO)
+                new Equals<>(new ScalarOfSupplier<>(() -> mostRecentBalanceSheet.value("ATCA")), () -> BigDecimal.ZERO),
+                new Equals<>(new ScalarOfSupplier<>(() -> mostRecentBalanceSheet.value("LTCL")), () -> BigDecimal.ZERO)
         );
         var currentValue = new SumOf(() -> mostRecentBalanceSheet.value("ATCA"), new Negated(() -> mostRecentBalanceSheet.value("LTCL")));
         var longTermDebt = new ScalarOf<>(() -> mostRecentBalanceSheet.value("LTTD"));
