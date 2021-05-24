@@ -19,7 +19,7 @@ stocks. This information can help you to decide which stocks are worth
 buying/selling based on value investing principles. Stock fundamental data are
 retrieved from [IB Trader Workstation (TWS)](https://www1.interactivebrokers.com/en/index.php?f=14099),
 prices are retrieved from TWS or [Financial Modeling Prep (FMP)](https://financialmodelingprep.com/developer/docs/)
-or [Alpha Vantage (AV)](https://www.alphavantage.co/documentation/).
+or [Alpha Vantage (AV)](https://www.alphavantage.co/documentation/) or [yahoo! finance (YF)](https://finance.yahoo.com).
 
 ## How to Use
 
@@ -44,7 +44,7 @@ export FUNDAMENTALS_SYMBOL=CAT
 export FUNDAMENTALS_CURRENCY=USD
 export FMP_APIKEY=1234567890abcdef
 export AV_APIKEY=1234567890abcdef # optional if PRICE_SOURCE is not AV
-export PRICE_SOURCE=TWS # possible values: TWS, FMP, AV
+export PRICE_SOURCE=TWS # possible values: TWS, FMP, AV, YF
 export PRICE_EXCHANGE=NYSE # only for TWS price source
 export PRICE_SYMBOL=CAT
 export PRICE_CURRENCY=USD # only for TWS price source
