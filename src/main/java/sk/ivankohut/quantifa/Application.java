@@ -121,6 +121,20 @@ public class Application {
                             )
                     )
             );
+            case "YF" -> new YfMarketPriceOfStock(
+                    new TextCache(
+                            new TextFilesStore(cacheDirectory.resolve("prices/yf/" + priceRequest.symbol())),
+                            priceFileName,
+                            new ContentOfUri(
+                                    httpClient,
+                                    new Concatenated(
+                                            "https://finance.yahoo.com/quote/",
+                                            priceRequest.symbol()
+                                    ),
+                                    timeout
+                            )
+                    )
+            );
             default -> throw new IllegalArgumentException("Unknown price source.");
         }).price().map(p -> p.divide(BigDecimal.valueOf(priceRequest.divisor())))
                 .flatMap(p -> new FmpCurrencyExchangeRate(

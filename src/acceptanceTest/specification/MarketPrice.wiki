@@ -12,6 +12,8 @@ Test
 |FMP market price                  |fixture.FmpMarketPriceFixture                |
 |AV market prices                  |fixture.AvMarketPricesFixture                |
 |AV market price                   |fixture.AvMarketPriceFixture                 |
+|YF market prices                  |fixture.YfMarketPricesFixture                |
+|YF market price                   |fixture.YfMarketPriceFixture                 |
 
 *!
 
@@ -19,6 +21,7 @@ Market price of stock can be retrieved from the following sources:
  * Trader Workstation (TWS)
  * financialmodelingprep.com (FMP)
  * alphavantage.co (AV)
+ * finance.yahoo.com (YF)
 
 
 !1 TWS
@@ -64,6 +67,21 @@ e.g. London Stock Exchange prices are denominated in pences, not in pounds.
 |AAL.L  |2534.21 |
 
 |AV market price             |
+|symbol|price divisor|price? |
+|CAT   |1            |185.67 |
+|CBK.DE|1            |0      |
+|AAL.L |100          |25.3421|
+
+
+!1 YF
+
+|YF market prices|
+|symbol |price   |
+|CAT    |185.67  |
+|AKE.PA |94.17   |
+|AAL.L  |2534.21 |
+
+|YF market price             |
 |symbol|price divisor|price? |
 |CAT   |1            |185.67 |
 |CBK.DE|1            |0      |
