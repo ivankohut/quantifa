@@ -1,6 +1,7 @@
 package sk.ivankohut.quantifa;
 
 import lombok.RequiredArgsConstructor;
+import org.cactoos.Scalar;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -17,7 +18,7 @@ public class SimpleReportedAmount implements ReportedAmount {
     }
 
     @Override
-    public BigDecimal value() {
-        return value;
+    public Scalar<BigDecimal> value() {
+        return () -> value;
     }
 }

@@ -2,6 +2,7 @@ package fixture;
 
 import lombok.Setter;
 import org.cactoos.iterable.Mapped;
+import org.cactoos.scalar.Unchecked;
 import sk.ivankohut.quantifa.ReportedAmount;
 import sk.ivankohut.quantifa.SimpleStockContract;
 
@@ -9,7 +10,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Setter
-public class BookValueFixture implements ReportedAmount {
+public class BookValueFixture {
 
     private ReportedAmount result;
 
@@ -39,12 +40,10 @@ public class BookValueFixture implements ReportedAmount {
         ).bookValue();
     }
 
-    @Override
     public BigDecimal value() {
-        return result.value();
+        return new Unchecked<>(result.value()).value();
     }
 
-    @Override
     public LocalDate date() {
         return result.date();
     }

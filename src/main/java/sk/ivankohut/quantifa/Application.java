@@ -7,7 +7,6 @@ import org.cactoos.Text;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.scalar.Equals;
 import org.cactoos.scalar.Or;
-import org.cactoos.scalar.ScalarOf;
 import org.cactoos.scalar.ScalarOfSupplier;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Ternary;
@@ -188,11 +187,11 @@ public class Application {
             }
 
             @Override
-            public BigDecimal value(String name) {
-                return scalar.value().value(name);
+            public Scalar<BigDecimal> value(String name) {
+                return () -> scalar.value().value(name).value();
             }
         };
-        var sharesCount = new SumOf(() -> mostRecentBalanceSheet.value("QTCO"), () -> mostRecentBalanceSheet.value("QTPO"));
+        var sharesCount = new SumOf(mostRecentBalanceSheet.value("QTCO"), mostRecentBalanceSheet.value("QTPO"));
         this.bookValue = new ReportedAmount() {
 
             @Override
@@ -201,47 +200,42 @@ public class Application {
             }
 
             @Override
-            public BigDecimal value() {
-                return new Unchecked<>(new DivisionOf(
+            public Scalar<BigDecimal> value() {
+                return new DivisionOf(
                         mostRecentBalanceSheet.value("QTLE"),
                         sharesCount,
                         new BigDecimal(-1)
-                )).value();
+                );
             }
         };
-        this.epsTtm = new TrailingTwelveMonths(new Mapped<>(
-                interimFiscalPeriod -> new FinancialStatementAmount(interimFiscalPeriod.incomeStatement(), "VDES"),
-                interimFiscalPeriods
-        ));
-        this.epsAverage = new AverageOfTheMostRecent(
-                new Mapped<>(
-                        annualFiscalPeriod -> new FinancialStatementAmount(annualFiscalPeriod.incomeStatement(), "VDES"),
-                        annualFiscalPeriods
-                ),
-                3
-        );
-        this.currentRatio = new DivisionOf(() -> mostRecentBalanceSheet.value("ATCA"), () -> mostRecentBalanceSheet.value("LTCL"), BigDecimal.ZERO);
+        this.epsTtm = new TrailingTwelveMonths(new DilutedNormalizedEpsList(interimFiscalPeriods));
+        this.epsAverage = new AverageOfTheMostRecent(new DilutedNormalizedEpsList(annualFiscalPeriods), 3);
+        var totalCurrentAssets = mostRecentBalanceSheet.value("ATCA");
+        var totalCurrentLiabilities = mostRecentBalanceSheet.value("LTCL");
+        this.currentRatio = new DivisionOf(totalCurrentAssets, totalCurrentLiabilities, BigDecimal.ZERO);
+        Scalar<BigDecimal> zero = () -> BigDecimal.ZERO;
         var noCurrentValue = new Or(
-                new Equals<>(new ScalarOfSupplier<>(() -> mostRecentBalanceSheet.value("ATCA")), () -> BigDecimal.ZERO),
-                new Equals<>(new ScalarOfSupplier<>(() -> mostRecentBalanceSheet.value("LTCL")), () -> BigDecimal.ZERO)
+                new Equals<>(totalCurrentAssets, zero),
+                new Equals<>(totalCurrentLiabilities, zero)
         );
-        var currentValue = new SumOf(() -> mostRecentBalanceSheet.value("ATCA"), new Negated(() -> mostRecentBalanceSheet.value("LTCL")));
-        var longTermDebt = new ScalarOf<>(() -> mostRecentBalanceSheet.value("LTTD"));
+        var currentValue = new SumOf(totalCurrentAssets, new Negated(totalCurrentLiabilities));
+        var longTermDebt = mostRecentBalanceSheet.value("LTTD");
         this.netCurrentAssetsToLongTermDebtRatio = new Ternary<>(
                 noCurrentValue,
-                () -> BigDecimal.ZERO,
+                zero,
                 new DivisionOf(currentValue, longTermDebt, BigDecimal.ZERO)
         );
         this.netCurrentAssetValue = new Ternary<>(
-                new Or(noCurrentValue, new Equals<>(longTermDebt, () -> BigDecimal.ZERO)),
-                () -> BigDecimal.ZERO,
+                new Or(noCurrentValue, new Equals<>(longTermDebt, zero)),
+                zero,
                 new DivisionOf(new SumOf(currentValue, new Negated(longTermDebt)), sharesCount, BigDecimal.ZERO)
         );
-        this.netCurrentAssetValueRatio = new DivisionOf(() -> price.price().orElse(BigDecimal.ZERO), new NonNegative(netCurrentAssetValue), BigDecimal.ZERO);
+        Scalar<BigDecimal> priceOrZero = () -> price.price().orElse(BigDecimal.ZERO);
+        this.netCurrentAssetValueRatio = new DivisionOf(priceOrZero, new NonNegative(netCurrentAssetValue), BigDecimal.ZERO);
         this.grahamNumber = new Sticky<>(new SquareRootOf(new MultiplicationOf(
-                new DecimalOf(15 * 1.5), new NonNegative(epsAverage), new NonNegative(bookValue::value))
+                new DecimalOf(15 * 1.5), new NonNegative(epsAverage), new NonNegative(bookValue.value()))
         ));
-        this.grahamRatio = new DivisionOf(() -> price.price().orElse(BigDecimal.ZERO), grahamNumber, BigDecimal.ZERO);
+        this.grahamRatio = new DivisionOf(priceOrZero, grahamNumber, BigDecimal.ZERO);
     }
 
     public String companyName() {
@@ -306,7 +300,7 @@ public class Application {
             print("Company name", application.companyName());
             print("Current price", application.price());
             var bookValue = application.bookValue();
-            print("Book value (%s)".formatted(bookValue.date()), bookValue.value());
+            print("Book value (%s)".formatted(bookValue.date()), new Unchecked<>(bookValue.value()).value());
             print("Diluted normalized EPS TTM", application.epsTtm());
             print("Diluted normalized EPS 3 year average", application.epsAverage());
             print("Graham number", application.grahamNumber());
