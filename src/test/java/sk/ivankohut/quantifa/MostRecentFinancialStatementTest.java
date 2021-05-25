@@ -15,7 +15,7 @@ import static org.mockito.Mockito.when;
 class MostRecentFinancialStatementTest {
 
     @Test
-    void mostRecentFinancialStatement() {
+    void mostRecentFinancialStatement() throws Exception {
         var date = LocalDate.now();
         var value = BigDecimal.TEN;
         var sut = new MostRecentFinancialStatement(new ListOf<>(
@@ -26,7 +26,7 @@ class MostRecentFinancialStatementTest {
         // exercise
         // verify
         assertThat(sut.date()).isEqualTo(date);
-        assertThat(sut.value("name")).isEqualTo(value);
+        assertThat(sut.value("name").value()).isEqualByComparingTo(value);
     }
 
     @Test
@@ -42,7 +42,7 @@ class MostRecentFinancialStatementTest {
     private static FinancialStatement createFinancialStatement(LocalDate date, BigDecimal value) {
         var result = mock(FinancialStatement.class);
         when(result.date()).thenReturn(date);
-        when(result.value(anyString())).thenReturn(value);
+        when(result.value(anyString())).thenReturn(() -> value);
         return result;
     }
 }

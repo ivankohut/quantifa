@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class XmlFinancialStatementTest {
 
     @Test
-    void extractLineItemFromGivenXml() {
+    void extractLineItemFromGivenXml() throws Exception {
         // exercise
         var sut = new XmlFinancialStatement(
                 () -> LocalDate.parse("2019-12-31"),
@@ -28,7 +28,7 @@ class XmlFinancialStatementTest {
         );
         // verify
         assertThat(sut.date()).isEqualTo("2019-12-31");
-        assertThat(sut.value("ITEM2")).isEqualByComparingTo(BigDecimal.valueOf(2.2));
-        assertThat(sut.value("ITEM0")).isEqualByComparingTo(BigDecimal.ZERO);
+        assertThat(sut.value("ITEM2").value()).isEqualByComparingTo(BigDecimal.valueOf(2.2));
+        assertThat(sut.value("ITEM0").value()).isEqualByComparingTo(BigDecimal.ZERO);
     }
 }

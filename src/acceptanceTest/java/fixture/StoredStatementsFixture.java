@@ -28,7 +28,7 @@ public class StoredStatementsFixture {
     }
 
     @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT")
-    public boolean retrievingStatementsFromTWS() {
+    public boolean retrievingStatementsFromTWS() throws Exception {
         resetCache();
         var twsApi = new TwsApiAdapter() {
 
@@ -42,7 +42,7 @@ public class StoredStatementsFixture {
         };
         new FixtureApplication(
                 twsApi, CachedFinancialStatementsTest.clockFixedOn(currentDate), new SimpleStockContract("NYSE", "CAT", "USD")
-        ).bookValue().value();
+        ).bookValue().value().value();
         return twsApi.fundamentalsRequested;
     }
 

@@ -1,5 +1,7 @@
 package sk.ivankohut.quantifa;
 
+import org.cactoos.Scalar;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -7,5 +9,5 @@ public interface FinancialStatement {
 
     LocalDate date();
 
-    BigDecimal value(String name);
+    Scalar<BigDecimal> value(String name);
 }

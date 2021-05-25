@@ -1,5 +1,6 @@
 package sk.ivankohut.quantifa;
 
+import org.cactoos.Scalar;
 import org.cactoos.iterable.Sorted;
 import org.cactoos.scalar.FirstOf;
 import org.cactoos.scalar.Sticky;
@@ -32,7 +33,7 @@ public class MostRecentFinancialStatement implements FinancialStatement {
     }
 
     @Override
-    public BigDecimal value(String name) {
+    public Scalar<BigDecimal> value(String name) {
         return statement.value().value(name);
     }
 }

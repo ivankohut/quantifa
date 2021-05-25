@@ -24,14 +24,14 @@ public class XmlFinancialStatement implements FinancialStatement {
     }
 
     @Override
-    public BigDecimal value(String name) {
+    public Scalar<BigDecimal> value(String name) {
         var lineItems = new Filtered<>(n -> "lineItem".equals(n.getNodeName()), new ChildNodes(new Unchecked<>(statement).value()));
-        return new Unchecked<>(new FirstOf<>(
+        return new FirstOf<>(
                 new Mapped<>(
                         node -> new BigDecimal(node.getTextContent()),
                         new Filtered<Node>(n -> name.equals(n.getAttributes().getNamedItem("coaCode").getTextContent()), lineItems)
                 ),
                 BigDecimal.ZERO
-        )).value();
+        );
     }
 }
