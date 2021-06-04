@@ -35,7 +35,7 @@ public class GrahamNumberFixture {
                                 reportingCurrency,
                                 new PeriodsXml("Annual", new FiscalPeriodXml(
                                         fiscalPeriodEndDate,
-                                        new FinancialStatementXml("INC", Map.of("VDES", earnings)),
+                                        new FinancialStatementXml("INC", Map.of("SDBF", earnings)),
                                         new FinancialStatementXml("BAL", Map.of("QTLE", bookValue, "QTCO", BigDecimal.ONE))
                                 )),
                                 new SingleSimplePeriodPeriodsXml("Interim", fiscalPeriodEndDate)

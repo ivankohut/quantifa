@@ -17,7 +17,7 @@ class EpsListTest {
     void valuesFromIncomeStatements() {
         var date1 = LocalDate.now();
         var date2 = date1.plusDays(1);
-        var lineItem = "VDES";
+        var lineItem = "SDBF";
         var value1 = BigDecimal.ONE;
         var value2 = BigDecimal.TEN;
         // exercise
