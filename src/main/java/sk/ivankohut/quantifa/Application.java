@@ -208,8 +208,8 @@ public class Application {
                 );
             }
         };
-        this.epsTtm = new TrailingTwelveMonths(new DilutedNormalizedEpsList(interimFiscalPeriods));
-        this.epsAverage = new AverageOfTheMostRecent(new DilutedNormalizedEpsList(annualFiscalPeriods), 3);
+        this.epsTtm = new TrailingTwelveMonths(new EpsList(interimFiscalPeriods));
+        this.epsAverage = new AverageOfTheMostRecent(new EpsList(annualFiscalPeriods), 3);
         var totalCurrentAssets = mostRecentBalanceSheet.value("ATCA");
         var totalCurrentLiabilities = mostRecentBalanceSheet.value("LTCL");
         this.currentRatio = new DivisionOf(totalCurrentAssets, totalCurrentLiabilities, BigDecimal.ZERO);
@@ -301,8 +301,8 @@ public class Application {
             print("Current price", application.price());
             var bookValue = application.bookValue();
             print("Book value (%s)".formatted(bookValue.date()), new Unchecked<>(bookValue.value()).value());
-            print("Diluted normalized EPS TTM", application.epsTtm());
-            print("Diluted normalized EPS 3 year average", application.epsAverage());
+            print("EPS TTM", application.epsTtm());
+            print("EPS 3 year average", application.epsAverage());
             print("Graham number", application.grahamNumber());
             print("Current price to Graham number", application.grahamRatio());
             print("Current ratio", application.currentRatio());

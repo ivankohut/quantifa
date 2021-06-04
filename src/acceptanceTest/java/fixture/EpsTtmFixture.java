@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor
-public class DilutedNormalizedEpsTtmFixture {
+public class EpsTtmFixture {
 
     private List<ReportedAmount> dateAndAmount;
 

@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class DilutedNormalizedEpsListTest {
+class EpsListTest {
 
     @Test
     void valuesFromIncomeStatements() {
@@ -21,7 +21,7 @@ class DilutedNormalizedEpsListTest {
         var value1 = BigDecimal.ONE;
         var value2 = BigDecimal.TEN;
         // exercise
-        var sut = new DilutedNormalizedEpsList(new ListOf<>(
+        var sut = new EpsList(new ListOf<>(
                 createFiscalPeriod(date1, lineItem, value1),
                 createFiscalPeriod(date2, lineItem, value2)
         ));
