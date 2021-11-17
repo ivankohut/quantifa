@@ -36,6 +36,7 @@ import java.nio.file.Path;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @SuppressWarnings({ "PMD.DataClass", "PMD.ExcessiveImports", "PMD.TooManyMethods" })
 public class Application {
@@ -77,7 +78,7 @@ public class Application {
                 .iterator().next().getTextContent();
         var timeout = Duration.ofSeconds(15);
         var priceFileName = new Concatenated(
-                new TextOfDateTime(today),
+                new TextOfDateTime(DateTimeFormatter.ISO_LOCAL_DATE, today),
                 new TextOf(".json")
         );
         this.price = () -> (switch (priceRequest.source()) {
