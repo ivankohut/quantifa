@@ -11,25 +11,46 @@ import java.util.List;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 class TwsApiControllerTest {
 
     @Test
-    void connectsDuringCreationAndDisconnectWhenClosing() {
+    void lazilyConnectsJustBeforeExecutingTheFirstOperation() {
         var apiController = mock(ApiController.class);
         var coordinates = new SimpleTwsCoordinates();
         // exercise
-        new TwsApiController(coordinates, apiController, 0);
+        try (var sut = new TwsApiController(coordinates, apiController, 0)) {
+            sut.setMarketDataType(1);
+            sut.setMarketDataType(2);
+        }
         // verify
-        verify(apiController).connect(coordinates.hostName(), coordinates.port(), 1, null);
+        var inOrder = inOrder(apiController);
+        inOrder.verify(apiController).connect(coordinates.hostName(), coordinates.port(), 1, null);
+        inOrder.verify(apiController).reqMktDataType(1);
+        inOrder.verify(apiController).reqMktDataType(2);
+        inOrder.verify(apiController).disconnect();
+        inOrder.verifyNoMoreInteractions();
     }
 
     @Test
-    void disconnectsWhenClosing() {
+    void doNothingIfNotConnectedWhenClosing() {
         var apiController = mock(ApiController.class);
         var sut = create(apiController);
+        // exercise
+        sut.close();
+        // verify
+        verifyNoMoreInteractions(apiController);
+    }
+
+    @Test
+    void disconnectsIfConnectedWhenClosing() {
+        var apiController = mock(ApiController.class);
+        var sut = create(apiController);
+        sut.setMarketDataType(0);
         // exercise
         sut.close();
         // verify
