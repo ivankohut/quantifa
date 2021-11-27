@@ -18,7 +18,7 @@ public class TwsFundamental implements Text {
 
     @Override
     public String asString() {
-        var result = new UncheckedCompletableFuture<String>();
+        var result = new UncheckedCompletableFuture<String>(5000);
         twsApi.requestFundamentals(stockContract, type, result::complete);
         return result.get();
     }
