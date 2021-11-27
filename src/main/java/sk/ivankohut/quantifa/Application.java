@@ -109,15 +109,17 @@ public class Application {
                     new TextCache(
                             new TextFilesStore(cacheDirectory.resolve("prices/av/" + priceRequest.symbol())),
                             priceFileName,
-                            new ContentOfUri(
-                                    httpClient,
-                                    new Concatenated(
-                                            "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=",
-                                            priceRequest.symbol(),
-                                            "&apikey=",
-                                            avApiKey
-                                    ),
-                                    timeout
+                            new AvValidatedResponse(
+                                    new ContentOfUri(
+                                            httpClient,
+                                            new Concatenated(
+                                                    "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=",
+                                                    priceRequest.symbol(),
+                                                    "&apikey=",
+                                                    avApiKey
+                                            ),
+                                            timeout
+                                    )
                             )
                     )
             );
