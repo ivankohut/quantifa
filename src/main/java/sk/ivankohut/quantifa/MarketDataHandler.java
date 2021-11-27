@@ -13,7 +13,7 @@ import java.util.Optional;
 public class MarketDataHandler extends ApiController.TopMktDataAdapter implements MarketPrice {
 
     private final boolean bid;
-    private final UncheckedCompletableFuture<Optional<BigDecimal>> result = new UncheckedCompletableFuture<>();
+    private final UncheckedCompletableFuture<Optional<BigDecimal>> result = new UncheckedCompletableFuture<>(3000);
 
     @Override
     public void tickPrice(TickType tickType, double price, TickAttrib attribs) {
