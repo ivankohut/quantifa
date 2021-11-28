@@ -77,6 +77,11 @@ public class ApplicationConfiguration implements TwsCoordinates {
             public int divisor() {
                 return Integer.parseInt(configuration.getOrDefault("PRICE_DIVISOR", "1"));
             }
+
+            @Override
+            public int sourceCoolDownSeconds() {
+                return Integer.parseInt(configuration.getOrDefault("PRICE_SOURCE_COOLDOWN_SECONDS", "0"));
+            }
         };
     }
 

@@ -49,6 +49,7 @@ export PRICE_EXCHANGE=NYSE # only for TWS price source
 export PRICE_SYMBOL=CAT
 export PRICE_CURRENCY=USD # only for TWS price source
 export PRICE_DIVISOR=1 # optional
+export PRICE_SOURCE_COOLDOWN_SECONDS=0 # optional, for AV and YF price sources
 ```
 
 Finally, to run application, execute
