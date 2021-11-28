@@ -78,6 +78,7 @@ class ApplicationConfigurationTest {
     void priceRequestValues() {
         var sut = create(Map.of(
                 "PRICE_SOURCE", "source",
+                "PRICE_EXCHANGE", "NYSE",
                 "PRICE_SYMBOL", "symbol",
                 "PRICE_CURRENCY", "currency",
                 "PRICE_DIVISOR", "100"
@@ -86,6 +87,7 @@ class ApplicationConfigurationTest {
         var result = sut.priceRequest();
         // verify
         assertThat(result.source()).isEqualTo("source");
+        assertThat(result.exchange()).isEqualTo("NYSE");
         assertThat(result.symbol()).isEqualTo("symbol");
         assertThat(result.currency()).isEqualTo("currency");
         assertThat(result.divisor()).isEqualTo(100);
@@ -98,6 +100,7 @@ class ApplicationConfigurationTest {
         var result = sut.priceRequest();
         // verify
         assertException(result::source, "Configuration value PRICE_SOURCE of type environment variable is not defined.");
+        assertException(result::exchange, "Configuration value PRICE_EXCHANGE of type environment variable is not defined.");
         assertException(result::symbol, "Configuration value PRICE_SYMBOL of type environment variable is not defined.");
         assertException(result::currency, "Configuration value PRICE_CURRENCY of type environment variable is not defined.");
     }
