@@ -52,4 +52,9 @@ public class SimplePriceRequest implements PriceRequest {
     public int divisor() {
         return divisor;
     }
+
+    @Override
+    public int sourceCoolDownSeconds() {
+        return 0;
+    }
 }

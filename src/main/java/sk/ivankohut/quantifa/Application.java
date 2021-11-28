@@ -26,6 +26,7 @@ import sk.ivankohut.quantifa.decimal.Rounded;
 import sk.ivankohut.quantifa.decimal.SquareRootOf;
 import sk.ivankohut.quantifa.decimal.SumOf;
 import sk.ivankohut.quantifa.utils.ContentOfUri;
+import sk.ivankohut.quantifa.utils.SecondsDelayedText;
 import sk.ivankohut.quantifa.utils.PeekedScalar;
 import sk.ivankohut.quantifa.utils.StickyFirstOrFail;
 import sk.ivankohut.quantifa.xmldom.XPathNodes;
@@ -110,15 +111,18 @@ public class Application {
                             new TextFilesStore(cacheDirectory.resolve("prices/av/" + priceRequest.symbol())),
                             priceFileName,
                             new AvValidatedResponse(
-                                    new ContentOfUri(
-                                            httpClient,
-                                            new Concatenated(
-                                                    "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=",
-                                                    priceRequest.symbol(),
-                                                    "&apikey=",
-                                                    avApiKey
+                                    new SecondsDelayedText(
+                                            new ContentOfUri(
+                                                    httpClient,
+                                                    new Concatenated(
+                                                            "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=",
+                                                            priceRequest.symbol(),
+                                                            "&apikey=",
+                                                            avApiKey
+                                                    ),
+                                                    timeout
                                             ),
-                                            timeout
+                                            priceRequest.sourceCoolDownSeconds()
                                     )
                             )
                     )
@@ -127,13 +131,16 @@ public class Application {
                     new TextCache(
                             new TextFilesStore(cacheDirectory.resolve("prices/yf/" + priceRequest.symbol())),
                             priceFileName,
-                            new ContentOfUri(
-                                    httpClient,
-                                    new Concatenated(
-                                            "https://finance.yahoo.com/quote/",
-                                            priceRequest.symbol()
+                            new SecondsDelayedText(
+                                    new ContentOfUri(
+                                            httpClient,
+                                            new Concatenated(
+                                                    "https://finance.yahoo.com/quote/",
+                                                    priceRequest.symbol()
+                                            ),
+                                            timeout
                                     ),
-                                    timeout
+                                    priceRequest.sourceCoolDownSeconds()
                             )
                     )
             );

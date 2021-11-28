@@ -5,4 +5,6 @@ public interface PriceRequest extends StockContract {
     String source();
 
     int divisor();
+
+    int sourceCoolDownSeconds();
 }

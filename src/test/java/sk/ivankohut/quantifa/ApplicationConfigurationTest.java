@@ -81,7 +81,8 @@ class ApplicationConfigurationTest {
                 "PRICE_EXCHANGE", "NYSE",
                 "PRICE_SYMBOL", "symbol",
                 "PRICE_CURRENCY", "currency",
-                "PRICE_DIVISOR", "100"
+                "PRICE_DIVISOR", "100",
+                "PRICE_SOURCE_COOLDOWN_SECONDS", "3"
         ));
         // exercise
         var result = sut.priceRequest();
@@ -91,6 +92,7 @@ class ApplicationConfigurationTest {
         assertThat(result.symbol()).isEqualTo("symbol");
         assertThat(result.currency()).isEqualTo("currency");
         assertThat(result.divisor()).isEqualTo(100);
+        assertThat(result.sourceCoolDownSeconds()).isEqualTo(3);
     }
 
     @Test
@@ -112,6 +114,7 @@ class ApplicationConfigurationTest {
         var result = sut.priceRequest();
         // verify
         assertThat(result.divisor()).isEqualTo(1);
+        assertThat(result.sourceCoolDownSeconds()).isZero();
     }
 
     private static ApplicationConfiguration create(Map<String, String> configuration) {
