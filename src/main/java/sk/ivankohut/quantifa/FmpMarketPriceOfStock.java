@@ -22,8 +22,8 @@ public class FmpMarketPriceOfStock implements MarketPrice {
         this.symbol = symbol;
     }
 
-    // probably bug in SonarQube rule
-    @SuppressWarnings({ "rawtypes", "unchecked", "java:S2293" })
+    // probably bugs in SonarQube rules
+    @SuppressWarnings({ "rawtypes", "unchecked", "java:S2293", "java:S1905" })
     @Override
     public Optional<BigDecimal> price() {
         return new Unchecked<>(new FirstOf<Optional<BigDecimal>>(
