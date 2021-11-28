@@ -5,6 +5,7 @@ import com.ib.client.Types;
 import com.ib.controller.ApiController;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
+import sk.ivankohut.quantifa.utils.DelayedScalar;
 
 import java.util.List;
 
@@ -17,17 +18,14 @@ public class TwsApiController implements AutoCloseable, TwsApi {
      * @param afterConnectionDelay - we have to wait some time, e.g. 0.5s (maybe for the inner threads to start), otherwise it does not work
      */
     public TwsApiController(TwsCoordinates coordinates, ApiController apiController, int afterConnectionDelay) {
-        this.apiController = new Unchecked<>(new Sticky<>(() -> {
-            apiController.connect(coordinates.hostName(), coordinates.port(), 1, null);
-            connected = true;
-            try {
-                Thread.sleep(afterConnectionDelay);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                throw new ApplicationException(e);
-            }
-            return apiController;
-        }));
+        this.apiController = new Unchecked<>(new Sticky<>(new DelayedScalar<>(
+                () -> {
+                    apiController.connect(coordinates.hostName(), coordinates.port(), 1, null);
+                    connected = true;
+                    return apiController;
+                },
+                afterConnectionDelay
+        )));
     }
 
     @Override
