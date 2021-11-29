@@ -28,6 +28,16 @@ class FiscalPeriodsTest {
                                 <lineItem coaCode="I2">4.0</lineItem>
                             </Statement>
                         </FiscalPeriod>
+                        <FiscalPeriod Type="Annual" EndDate="2017-12-31" FiscalYear="2019">
+                            <Statement Type="BAL" id="5">
+                                <lineItem coaCode="B3">5.0</lineItem>
+                            </Statement>
+                        </FiscalPeriod>
+                        <FiscalPeriod Type="Annual" EndDate="2016-12-31" FiscalYear="2019">
+                            <Statement Type="INC" id="6">
+                                <lineItem coaCode="I3">6.0</lineItem>
+                            </Statement>
+                        </FiscalPeriod>
                     </AnnualPeriods>
                     <InterimPeriods>
                         <FiscalPeriod Type="Annual" EndDate="2019-03-31" FiscalYear="2019">
@@ -44,6 +54,16 @@ class FiscalPeriodsTest {
                             </Statement>
                             <Statement Type="INC" id="4">
                                 <lineItem coaCode="I4">8.0</lineItem>
+                            </Statement>
+                        </FiscalPeriod>
+                        <FiscalPeriod Type="Annual" EndDate="2017-09-30" FiscalYear="2019">
+                            <Statement Type="BAL" id="5">
+                                <lineItem coaCode="B5">9.0</lineItem>
+                            </Statement>
+                        </FiscalPeriod>
+                        <FiscalPeriod Type="Annual" EndDate="2015-09-30" FiscalYear="2019">
+                            <Statement Type="INC" id="6">
+                                <lineItem coaCode="I5">10.0</lineItem>
                             </Statement>
                         </FiscalPeriod>
                     </InterimPeriods>
