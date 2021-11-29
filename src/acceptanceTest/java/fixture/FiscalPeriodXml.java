@@ -13,8 +13,16 @@ public class FiscalPeriodXml implements Text {
     private final LocalDate endDate;
     private final Iterable<Text> financialStatements;
 
-    public FiscalPeriodXml(LocalDate endDate, Text... financialStatements) {
-        this(endDate, new ListOf<>(financialStatements));
+    public FiscalPeriodXml(LocalDate endDate, IncomeStatementXml incomeStatement, BalanceSheetXml balanceSheet) {
+        this(endDate, new ListOf<>(balanceSheet, incomeStatement));
+    }
+
+    public FiscalPeriodXml(LocalDate endDate, BalanceSheetXml balanceSheet) {
+        this(endDate, new IncomeStatementXml(), balanceSheet);
+    }
+
+    public FiscalPeriodXml(LocalDate endDate, IncomeStatementXml incomeStatement) {
+        this(endDate, incomeStatement, new BalanceSheetXml());
     }
 
     @Override
