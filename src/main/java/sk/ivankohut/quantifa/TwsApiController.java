@@ -18,14 +18,11 @@ public class TwsApiController implements AutoCloseable, TwsApi {
      * @param afterConnectionDelay - we have to wait some time, e.g. 0.5s (maybe for the inner threads to start), otherwise it does not work
      */
     public TwsApiController(TwsCoordinates coordinates, ApiController apiController, int afterConnectionDelay) {
-        this.apiController = new Unchecked<>(new Sticky<>(new DelayedScalar<>(
-                () -> {
-                    apiController.connect(coordinates.hostName(), coordinates.port(), 1, null);
-                    connected = true;
-                    return apiController;
-                },
-                afterConnectionDelay
-        )));
+        this.apiController = new Unchecked<>(new Sticky<>(() -> {
+            apiController.connect(coordinates.hostName(), coordinates.port(), 1, null);
+            connected = true;
+            return new DelayedScalar<>(() -> apiController, afterConnectionDelay).value();
+        }));
     }
 
     @Override
