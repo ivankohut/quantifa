@@ -26,8 +26,8 @@ import sk.ivankohut.quantifa.decimal.Rounded;
 import sk.ivankohut.quantifa.decimal.SquareRootOf;
 import sk.ivankohut.quantifa.decimal.SumOf;
 import sk.ivankohut.quantifa.utils.ContentOfUri;
-import sk.ivankohut.quantifa.utils.SecondsDelayedText;
 import sk.ivankohut.quantifa.utils.PeekedScalar;
+import sk.ivankohut.quantifa.utils.SecondsDelayedText;
 import sk.ivankohut.quantifa.utils.StickyFirstOrFail;
 import sk.ivankohut.quantifa.xmldom.XPathNodes;
 
@@ -47,6 +47,8 @@ public class Application {
     private final ReportedAmount bookValue;
     private final Scalar<BigDecimal> epsTtm;
     private final Scalar<BigDecimal> epsAverage;
+    private final Scalar<BigDecimal> peTtm;
+    private final Scalar<BigDecimal> peAverage;
     private final Scalar<BigDecimal> grahamNumber;
     private final Scalar<BigDecimal> grahamRatio;
     private final Scalar<BigDecimal> currentRatio;
@@ -246,6 +248,8 @@ public class Application {
                 new DecimalOf(15 * 1.5), new NonNegative(epsAverage), new NonNegative(bookValue.value()))
         ));
         this.grahamRatio = new DivisionOf(priceOrZero, grahamNumber, BigDecimal.ZERO);
+        this.peTtm = new DivisionOf(priceOrZero, new NonNegative(epsTtm), BigDecimal.ZERO);
+        this.peAverage = new DivisionOf(priceOrZero, new NonNegative(epsAverage), BigDecimal.ZERO);
     }
 
     public String companyName() {
@@ -254,6 +258,14 @@ public class Application {
 
     public BigDecimal price() {
         return price.price().orElse(BigDecimal.ZERO);
+    }
+
+    public BigDecimal peTtm() {
+        return new Unchecked<>(peTtm).value();
+    }
+
+    public BigDecimal peAverage() {
+        return new Unchecked<>(peAverage).value();
     }
 
     public ReportedAmount bookValue() {
@@ -310,6 +322,8 @@ public class Application {
             print("Company name", application.companyName());
             print("Current price", application.price());
             var bookValue = application.bookValue();
+            print("PE TTM", application.peTtm());
+            print("PE 3 year average", application.peAverage());
             print("Book value (%s)".formatted(bookValue.date()), new Unchecked<>(bookValue.value()).value());
             print("EPS TTM", application.epsTtm());
             print("EPS 3 year average", application.epsAverage());

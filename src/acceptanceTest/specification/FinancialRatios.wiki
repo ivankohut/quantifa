@@ -2,10 +2,22 @@
 Test
 ---
 !*< Hidden
-|Define alias                                            |
-|Graham number        |fixture.GrahamNumberFixture       |
-|Current assets ratios|fixture.CurrentAssetsRatiosFixture|
+|Define alias                                              |
+|Price / Earnings ratios|fixture.PriceEarningsRatiosFixture|
+|Graham number          |fixture.GrahamNumberFixture       |
+|Current assets ratios  |fixture.CurrentAssetsRatiosFixture|
 *!
+
+PE, P/E, or price/earnings ratio is a ratio of price and earnings.
+There are P/E TTM and P/E average (3 years) values since there are TTM and average earnings values.
+If the company is not in profit then the P/E is 0.
+
+|Price / Earnings ratios                                   |
+|price|earnings TTM|earnings average|P/E TTM ?|P/E average?|
+|24   |8           |6               |3        |4           |
+|10   |-1          |-2              |0        |0           |
+|3    |0           |0               |0        |0           |
+
 
 Graham number is square root of 15 x average earnings per share x 1.5 x book value per share.
 Graham ratio is a ratio of price to graham number.
