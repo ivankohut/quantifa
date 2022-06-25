@@ -86,7 +86,7 @@ dependencies {
 
 gitBranchChecks {
     branchPattern = ~/(master)|(feature\/#\d+\/[a-z0-9\-]+)/
-    messagePattern = ~/#\d+ [A-Z0-9]\S* \S.*/
+    messagePattern = ~/#\d+ \[(fix|feat|ref)] [A-Z0-9]\S* \S.*/
 }
 
 check {
