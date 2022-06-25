@@ -9,8 +9,8 @@
         <exclude name="JUnitTestContainsTooManyAsserts"/>
         <exclude name="JUnitTestsShouldIncludeAssert"/>
         <exclude name="JUnitAssertionsShouldIncludeMessage"/>
+        <exclude name="JUnit5TestShouldBePackagePrivate"/>
         <!-- Not applicable in unit tests -->
-        <exclude name="DefaultPackage"/>
         <exclude name="TooManyStaticImports"/>
         <exclude name="SignatureDeclareThrowsException"/>
         <exclude name="MethodNamingConventions"/>
