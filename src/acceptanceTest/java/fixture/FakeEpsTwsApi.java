@@ -16,7 +16,7 @@ public class FakeEpsTwsApi extends FakeTwsApi {
                         new PeriodsXml(
                                 period,
                                 new Mapped<>(
-                                        eps -> new FiscalPeriodXml(eps.date(), new FinancialStatementXml("INC", Map.of("SDBF", eps.value().value()))),
+                                        eps -> new FiscalPeriodXml(eps.date(), new IncomeStatementXml(Map.of("SDBF", eps.value().value()))),
                                         dateAndAmount
                                 )
                         )

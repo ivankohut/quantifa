@@ -27,7 +27,7 @@ public class BookValueFixture {
                                                 new Mapped<>(
                                                         bookValue -> new FiscalPeriodXml(
                                                                 bookValue.getKey(),
-                                                                new FinancialStatementXml("BAL", bookValue.getValue())
+                                                                new BalanceSheetXml(bookValue.getValue())
                                                         ),
                                                         entry.getValue()
                                                 )
