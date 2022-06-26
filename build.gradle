@@ -82,6 +82,12 @@ dependencies {
     acceptanceTestAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     acceptanceTestImplementation "com.github.spotbugs:spotbugs-annotations:${spotbugsVersion}"
     acceptanceTestImplementation 'junit:junit:4.13.2'
+
+    constraints {
+        acceptanceTestImplementation ('org.apache.ant:ant:1.10.12') {
+            because 'security vulnerability in version 1.10.9 pulled by fitnesse'
+        }
+    }
 }
 
 gitBranchChecks {
