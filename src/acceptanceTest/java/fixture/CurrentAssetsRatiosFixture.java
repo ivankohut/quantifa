@@ -56,7 +56,7 @@ public class CurrentAssetsRatiosFixture {
                                 reportingCurrency,
                                 new PeriodsXml("Interim", new FiscalPeriodXml(
                                         fiscalPeriodEndDate,
-                                        new FinancialStatementXml("BAL", Map.ofEntries(new Joined<>(
+                                        new BalanceSheetXml(Map.ofEntries(new Joined<>(
                                                 entryList("ATCA", currentAssets),
                                                 entryList("LTCL", currentLiabilities),
                                                 entryList("LTTD", longTermDebt),
