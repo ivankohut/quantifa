@@ -23,7 +23,7 @@ or [Alpha Vantage (AV)](https://www.alphavantage.co/documentation/) or [yahoo! f
 
 ## How to Use
 
-First you need to build the executable `jar` file (requires JDK 15+) by
+First you need to build the executable `jar` file (requires JDK 17+) by
 executing
 
 ```shell script

@@ -3,7 +3,7 @@ install: skip
 
 os: linux
 dist: focal
-jdk: openjdk15
+jdk: openjdk17
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
