@@ -84,7 +84,7 @@ dependencies {
     acceptanceTestImplementation 'junit:junit:4.13.2'
 
     constraints {
-        acceptanceTestImplementation ('org.apache.ant:ant:1.10.12') {
+        acceptanceTestImplementation('org.apache.ant:ant:1.10.12') {
             because 'security vulnerability in version 1.10.9 pulled by fitnesse'
         }
     }
@@ -223,7 +223,7 @@ yamlValidator {
     searchPaths = ['.travis.yml']
 }
 
-task writeFitNesseClasspath (type: WriteFitNesseClasspath) {
+task writeFitNesseClasspath(type: WriteFitNesseClasspath) {
     classpath = sourceSets.acceptanceTest.runtimeClasspath
     pagePath = project.file(specificationDir)
 }
