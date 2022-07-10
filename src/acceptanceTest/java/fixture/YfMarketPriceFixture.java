@@ -22,9 +22,9 @@ public class YfMarketPriceFixture {
                 "https://finance.yahoo.com/quote/%s".formatted(symbol),
                 Optional.ofNullable(YfMarketPricesFixture.getPrices().get(symbol))
                         .map("""
-                  start root.App.main = {"context":{"dispatcher":{"stores":{"QuoteSummaryStore":{"financialData":{
-                  "currentPrice": {"raw": %s, "fmt": "1.11" }
-                }}}}}}; end"""::formatted)
+                                  start root.App.main = {"context":{"dispatcher":{"stores":{"QuoteSummaryStore":{"financialData":{
+                                  "currentPrice": {"raw": %s, "fmt": "1.11" }
+                                }}}}}}; end"""::formatted)
                         .orElse(""),
                 "",
                 ""

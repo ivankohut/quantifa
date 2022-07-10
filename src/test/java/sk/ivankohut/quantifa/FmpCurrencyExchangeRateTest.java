@@ -57,7 +57,7 @@ class FmpCurrencyExchangeRateTest {
                       "date" : "2020-09-06 20:41:57"
                     }
                   ]""",
-                 from, to
+                from, to
         );
         // exercise
         var result = sut.price().get();

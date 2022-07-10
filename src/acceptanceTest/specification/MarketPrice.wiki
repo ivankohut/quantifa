@@ -46,10 +46,10 @@ e.g. London Stock Exchange prices are denominated in pences, not in pounds.
 !1 FMP
 
 |FMP market prices|
-|symbol  |price   |
-|CAT     |185.67  |
-|AKE.PA  |94.17   |
-|AAL.L   |2534.21 |
+|symbol|price     |
+|CAT   |185.67    |
+|AKE.PA|94.17     |
+|AAL.L |2534.21   |
 
 |FMP market price            |
 |symbol|price divisor|price? |
@@ -61,10 +61,10 @@ e.g. London Stock Exchange prices are denominated in pences, not in pounds.
 !1 AV
 
 |AV market prices|
-|symbol |price   |
-|CAT    |185.67  |
-|AKE.PA |94.17   |
-|AAL.L  |2534.21 |
+|symbol|price    |
+|CAT   |185.67   |
+|AKE.PA|94.17    |
+|AAL.L |2534.21  |
 
 |AV market price             |
 |symbol|price divisor|price? |
@@ -76,10 +76,10 @@ e.g. London Stock Exchange prices are denominated in pences, not in pounds.
 !1 YF
 
 |YF market prices|
-|symbol |price   |
-|CAT    |185.67  |
-|AKE.PA |94.17   |
-|AAL.L  |2534.21 |
+|symbol|price    |
+|CAT   |185.67   |
+|AKE.PA|94.17    |
+|AAL.L |2534.21  |
 
 |YF market price             |
 |symbol|price divisor|price? |
@@ -94,10 +94,10 @@ Market price is displayed in reporting currency, i.e. currency exchange rate (re
 If the exchange rate is not available, the final price is 0.
 
 |Currency exchange rates|
-|from   |to   |rate     |
-|EUR    |GBP  |0.75547  |
-|EUR    |USD  |1.23456  |
-|EUR    |JPY  |100      |
+|from|to |rate          |
+|EUR |GBP|0.75547       |
+|EUR |USD|1.23456       |
+|EUR |JPY|100           |
 
 |Market price in reporting currency                         |
 |price from price source|currency|reporting currency|price? |
