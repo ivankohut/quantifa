@@ -12,6 +12,7 @@ plugins {
     id 'org.sonarqube' version '3.3'
     id 'at.zierler.yamlvalidator' version '1.5.0'
     id 'com.github.ivankohut.git-branch-checks' version '0.0.3'
+    id 'io.franzbecker.gradle-lombok' version '5.0.0'
 }
 
 ext {
@@ -59,8 +60,6 @@ if (!twsApiJar.exists()) {
 
 dependencies {
     implementation files(twsApiJar)
-    compileOnly "org.projectlombok:lombok:${lombokVersion}"
-    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     implementation 'org.cactoos:cactoos:0.50'
     implementation 'commons-io:commons-io:2.11.0'
     implementation 'org.json:json:20220320'
@@ -70,8 +69,6 @@ dependencies {
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
     testImplementation "org.junit.jupiter:junit-jupiter-params:${junitVersion}"
     testImplementation 'org.assertj:assertj-core:3.23.1'
-    testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
-    testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     testImplementation 'org.mockito:mockito-core:3.12.4'
 
     acceptanceTestImplementation 'org.fitnesse:fitnesse:20220319'
@@ -97,6 +94,10 @@ gitBranchChecks {
 
 check {
     dependsOn checkBranchName, checkCommitMessages, checkNoMergeCommits
+}
+
+lombok {
+    version = lombokVersion
 }
 
 jar {
