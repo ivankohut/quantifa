@@ -27,8 +27,8 @@ public class YfMarketPriceOfStock implements MarketPrice {
             try {
                 var documentContext = JsonPath.parse(matcher.group(1), Configuration.builder().options(Option.SUPPRESS_EXCEPTIONS).build());
                 var rawPrice = documentContext.read("$.context.dispatcher.stores.QuoteSummaryStore.financialData.currentPrice.raw");
-                if (rawPrice instanceof Number) {
-                    return Optional.of(BigDecimal.valueOf(((Number) rawPrice).doubleValue()));
+                if (rawPrice instanceof Number rawPriceNumber) {
+                    return Optional.of(BigDecimal.valueOf(rawPriceNumber.doubleValue()));
                 }
             } catch (InvalidJsonException e) {
                 // empty
