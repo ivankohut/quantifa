@@ -20,6 +20,8 @@ public class TextFilesStore implements Store {
 
     private final Path directory;
 
+    // disabling buggy SonarQube rule reporting false positive here
+    @SuppressWarnings("javabugs:S2190")
     public TextFilesStore(String directory) {
         this(Path.of(directory));
     }

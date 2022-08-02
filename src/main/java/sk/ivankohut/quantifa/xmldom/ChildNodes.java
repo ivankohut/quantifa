@@ -12,6 +12,8 @@ public class ChildNodes implements Iterable<Node> {
 
     private final Scalar<Node> node;
 
+    // disabling buggy SonarQube rule reporting false positive here
+    @SuppressWarnings("javabugs:S2190")
     public ChildNodes(Node node) {
         this(() -> node);
     }
