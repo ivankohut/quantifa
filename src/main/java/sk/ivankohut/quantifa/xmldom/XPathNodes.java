@@ -21,6 +21,8 @@ public class XPathNodes implements Iterable<Node> {
     private final Scalar<? extends Node> node;
     private final XPathExpression expression;
 
+    // disabling buggy SonarQube rule reporting false positive here
+    @SuppressWarnings("javabugs:S2190")
     public XPathNodes(Scalar<? extends Node> node, String expression) {
         this(node, compileExpression(expression));
     }
