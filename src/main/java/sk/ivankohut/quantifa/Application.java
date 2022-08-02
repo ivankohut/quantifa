@@ -43,6 +43,7 @@ import java.time.format.DateTimeFormatter;
 public class Application {
 
     private final Text companyName;
+    private final Text currency;
     private final MarketPrice price;
     private final ReportedAmount bookValue;
     private final Scalar<BigDecimal> epsTtm;
@@ -83,6 +84,10 @@ public class Application {
         var priceFileName = new Concatenated(
                 new TextOfDateTime(DateTimeFormatter.ISO_LOCAL_DATE, today),
                 new TextOf(".json")
+        );
+        this.currency = new org.cactoos.text.Sticky(
+                new TextOf(() -> new XPathNodes(financialStatements, "/ReportFinancialStatements/CoGeneralInfo/ReportingCurrency")
+                        .iterator().next().getAttributes().getNamedItem("Code").getTextContent())
         );
         this.price = () -> (switch (priceRequest.source()) {
             case "TWS" -> new TwsMarketPriceOfStock(twsApi, priceRequest, true);
@@ -169,8 +174,7 @@ public class Application {
                                 )
                         ),
                         priceRequest.currency(),
-                        new XPathNodes(financialStatements, "/ReportFinancialStatements/CoGeneralInfo/ReportingCurrency")
-                                .iterator().next().getAttributes().getNamedItem("Code").getTextContent()
+                        new UncheckedText(currency).asString()
                 ).price().map(p::multiply).map(BigDecimal::stripTrailingZeros));
 
         var financialStatementsNode = new StickyFirstOrFail<>(
@@ -256,6 +260,10 @@ public class Application {
         return new UncheckedText(companyName).asString();
     }
 
+    private String currency() {
+        return new UncheckedText(currency).asString();
+    }
+
     public BigDecimal price() {
         return price.price().orElse(BigDecimal.ZERO);
     }
@@ -320,6 +328,7 @@ public class Application {
                     configuration.avApiKey()
             );
             print("Company name", application.companyName());
+            print("Currency", application.currency());
             print("Current price", application.price());
             var bookValue = application.bookValue();
             print("PE TTM", application.peTtm());
