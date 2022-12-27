@@ -15,6 +15,7 @@ plugins {
     id 'at.zierler.yamlvalidator' version '1.5.0'
     id 'com.github.ivankohut.git-branch-checks' version '0.0.3'
     id 'io.franzbecker.gradle-lombok' version '5.0.0'
+    id 'name.remal.check-dependency-updates' version '1.5.0'
 }
 
 ext {
@@ -265,4 +266,12 @@ task acceptanceTestExecution(type: Test) {
 
 check {
     dependsOn acceptanceTestExecution
+}
+
+checkDependencyUpdates {
+    failIfUpdatesFound = true
+    notCheckedDependencies = [
+            // FitNesse does not work with newer Mockito
+            'org.mockito:mockito-core:4+',
+    ]
 }
