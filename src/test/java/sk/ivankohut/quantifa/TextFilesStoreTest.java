@@ -17,7 +17,7 @@ class TextFilesStoreTest {
     private final Store sut = new TextFilesStore("testStore");
 
     @AfterAll
-    private static void cleanup() throws IOException {
+    static void cleanup() throws IOException {
         FileUtils.deleteDirectory(new File("testStore"));
     }
 
