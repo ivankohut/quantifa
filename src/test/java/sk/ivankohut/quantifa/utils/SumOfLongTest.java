@@ -4,14 +4,14 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class LengthOfTest {
+class SumOfLongTest {
 
     @Test
-    void lengthOfGivenText() throws Exception {
-        var sut = new LengthOf(() -> "text");
+    void sumOfGivenLongScalars() throws Exception {
+        var sut = new SumOfLong(() -> 1L, () -> 2L);
         // exercise
         var result = sut.value();
         // verify
-        assertThat(result).isEqualTo(4);
+        assertThat(result).isEqualTo(3);
     }
 }
