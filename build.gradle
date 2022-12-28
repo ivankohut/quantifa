@@ -60,7 +60,7 @@ if (!twsApiJar.exists()) {
 
 dependencies {
     implementation files(twsApiJar)
-    implementation 'org.cactoos:cactoos:0.50'
+    implementation 'org.cactoos:cactoos:0.55.0'
     implementation 'commons-io:commons-io:2.11.0'
     implementation 'org.json:json:20220320'
     implementation 'com.jayway.jsonpath:json-path:2.7.0'
