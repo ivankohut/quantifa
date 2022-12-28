@@ -236,7 +236,7 @@ task writeFitNesseClasspath(type: WriteFitNesseClasspath) {
 class WriteFitNesseClasspath extends DefaultTask {
 
     @Input
-    FileCollection classpath
+    Iterable<File> classpath
 
     @OutputDirectory
     File pagePath
