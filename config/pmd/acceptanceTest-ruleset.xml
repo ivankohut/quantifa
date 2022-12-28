@@ -6,7 +6,6 @@
     <description>All production rules except those not meaningful for acceptance tests</description>
     <rule ref="config/pmd/main-ruleset.xml">
         <!-- Not applicable in fixtures -->
-        <exclude name="DefaultPackage"/>
         <exclude name="TooManyStaticImports"/>
         <exclude name="SignatureDeclareThrowsException"/>
         <exclude name="MethodNamingConventions"/>

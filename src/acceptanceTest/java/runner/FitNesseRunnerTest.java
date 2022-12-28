@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 @FitNesseRunner.Suite("_root")
 @FitNesseRunner.FitnesseDir(value = "src/acceptanceTest/specification", fitNesseRoot = ".")
 @FitNesseRunner.OutputDir("./build/fitnesse-results")
+@SuppressWarnings("PMD.TestClassWithoutTestCases")
 public class FitNesseRunnerTest {
 
 }
