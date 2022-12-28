@@ -5,6 +5,7 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Setter
 public class YfMarketPricesFixture {
@@ -22,7 +23,7 @@ public class YfMarketPricesFixture {
         prices.put(symbol, price);
     }
 
-    public static Map<String, BigDecimal> getPrices() {
-        return prices;
+    public static Optional<BigDecimal> priceOf(String symbol) {
+        return Optional.ofNullable(prices.get(symbol));
     }
 }

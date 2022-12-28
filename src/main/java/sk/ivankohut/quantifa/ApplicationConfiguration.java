@@ -1,16 +1,19 @@
 package sk.ivankohut.quantifa;
 
-import lombok.RequiredArgsConstructor;
-
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-@RequiredArgsConstructor
 public class ApplicationConfiguration implements TwsCoordinates {
 
     private final String type;
     private final Map<String, String> configuration;
+
+    public ApplicationConfiguration(String type, Map<String, String> configuration) {
+        this.type = type;
+        this.configuration = new HashMap<>(configuration);
+    }
 
     @Override
     public String hostName() {

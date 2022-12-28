@@ -32,7 +32,7 @@ public class BookValueFixture {
                                                         entry.getValue()
                                                 )
                                         ),
-                                        BalanceSheetsWithBookValue.getValues().entrySet()
+                                        BalanceSheetsWithBookValue.getValues()
                                 )
                         )
                 ),

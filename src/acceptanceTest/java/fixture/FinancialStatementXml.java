@@ -5,6 +5,7 @@ import org.cactoos.iterable.Mapped;
 import org.cactoos.text.Joined;
 
 import java.math.BigDecimal;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class FinancialStatementXml implements Text {
@@ -14,7 +15,7 @@ public class FinancialStatementXml implements Text {
 
     public FinancialStatementXml(String type, Map<String, BigDecimal> values) {
         this.type = type;
-        this.values = values;
+        this.values = new LinkedHashMap<>(values);
     }
 
     @Override

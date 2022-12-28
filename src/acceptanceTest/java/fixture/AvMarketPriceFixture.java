@@ -5,7 +5,6 @@ import sk.ivankohut.quantifa.CachedFinancialStatementsTest;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Optional;
 
 @Setter
 public class AvMarketPriceFixture {
@@ -20,7 +19,7 @@ public class AvMarketPriceFixture {
                 CachedFinancialStatementsTest.clockFixedOn(DATE),
                 new SimplePriceRequest("AV", symbol, priceDivisor),
                 "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=%s&apikey=avApiKey".formatted(symbol),
-                Optional.ofNullable(AvMarketPricesFixture.getPrices().get(symbol))
+                AvMarketPricesFixture.priceOf(symbol)
                         .map("{\"Global Quote\": { \"05. price\": \"%s\"}}"::formatted)
                         .orElse("{\"Global Quote\": {}}"),
                 "",
