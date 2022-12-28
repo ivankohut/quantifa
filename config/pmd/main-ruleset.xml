@@ -10,7 +10,6 @@
         <exclude name="CommentRequired"/>
         <exclude name="LocalVariableCouldBeFinal"/>
         <exclude name="CommentSize"/>
-        <exclude name="BeanMembersShouldSerialize"/>
         <exclude name="LawOfDemeter"/>
         <exclude name="CommentDefaultAccessModifier"/>
         <exclude name="MissingSerialVersionUID"/>

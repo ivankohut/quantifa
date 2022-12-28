@@ -24,7 +24,7 @@ ext {
     checkstyleVersion = '10.5.0'
     codenarcVersion = '3.1.0'
     spotbugsVersion = '4.7.3'
-    pmdVersion = '6.47.0'
+    pmdVersion = '6.52.0'
     jacocoVersion = '0.8.8'
     lombokVersion = '1.18.24'
     twsApiZipUrl = 'https://interactivebrokers.github.io/downloads/twsapi_macunix.976.01.zip'

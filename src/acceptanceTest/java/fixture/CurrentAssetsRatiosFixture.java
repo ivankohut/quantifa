@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+@SuppressWarnings("PMD.ImmutableField")
 public class CurrentAssetsRatiosFixture {
 
     private Optional<BigDecimal> currentAssets;
