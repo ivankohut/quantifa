@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Data
 @RequiredArgsConstructor
@@ -38,7 +39,7 @@ public class BalanceSheetsWithBookValue {
         );
     }
 
-    public static Map<String, List<Map.Entry<LocalDate, Map<String, BigDecimal>>>> getValues() {
-        return values;
+    public static Set<Map.Entry<String, List<Map.Entry<LocalDate, Map<String, BigDecimal>>>>> getValues() {
+        return values.entrySet();
     }
 }

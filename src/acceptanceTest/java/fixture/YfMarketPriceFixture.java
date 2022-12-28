@@ -5,7 +5,6 @@ import sk.ivankohut.quantifa.CachedFinancialStatementsTest;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Optional;
 
 @Setter
 public class YfMarketPriceFixture {
@@ -20,7 +19,7 @@ public class YfMarketPriceFixture {
                 CachedFinancialStatementsTest.clockFixedOn(DATE),
                 new SimplePriceRequest("YF", symbol, priceDivisor),
                 "https://finance.yahoo.com/quote/%s".formatted(symbol),
-                Optional.ofNullable(YfMarketPricesFixture.getPrices().get(symbol))
+                YfMarketPricesFixture.priceOf(symbol)
                         .map("""
                                   start root.App.main = {"context":{"dispatcher":{"stores":{"QuoteSummaryStore":{"financialData":{
                                   "currentPrice": {"raw": %s, "fmt": "1.11" }

@@ -13,6 +13,7 @@ import sk.ivankohut.quantifa.StockContract;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Setter
@@ -24,7 +25,7 @@ public class StoredStatementsFixture {
     private final String fundamentalsXml = IOUtils.resourceToString("/financialStatements.xml", StandardCharsets.UTF_8);
 
     public StoredStatementsFixture(List<String> storedStatementsDates) throws IOException {
-        this.storedStatementsDates = storedStatementsDates;
+        this.storedStatementsDates = new ArrayList<>(storedStatementsDates);
     }
 
     @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT")
